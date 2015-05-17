@@ -46,20 +46,22 @@
     self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
+
+    // Fetch comics whenever we get notified more are available.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComicsFromDB) name:NewComicsAvailableNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    // Initially we want to grab what we have stored, in case connectivity sucks.
-    _comics = [[DataManager sharedInstance] allSavedComics];
-    [self.collectionView reloadData];
+    // Initially we want to grab what we have stored.
+    [self loadComicsFromDB];
 
+    // If we don't have any, it's the first launch - let's show the loading view
+    // and wait for the data manager to tell us new comics are available.
     if (_comics.count == 0 && ![LoadingView isVisible]) {
         [LoadingView showInView:self.view];
     }
-
-    [self fetchNewComics];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -79,38 +81,17 @@
 
 #pragma mark - Loading data
 
-- (void)fetchNewComics {
-    // Download the latest comics...
-    [[DataManager sharedInstance] downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-        // Error handling...
-        if (error) {
-            if (_comics.count == 0) {
-                NSLog(@"Error downloading latest comics and we have no comics stored. Retrying fetch again in 3 seconds...");
+- (void)loadComicsFromDB {
+    // Grab the comics we have saved.
+    _comics = [[DataManager sharedInstance] allSavedComics];
 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                    [self fetchNewComics];
-                });
-            }
+    // If we have comics and the loading view is present, tell it to handle that we're done.
+    if (_comics.count > 0 && [LoadingView isVisible]) {
+        [LoadingView handleDoneLoading];
+    }
 
-            return;
-        }
-
-        _comics = [[DataManager sharedInstance] allSavedComics];
-
-        if (_comics.count > 0 && [LoadingView isVisible]) {
-            [LoadingView handleDoneLoading];
-        }
-
-        if (numberOfNewComics > 0) {
-            NSMutableArray *indexPathsToInsert = [NSMutableArray arrayWithCapacity:numberOfNewComics];
-
-            for (NSInteger i = 0; i < numberOfNewComics; i++) {
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForItem:i inSection:0]];
-            }
-
-            [self.collectionView insertItemsAtIndexPaths:indexPathsToInsert];
-        }
-    }];
+    // Reload the collection view.
+    [self.collectionView reloadData];
 }
 
 

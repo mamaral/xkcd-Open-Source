@@ -10,6 +10,8 @@
 #import "AppDelegate.h"
 #import "Comic.h"
 
+static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
+
 @interface DataManager : NSObject
 
 @property (nonatomic, strong) RLMRealm *realm;

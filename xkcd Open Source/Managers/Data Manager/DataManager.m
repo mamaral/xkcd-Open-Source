@@ -8,6 +8,7 @@
 
 #import "DataManager.h"
 #import "RequestManager.h"
+#import <GTTracker.h>
 
 static NSInteger const kCurrentSchemaVersion = 1;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
@@ -38,6 +39,8 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     _defaults = [NSUserDefaults standardUserDefaults];
 
     [self initializeRealm];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteringForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
 
     return self;
 }
@@ -80,6 +83,30 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 }
 
 
+#pragma mark - App life cycle handling
+
+- (void)handleAppEnteringForeground {
+    // Download the latest comics.
+    [self downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
+
+        // If there was an error and we have none saved, there was an issue loading the first batch of
+        // comics and we should probably retry after a short delay.
+        if (error && [self allSavedComics].count == 0) {
+            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Foreground Fetch Error" action:error.localizedDescription];
+
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self handleAppEnteringForeground];
+            });
+        }
+
+        // Otherwise if we have new comics, notify the app that there are more available.
+        else if (numberOfNewComics > 0) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:NewComicsAvailableNotification object:nil];
+        }
+    }];
+}
+
+
 #pragma mark - Fetching comics
 
 - (RLMResults *)allSavedComics {
@@ -88,13 +115,13 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
     // Calculate the starting index.
-    NSInteger startingIndex = [self latestComicDownloaded] + 1;
+    NSInteger since = [self latestComicDownloaded];
 
     // Pass that to our request manager to fetch it.
-    [[RequestManager sharedInstance] downloadComicsStartingAtIndex:startingIndex completionHandler:^(NSError *error, NSArray *comicDicts) {
+    [[RequestManager sharedInstance] downloadComicsSince:since completionHandler:^(NSError *error, NSArray *comicDicts) {
         // Error handling
         if (error) {
-            handler(error, nil);
+            handler(error, 0);
             return;
         }
 
@@ -128,12 +155,20 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 - (void)performBackgroundFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     // Download all of the latest comics.
     [self downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
+        BOOL newData = numberOfNewComics > 0;
+
         if (error) {
             completionHandler(UIBackgroundFetchResultFailed);
         }
 
+        else if (newData) {
+            completionHandler(UIBackgroundFetchResultNewData);
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NEW_COMICS_AVAILABLE" object:nil];
+        }
+
         else {
-            completionHandler(numberOfNewComics > 1 ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
+            completionHandler(UIBackgroundFetchResultNoData);
         }
     }];
 }

@@ -55,8 +55,8 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 
 #pragma mark - Downloading comics
 
-- (void)downloadComicsStartingAtIndex:(NSInteger)startingIndex completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler {
-    NSDictionary *params = @{@"since": [NSString stringWithFormat:@"%ld", (long)startingIndex]};
+- (void)downloadComicsSince:(NSInteger)since completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler {
+    NSDictionary *params = @{@"since": [NSString stringWithFormat:@"%ld", (long)since]};
 
     [self.manager GET:kFetchURLString parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         handler(nil, (NSArray *)responseObject);

@@ -72,14 +72,13 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
     
     [[RequestManager sharedInstance] sendDeviceToken:token completionHandler:^(NSError *error) {
         if (error) {
-            [[[UIAlertView alloc] initWithTitle:@"ERROR" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
             NSLog(@"Sending token to server failed with error: %@", error);
         }
-
-        else {
-            [[[UIAlertView alloc] initWithTitle:@"WORKED!!" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-        }
     }];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    [[DataManager sharedInstance] performBackgroundFetchWithCompletionHandler:completionHandler];
 }
 
 

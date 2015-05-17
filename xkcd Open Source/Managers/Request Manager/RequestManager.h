@@ -22,7 +22,7 @@
 
 #pragma mark - Downloading comics
 
-- (void)downloadComicsStartingAtIndex:(NSInteger)startingIndex completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler;
+- (void)downloadComicsSince:(NSInteger)since completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler;
 
 
 #pragma mark - Device tokens
