@@ -1,0 +1,1 @@
+../../../GoogleAnalytics-iOS-SDK/GoogleAnalytics/Library/GAIEcommerceProduct.h
