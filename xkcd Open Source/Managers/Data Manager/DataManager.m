@@ -41,6 +41,7 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     [self initializeRealm];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteringForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteringForeground) name:UIApplicationDidFinishLaunchingNotification object:nil];
 
     return self;
 }
