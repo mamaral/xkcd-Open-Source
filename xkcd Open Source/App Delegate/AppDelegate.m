@@ -17,7 +17,9 @@
 
 static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
-@interface AppDelegate ()
+@interface AppDelegate () {
+    DataManager *_dataManager;
+}
 
 @end
 
@@ -29,6 +31,8 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
+
+    _dataManager = [DataManager sharedInstance];
 
     [ThemeManager setupTheme];
 
@@ -68,7 +72,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSString *token = [[DataManager sharedInstance] tokenStringFromData:deviceToken];
+    NSString *token = [_dataManager tokenStringFromData:deviceToken];
     
     [[RequestManager sharedInstance] sendDeviceToken:token completionHandler:^(NSError *error) {
         if (error) {
@@ -78,7 +82,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [[DataManager sharedInstance] performBackgroundFetchWithCompletionHandler:completionHandler];
+    [_dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
 }
 
 
