@@ -6,3 +6,8 @@
 *.xcuserstate
 project.xcworkspace/
 xcuserdata/
+
+#Pods
+Podfile.lock
+Pods/
+build/
