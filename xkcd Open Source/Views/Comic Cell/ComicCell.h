@@ -19,7 +19,6 @@ static NSString * const kComicCellReuseIdentifier = @"ComicCell";
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *maskView;
 @property (nonatomic, strong) UILabel *numberLabel;
-@property (nonatomic, strong) UIView *shadowView;
 @property (nonatomic, strong) UIView *highlightedMask;
 
 @end

@@ -41,12 +41,6 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
     self.imageView.clipsToBounds = YES;
     [self.containerView addSubview:self.imageView];
 
-    self.shadowView = [UIView new];
-    self.shadowView.backgroundColor = [UIColor clearColor];
-    [self.containerView addSubview:self.shadowView];
-
-    [ThemeManager addShadowToLayer:self.shadowView.layer radius:10.0 opacity:0.4];
-
     self.numberLabel = [UILabel new];
     self.numberLabel.textAlignment = NSTextAlignmentCenter;
     self.numberLabel.textColor = [UIColor whiteColor];
@@ -54,7 +48,7 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
     self.numberLabel.font = [ThemeManager xkcdFontWithSize:11];
     self.numberLabel.adjustsFontSizeToFitWidth = YES;
     self.numberLabel.clipsToBounds = YES;
-    [self.shadowView addSubview:self.numberLabel];
+    [self.containerView addSubview:self.numberLabel];
 
     [ThemeManager addBorderToLayer:self.numberLabel.layer radius:kComicCellNumberLabelWidth / 2.0 color:[UIColor whiteColor]];
 
@@ -70,8 +64,7 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
     [self.containerView anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:3 topAndBottomPadding:3];
     [self.imageView anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:7 topAndBottomPadding:7];
     [self.maskView fillSuperview];
-    [self.shadowView anchorBottomRightWithRightPadding:4 bottomPadding:4 width:kComicCellNumberLabelWidth height:kComicCellNumberLabelWidth];
-    [self.numberLabel fillSuperview];
+    [self.numberLabel anchorBottomRightWithRightPadding:4 bottomPadding:4 width:kComicCellNumberLabelWidth height:kComicCellNumberLabelWidth];
     [self.highlightedMask fillSuperview];
 }
 
