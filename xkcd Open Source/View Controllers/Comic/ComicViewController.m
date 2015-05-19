@@ -15,7 +15,9 @@
 
 static CGFloat const kAltButtonSize = 60.0;
 
-@interface ComicViewController ()
+@interface ComicViewController () {
+    BOOL _viewedAlt;
+}
 
 @end
 
@@ -54,6 +56,12 @@ static CGFloat const kAltButtonSize = 60.0;
     [super viewWillLayoutSubviews];
 
     [self layoutFacade];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Viewed Alt" action:_viewedAlt ? @"Yes" : @"NO"];
 }
 
 - (void)createViewComponents {
@@ -107,6 +115,8 @@ static CGFloat const kAltButtonSize = 60.0;
 #pragma mark - Alt
 
 - (void)showAltView {
+    _viewedAlt = YES;
+
     [self.view addSubview:self.altView];
     [self.altView show];
 }
