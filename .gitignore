@@ -6,6 +6,7 @@
 *.xcuserstate
 project.xcworkspace/
 xcuserdata/
+*.xccheckout
 
 #Pods
 Podfile.lock
