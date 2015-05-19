@@ -71,7 +71,7 @@ static CGFloat const kAltButtonSize = 60.0;
     self.comicImageView = [UIImageView new];
     self.comicImageView.contentMode = UIViewContentModeScaleAspectFit;
     self.comicImageView.userInteractionEnabled = YES;
-    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:self.comic.imageURLString ?: @""]];
+    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:self.comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
     [self.containerView addSubview:self.comicImageView];
 
     self.showAltButton = [UIButton buttonWithType:UIButtonTypeCustom];

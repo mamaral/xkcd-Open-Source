@@ -25,6 +25,10 @@ static NSString * const kXkcdFontName = @"xkcd-Regular";
     return [UIColor colorWithRed:151/255.0 green:169/255.0 blue:199/255.0 alpha:1.0];
 }
 
++ (UIImage *)loadingImage {
+    return [UIImage imageNamed:@"loading"];
+}
+
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color {
     layer.cornerRadius = radius;
     layer.borderColor = color.CGColor;

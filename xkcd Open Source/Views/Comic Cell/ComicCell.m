@@ -78,7 +78,7 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
 - (void)setComic:(Comic *)comic {
     _comic = comic;
 
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString] placeholderImage:nil];
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString] placeholderImage:[ThemeManager loadingImage]];
     self.numberLabel.text = [NSString stringWithFormat:@"%ld", (long)comic.num];
 }
 
