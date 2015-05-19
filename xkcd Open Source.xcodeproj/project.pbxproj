@@ -544,9 +544,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/xkcd",
-					Open,
-					Source/Misc/Frameworks,
 				);
 				INFOPLIST_FILE = "xkcd Open Source/Misc/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -564,9 +561,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/xkcd",
-					Open,
-					Source/Misc/Frameworks,
 				);
 				INFOPLIST_FILE = "xkcd Open Source/Misc/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
