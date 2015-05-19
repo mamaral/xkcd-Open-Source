@@ -3,11 +3,10 @@
 
 ## A free, ad-free, open-source, native, and universal xkcd.com reader for iOS.
 
-![splash](Screenshots/splash.png)
 ![list](Screenshots/list.png)
 ![comic](Screenshots/comic.png)
 ![alt](Screenshots/alt.png)
-![iPad](Screenshots/iPad.png)
+![iPad](Screenshots/ipad.png)
 
 # Features include:
 
