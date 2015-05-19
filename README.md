@@ -32,16 +32,16 @@
 
 ## Todo List (in no specific order)
 
-- [] Gathering user feedback
-- [] Searching
-- [] Favoriting
-- [] Visual indication that comics are read/unread
-- [] Lazy-image downloading for offline viewing
-- [] Social sharing
-- [] Investigate integrating the ***What If?*** series
-- [] ***About*** section featuring contributors
-- [] Code coverage
-- [] Getting Randall Munroe to acknowledge my existince
+- [ ] Gathering user feedback
+- [ ] Searching
+- [ ] Favoriting
+- [ ] Visual indication that comics are read/unread
+- [ ] Lazy-image downloading for offline viewing
+- [ ] Social sharing
+- [ ] Investigate integrating the ***What If?*** series
+- [ ] ***About*** section featuring contributors
+- [ ] Code coverage
+- [ ] Getting Randall Munroe to acknowledge my existince
 
 ## Want to help?
 
