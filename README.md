@@ -42,7 +42,7 @@
 - [ ] Investigate integrating the ***What If?*** series
 - [ ] ***About*** section featuring contributors
 - [ ] Code coverage
-- [ ] Getting Randall Munroe to acknowledge my existince
+- [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Want to help?
 
