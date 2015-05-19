@@ -45,7 +45,7 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
     self.shadowView.backgroundColor = [UIColor clearColor];
     [self.containerView addSubview:self.shadowView];
 
-    [ThemeManager addShadowToLayer:self.shadowView.layer];
+    [ThemeManager addShadowToLayer:self.shadowView.layer radius:10.0 opacity:0.4];
 
     self.numberLabel = [UILabel new];
     self.numberLabel.textAlignment = NSTextAlignmentCenter;

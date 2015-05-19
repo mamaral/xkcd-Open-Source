@@ -13,6 +13,8 @@
 #import "ThemeManager.h"
 #import "DataManager.h"
 
+static CGFloat const kAltButtonSize = 60.0;
+
 @interface ComicViewController ()
 
 @end
@@ -83,10 +85,10 @@
     [self.showAltButton addTarget:self action:@selector(dismissAltView) forControlEvents:UIControlEventTouchUpOutside];
     [self.view addSubview:self.showAltButton];
 
-    [ThemeManager addBorderToLayer:self.showAltButton.layer radius:22.0 color:[UIColor whiteColor]];
-    [ThemeManager addShadowToLayer:self.showAltButton.layer];
+    [ThemeManager addBorderToLayer:self.showAltButton.layer radius:kAltButtonSize / 2.0 color:[UIColor whiteColor]];
+    [ThemeManager addShadowToLayer:self.showAltButton.layer radius:10.0 opacity:0.4];
 
-    self.altView = [[AltView alloc] initWithAltText:self.comic.alt];
+    self.altView = [[AltView alloc] initWithComic:self.comic];
     self.altView.alpha = 0.0;
 }
 
@@ -94,7 +96,7 @@
     [self.containerView fillSuperview];
     self.containerView.contentSize = self.containerView.frame.size;
     [self.comicImageView anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:10 topAndBottomPadding:10];
-    [self.showAltButton anchorBottomRightWithRightPadding:30 bottomPadding:30 width:44 height:44];
+    [self.showAltButton anchorBottomRightWithRightPadding:30 bottomPadding:30 width:kAltButtonSize height:kAltButtonSize];
 
     if (self.altView.isVisible) {
         [self.altView layoutFacade];

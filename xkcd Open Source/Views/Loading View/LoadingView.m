@@ -105,7 +105,7 @@
 
     [self.imageViewContainer anchorInCenterWithWidth:containerWidth height:containerHeight];
     [self.animatedImageView anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:10 topAndBottomPadding:10];
-    [self.loadingLabel alignAbove:self.imageViewContainer matchingCenterWithBottomPadding:5 width:containerWidth height:30];
+    [self.loadingLabel alignAbove:self.imageViewContainer matchingCenterWithBottomPadding:5 width:containerWidth height:44];
     [self.doneButton alignUnder:self.imageViewContainer matchingCenterWithTopPadding:5 width:containerWidth height:44];
 }
 

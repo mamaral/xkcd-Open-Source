@@ -28,14 +28,14 @@ static NSString * const kXkcdFontName = @"xkcd-Regular";
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color {
     layer.cornerRadius = radius;
     layer.borderColor = color.CGColor;
-    layer.borderWidth = 1.0;
+    layer.borderWidth = 1.25;
 }
 
-+ (void)addShadowToLayer:(CALayer *)layer {
++ (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity {
     layer.shadowColor = [UIColor blackColor].CGColor;
     layer.shadowOffset = CGSizeMake(0.0, 0.0);
-    layer.shadowOpacity = 0.4;
-    layer.shadowRadius = 10.0;
+    layer.shadowOpacity = 0.9;
+    layer.shadowRadius = 15.0;
 }
 
 @end

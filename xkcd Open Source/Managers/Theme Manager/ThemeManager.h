@@ -18,6 +18,6 @@ static CGFloat const kDefaultCornerRadius = 7.0;
 + (UIColor *)xkcdLightBlue;
 
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color;
-+ (void)addShadowToLayer:(CALayer *)layer;
++ (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity;
 
 @end
