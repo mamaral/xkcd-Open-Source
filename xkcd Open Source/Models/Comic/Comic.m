@@ -27,28 +27,20 @@
     self.alt = dictionary[kAltKey] ?: @"";
     self.transcript = dictionary[kTranscriptKey] ?: @"";
     self.imageURLString = dictionary[kImageURLStringKey] ?: @"http://xkcd.com/";
-    self.date = [self generateDateFromDay:dictionary[kDayKey] month:dictionary[kMonthKey] year:dictionary[kYearKey]];
+    self.day = dictionary[kDayKey] ?: @"";
+    self.month = dictionary[kMonthKey] ?: @"";
+    self.year = dictionary[kYearKey] ?: @"";
     self.aspectRatio = dictionary[kAspectRatioKey] ? [dictionary[kAspectRatioKey] floatValue] : 1.0;
     self.viewed = NO;
+
+    NSString *month = [[[NSDateFormatter new] monthSymbols] objectAtIndex:([self.month integerValue] - 1)];
+    self.formattedDateString = [NSString stringWithFormat:@"%@ %@,  %@", month, self.day, self.year] ?: @"";
 
     return self;
 }
 
 + (NSString *)primaryKey {
     return @"comicID";
-}
-
-
-#pragma mark - Generating dates
-
-- (NSDate *)generateDateFromDay:(NSString *)day month:(NSString *)month year:(NSString *)year {
-    NSDateComponents *components = [NSDateComponents new];
-
-    [components setDay:[day integerValue]];
-    [components setMonth:[month integerValue]];
-    [components setYear:[year integerValue]];
-
-    return [[NSCalendar currentCalendar] dateFromComponents:components];
 }
 
 @end

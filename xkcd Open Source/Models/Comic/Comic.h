@@ -29,7 +29,10 @@ static NSString * const kAspectRatioKey = @"img_aspect_ratio";
 @property NSString *alt;
 @property NSString *transcript;
 @property NSString *imageURLString;
-@property NSDate *date;
+@property NSString *day;
+@property NSString *month;
+@property NSString *year;
+@property NSString *formattedDateString;
 @property CGFloat aspectRatio;
 @property BOOL viewed;
 
