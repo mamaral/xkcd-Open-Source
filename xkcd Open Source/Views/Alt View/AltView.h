@@ -7,15 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Comic.h"
 
 @interface AltView : UIView
 
-@property (nonatomic, strong) NSString *altText;
+@property (nonatomic, strong) Comic *comic;
+
+@property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UILabel *altLabel;
+@property (nonatomic, strong) UILabel *dateLabel;
 
 @property (nonatomic) BOOL isVisible;
 
-- (instancetype)initWithAltText:(NSString *)altText;
+- (instancetype)initWithComic:(Comic *)comic;
+
 - (void)layoutFacade;
 - (void)show;
 - (void)dismissWithCompletion:(dispatch_block_t)completion;

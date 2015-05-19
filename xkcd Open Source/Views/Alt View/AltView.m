@@ -10,12 +10,14 @@
 #import "ThemeManager.h"
 #import <UIView+Facade.h>
 
+static CGFloat const kAltViewPadding = 15.0;
+
 @implementation AltView
 
-- (instancetype)initWithAltText:(NSString *)altText {
+- (instancetype)initWithComic:(Comic *)comic {
     self = [super init];
 
-    self.altText = altText;
+    self.comic = comic;
 
     [self setupAltView];
 
