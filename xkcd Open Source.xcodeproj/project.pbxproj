@@ -566,7 +566,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "xkcd Open Source";
-				PROVISIONING_PROFILE = "58b94695-e958-4b19-9847-d926f2bfeee8";
+				PROVISIONING_PROFILE = "d31a2265-7d81-4e2d-8f85-9962d74868b2";
 			};
 			name = Release;
 		};
