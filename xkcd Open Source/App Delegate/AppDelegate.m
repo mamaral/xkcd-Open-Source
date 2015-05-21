@@ -40,6 +40,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
     [self initializeAnalytics];
     [self setupPushNotifications];
+    [self clearAppBadge];
 
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
 
@@ -50,6 +51,8 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     [[GTTracker sharedInstance] startAnalyticsSession];
+
+    [self clearAppBadge];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -83,6 +86,10 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     [_dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
+}
+
+- (void)clearAppBadge {
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 
 
