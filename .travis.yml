@@ -5,4 +5,4 @@ xcode_scheme: xkcdOSTests
 script: 
   - xctool -workspace xkcd\ Open\ Source.xcworkspace -scheme xkcdOSTests build test -sdk iphonesimulator GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
 after_success:
-  - bash codecov -v
+  - bash <(curl -s https://codecov.io/bash)
