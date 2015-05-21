@@ -24,7 +24,7 @@
 		277317101B06DF9300ED7978 /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2773170F1B06DF9300ED7978 /* ThemeManager.m */; };
 		277317161B06E3E600ED7978 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 277317151B06E3E600ED7978 /* LoadingView.m */; };
 		27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */; };
-		27B984A31B0D602D00684AA1 /* xkcdOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984A21B0D602D00684AA1 /* xkcdOSTests.m */; };
+		27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984A91B0D641700684AA1 /* ComicTests.m */; };
 		27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */; };
 		70F7092809A3BE7A7BB3041B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 09A2B0C2ACB019A4B019EC89 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -72,7 +72,7 @@
 		27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicListFlowLayout.m; sourceTree = "<group>"; };
 		27B9849E1B0D602D00684AA1 /* xkcdOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = xkcdOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		27B984A11B0D602D00684AA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		27B984A21B0D602D00684AA1 /* xkcdOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xkcdOSTests.m; sourceTree = "<group>"; };
+		27B984A91B0D641700684AA1 /* ComicTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicTests.m; sourceTree = "<group>"; };
 		27EE4A5E1B07BDAA001454A3 /* ComicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicViewController.h; sourceTree = "<group>"; };
 		27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicViewController.m; sourceTree = "<group>"; };
 		BB4757291B48E3C99EBB7007 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
@@ -283,7 +283,7 @@
 		27B9849F1B0D602D00684AA1 /* xkcdOSTests */ = {
 			isa = PBXGroup;
 			children = (
-				27B984A21B0D602D00684AA1 /* xkcdOSTests.m */,
+				27B984A91B0D641700684AA1 /* ComicTests.m */,
 				27B984A01B0D602D00684AA1 /* Supporting Files */,
 			);
 			path = xkcdOSTests;
@@ -517,7 +517,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				27B984A31B0D602D00684AA1 /* xkcdOSTests.m in Sources */,
+				27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -658,6 +658,7 @@
 		};
 		27B984A61B0D602D00684AA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D99D23534596E16621A29CE5 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -725,6 +726,7 @@
 				27B984A71B0D602D00684AA1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
