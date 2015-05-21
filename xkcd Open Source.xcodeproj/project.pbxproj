@@ -75,8 +75,10 @@
 		27B984A91B0D641700684AA1 /* ComicTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicTests.m; sourceTree = "<group>"; };
 		27EE4A5E1B07BDAA001454A3 /* ComicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicViewController.h; sourceTree = "<group>"; };
 		27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicViewController.m; sourceTree = "<group>"; };
+		4484B4BA0184CB6D6523840B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		BB4757291B48E3C99EBB7007 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
 		D99D23534596E16621A29CE5 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.debug.xcconfig; sourceTree = "<group>"; };
+		F23446BA06D19E2DB13831EC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 			children = (
 				2714CCB41B05667400ADF009 /* xkcd Open Source */,
 				27B9849F1B0D602D00684AA1 /* xkcdOSTests */,
+				92D197D67863ECFFF37B8726 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -332,6 +335,15 @@
 				09A2B0C2ACB019A4B019EC89 /* libPods.a */,
 			);
 			path = Frameworks;
+			sourceTree = "<group>";
+		};
+		92D197D67863ECFFF37B8726 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F23446BA06D19E2DB13831EC /* Pods.debug.xcconfig */,
+				4484B4BA0184CB6D6523840B /* Pods.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		B9BC939A66E2A1E470D076F8 /* Pods */ = {
@@ -624,7 +636,7 @@
 		};
 		2714CCD01B05667400ADF009 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D99D23534596E16621A29CE5 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = F23446BA06D19E2DB13831EC /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -640,7 +652,7 @@
 		};
 		2714CCD11B05667400ADF009 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB4757291B48E3C99EBB7007 /* Pods.release.xcconfig */;
+			baseConfigurationReference = 4484B4BA0184CB6D6523840B /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
@@ -658,7 +670,6 @@
 		};
 		27B984A61B0D602D00684AA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D99D23534596E16621A29CE5 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
