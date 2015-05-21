@@ -24,9 +24,20 @@
 		277317101B06DF9300ED7978 /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2773170F1B06DF9300ED7978 /* ThemeManager.m */; };
 		277317161B06E3E600ED7978 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 277317151B06E3E600ED7978 /* LoadingView.m */; };
 		27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */; };
+		27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984A91B0D641700684AA1 /* ComicTests.m */; };
 		27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */; };
 		70F7092809A3BE7A7BB3041B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 09A2B0C2ACB019A4B019EC89 /* libPods.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		27B984A41B0D602D00684AA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2714CCAA1B05667400ADF009 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2714CCB11B05667400ADF009;
+			remoteInfo = "xkcd Open Source";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		09A2B0C2ACB019A4B019EC89 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,6 +70,9 @@
 		277317151B06E3E600ED7978 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		27AE1AD21B08CFE6002D5280 /* ComicListFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicListFlowLayout.h; sourceTree = "<group>"; };
 		27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicListFlowLayout.m; sourceTree = "<group>"; };
+		27B9849E1B0D602D00684AA1 /* xkcdOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = xkcdOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		27B984A11B0D602D00684AA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		27B984A91B0D641700684AA1 /* ComicTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicTests.m; sourceTree = "<group>"; };
 		27EE4A5E1B07BDAA001454A3 /* ComicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicViewController.h; sourceTree = "<group>"; };
 		27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicViewController.m; sourceTree = "<group>"; };
 		BB4757291B48E3C99EBB7007 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
@@ -73,6 +87,13 @@
 				70F7092809A3BE7A7BB3041B /* libPods.a in Frameworks */,
 				2715C2EF1B090AFD00F50645 /* Crashlytics.framework in Frameworks */,
 				2715C2EE1B090AFD00F50645 /* Fabric.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27B9849B1B0D602D00684AA1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				2714CCB41B05667400ADF009 /* xkcd Open Source */,
+				27B9849F1B0D602D00684AA1 /* xkcdOSTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				2714CCB21B05667400ADF009 /* xkcd Open Source.app */,
+				27B9849E1B0D602D00684AA1 /* xkcdOSTests.xctest */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -257,6 +280,23 @@
 			path = Layout;
 			sourceTree = "<group>";
 		};
+		27B9849F1B0D602D00684AA1 /* xkcdOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				27B984A91B0D641700684AA1 /* ComicTests.m */,
+				27B984A01B0D602D00684AA1 /* Supporting Files */,
+			);
+			path = xkcdOSTests;
+			sourceTree = "<group>";
+		};
+		27B984A01B0D602D00684AA1 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				27B984A11B0D602D00684AA1 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		27EE4A5B1B07BD8D001454A3 /* Comic Cell */ = {
 			isa = PBXGroup;
 			children = (
@@ -326,6 +366,24 @@
 			productReference = 2714CCB21B05667400ADF009 /* xkcd Open Source.app */;
 			productType = "com.apple.product-type.application";
 		};
+		27B9849D1B0D602D00684AA1 /* xkcdOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 27B984A81B0D602D00684AA1 /* Build configuration list for PBXNativeTarget "xkcdOSTests" */;
+			buildPhases = (
+				27B9849A1B0D602D00684AA1 /* Sources */,
+				27B9849B1B0D602D00684AA1 /* Frameworks */,
+				27B9849C1B0D602D00684AA1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				27B984A51B0D602D00684AA1 /* PBXTargetDependency */,
+			);
+			name = xkcdOSTests;
+			productName = xkcdOSTests;
+			productReference = 27B9849E1B0D602D00684AA1 /* xkcdOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -343,6 +401,10 @@
 							};
 						};
 					};
+					27B9849D1B0D602D00684AA1 = {
+						CreatedOnToolsVersion = 6.3.1;
+						TestTargetID = 2714CCB11B05667400ADF009;
+					};
 				};
 			};
 			buildConfigurationList = 2714CCAD1B05667400ADF009 /* Build configuration list for PBXProject "xkcd Open Source" */;
@@ -359,6 +421,7 @@
 			projectRoot = "";
 			targets = (
 				2714CCB11B05667400ADF009 /* xkcd Open Source */,
+				27B9849D1B0D602D00684AA1 /* xkcdOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -372,6 +435,13 @@
 				2773170D1B06D1AA00ED7978 /* xkcd.otf in Resources */,
 				2714CCC01B05667400ADF009 /* LaunchScreen.xib in Resources */,
 				2714CCBD1B05667400ADF009 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27B9849C1B0D602D00684AA1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,7 +513,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		27B9849A1B0D602D00684AA1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		27B984A51B0D602D00684AA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2714CCB11B05667400ADF009 /* xkcd Open Source */;
+			targetProxy = 27B984A41B0D602D00684AA1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		2714CCBE1B05667400ADF009 /* LaunchScreen.xib */ = {
@@ -570,6 +656,48 @@
 			};
 			name = Release;
 		};
+		27B984A61B0D602D00684AA1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D99D23534596E16621A29CE5 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = xkcdOSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/xkcd Open Source.app/xkcd Open Source";
+			};
+			name = Debug;
+		};
+		27B984A71B0D602D00684AA1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = xkcdOSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/xkcd Open Source.app/xkcd Open Source";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -587,6 +715,15 @@
 			buildConfigurations = (
 				2714CCD01B05667400ADF009 /* Debug */,
 				2714CCD11B05667400ADF009 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		27B984A81B0D602D00684AA1 /* Build configuration list for PBXNativeTarget "xkcdOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				27B984A61B0D602D00684AA1 /* Debug */,
+				27B984A71B0D602D00684AA1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
