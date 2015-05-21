@@ -1,4 +1,4 @@
 language: objective-c
 xcode_sdk: iphonesimulator
-xcode_project: xkcd\ Open\ Source.xcodeproj
+xcode_project: xkcd Open Source.xcodeproj
 xcode_scheme: xkcdOSTests
