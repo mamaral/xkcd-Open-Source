@@ -1,5 +1,4 @@
 language: objective-c
-script: 
-  - xctool -project xkcd\ Open\ Source.xcodeproj -scheme xkcdOSTests build test -sdk iphonesimulator GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+xcode_sdk: iphonesimulator
+xcode_project: xkcd\ Open\ Source.xcodeproj
+xcode_scheme: xkcdOSTests
