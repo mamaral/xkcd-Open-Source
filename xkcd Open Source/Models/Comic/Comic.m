@@ -33,8 +33,8 @@
     self.aspectRatio = dictionary[kAspectRatioKey] ? [dictionary[kAspectRatioKey] floatValue] : 1.0;
     self.viewed = NO;
 
-    NSString *month = [[[NSDateFormatter new] monthSymbols] objectAtIndex:([self.month integerValue] - 1)];
-    self.formattedDateString = [NSString stringWithFormat:@"%@ %@,  %@", month, self.day, self.year] ?: @"";
+    NSString *month = self.month.length > 0 ? [[[NSDateFormatter new] monthSymbols] objectAtIndex:([self.month integerValue] - 1)] : @"";
+    self.formattedDateString = (month.length > 0 && self.day.length > 0 && self.year.length > 0) ? [NSString stringWithFormat:@"%@ %@,  %@", month, self.day, self.year] : @"";
 
     return self;
 }
