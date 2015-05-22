@@ -30,4 +30,8 @@
     [super tearDown];
 }
 
+- (void)testSingleton {
+    XCTAssertNotNil([DataManager sharedInstance]);
+}
+
 @end
