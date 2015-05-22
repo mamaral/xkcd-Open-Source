@@ -35,9 +35,9 @@
 
 + (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity {
     layer.shadowColor = [UIColor blackColor].CGColor;
-    layer.shadowOffset = CGSizeMake(0.0, 0.0);
-    layer.shadowOpacity = kDefaultShadowOpacity;
-    layer.shadowRadius = kDefaultShadowRadius;
+    layer.shadowOffset = CGSizeZero;
+    layer.shadowOpacity = opacity;
+    layer.shadowRadius = radius;
 }
 
 @end

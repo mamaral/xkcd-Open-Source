@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import "ThemeManager.h"
 
 @interface ThemeManagerTests : XCTestCase
 
@@ -17,24 +18,58 @@
 
 - (void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    XCTAssert(YES, @"Pass");
+- (void)testSetupTheme {
+    [ThemeManager setupTheme];
+
+    NSDictionary *navigationBarAppearanceAttributes = [UINavigationBar appearance].titleTextAttributes;
+
+    XCTAssertEqualObjects(navigationBarAppearanceAttributes[NSForegroundColorAttributeName], [UIColor blackColor]);
+    XCTAssertEqualObjects(navigationBarAppearanceAttributes[NSFontAttributeName], [UIFont fontWithName:kXKCDFontName size:kDefaultXKCDTitleFontSize]);
 }
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
+- (void)testXKCDFont {
+    CGFloat fontSize = 25.0;
+
+    XCTAssertEqualObjects([ThemeManager xkcdFontWithSize:fontSize], [UIFont fontWithName:kXKCDFontName size:fontSize]);
+}
+
+- (void)testXKCDLightBlue {
+    XCTAssertEqualObjects([ThemeManager xkcdLightBlue], [UIColor colorWithRed:151/255.0 green:169/255.0 blue:199/255.0 alpha:1.0]);
+}
+
+- (void)testLoadingImage {
+    XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager loadingImage]), UIImagePNGRepresentation([UIImage imageNamed:kDefaultLoadingImageName]));
+}
+
+- (void)testAddBorderToLayer {
+    UIView *testView = [UIView new];
+    CGFloat radius = 10;
+    UIColor *color = [UIColor redColor];
+
+    [ThemeManager addBorderToLayer:testView.layer radius:radius color:color];
+
+    XCTAssertEqual(testView.layer.cornerRadius, radius);
+    XCTAssertEqual(testView.layer.borderColor, color.CGColor);
+    XCTAssertEqual(testView.layer.borderWidth, kDefaultBorderWidth);
+}
+
+- (void)testAddShadowToLayer {
+    UIView *testView = [UIView new];
+    CGFloat radius = 15;
+    CGFloat opacity = 0.4;
+
+    [ThemeManager addShadowToLayer:testView.layer radius:radius opacity:opacity];
+
+    XCTAssertEqual(testView.layer.shadowRadius, radius);
+    XCTAssertEqualWithAccuracy(testView.layer.shadowOpacity, opacity, 0.01);
+    XCTAssertEqual(testView.layer.shadowColor, [UIColor blackColor].CGColor);
+    XCTAssert(CGSizeEqualToSize(testView.layer.shadowOffset, CGSizeZero));
 }
 
 @end
