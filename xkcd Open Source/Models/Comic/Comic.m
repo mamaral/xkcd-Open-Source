@@ -34,7 +34,7 @@
     self.viewed = NO;
 
     NSString *month = self.month.length > 0 ? [[[NSDateFormatter new] monthSymbols] objectAtIndex:([self.month integerValue] - 1)] : @"";
-    self.formattedDateString = (month.length > 0 && self.day.length > 0 && self.year.length > 0) ? [NSString stringWithFormat:@"%@ %@,  %@", month, self.day, self.year] : @"";
+    self.formattedDateString = (month.length > 0 && self.day.length > 0 && self.year.length > 0) ? [NSString stringWithFormat:@"%@ %@, %@", month, self.day, self.year] : @"";
 
     return self;
 }
