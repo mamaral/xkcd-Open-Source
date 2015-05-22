@@ -20,8 +20,8 @@
 - (instancetype)initComicWithDictionary:(NSDictionary *)dictionary {
     self = [super init];
 
-    self.num = [dictionary[kNumKey] integerValue] ?: 0;
-    self.comicID = [dictionary[kNumKey] stringValue] ?: @"";
+    self.num = [dictionary[kNumKey] integerValue] ?: kDefaultComicNum;
+    self.comicID = [dictionary[kNumKey] stringValue] ?: @"0";
     self.title = dictionary[kTitleKey] ?: @"";
     self.safeTitle = dictionary[kSafeTitleKey] ?: @"";
     self.alt = dictionary[kAltKey] ?: @"";
