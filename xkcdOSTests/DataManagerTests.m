@@ -20,9 +20,13 @@
 
 - (void)setUp {
     [super setUp];
+
+    _dataManager = [DataManager sharedInstance];
 }
 
 - (void)tearDown {
+    _dataManager = nil;
+
     [super tearDown];
 }
 
