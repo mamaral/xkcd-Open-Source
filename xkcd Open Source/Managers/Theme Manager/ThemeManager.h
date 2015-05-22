@@ -16,8 +16,6 @@ static CGFloat const kDefaultXKCDTitleFontSize = 22.0;
 
 static CGFloat const kDefaultCornerRadius = 7.0;
 static CGFloat const kDefaultBorderWidth = 1.25;
-static CGFloat const kDefaultShadowOpacity = 0.9;
-static CGFloat const kDefaultShadowRadius = 15;
 
 @interface ThemeManager : NSObject
 
