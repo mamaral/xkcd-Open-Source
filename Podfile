@@ -1,3 +1,4 @@
+link_with 'xkcdOSTests', 'xkcd Open Source'
 pod "Realm"
 pod "AFNetworking", "~> 2.0"
 pod "Facade"
