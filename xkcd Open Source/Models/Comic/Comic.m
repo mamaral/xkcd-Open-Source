@@ -26,7 +26,7 @@
     self.safeTitle = dictionary[kSafeTitleKey] ?: @"";
     self.alt = dictionary[kAltKey] ?: @"";
     self.transcript = dictionary[kTranscriptKey] ?: @"";
-    self.imageURLString = dictionary[kImageURLStringKey] ?: @"http://xkcd.com/";
+    self.imageURLString = dictionary[kImageURLStringKey] ?: @"";
     self.day = dictionary[kDayKey] ?: @"";
     self.month = dictionary[kMonthKey] ?: @"";
     self.year = dictionary[kYearKey] ?: @"";
