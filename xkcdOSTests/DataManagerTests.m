@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import "DataManager.h"
 
-@interface DataManagerTests : XCTestCase
+@interface DataManagerTests : XCTestCase {
+    DataManager *_dataManager;
+}
 
 @end
 
