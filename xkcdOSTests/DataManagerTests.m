@@ -11,11 +11,8 @@
 #import "DataManager.h"
 #import "StubManager.h"
 
-static NSString *kRealmPathForTesting = @"test.realm";
-
 @interface DataManagerTests : XCTestCase {
     DataManager *_dataManager;
-    RLMRealm *_testRealm;
 }
 
 @end
@@ -25,12 +22,7 @@ static NSString *kRealmPathForTesting = @"test.realm";
 - (void)setUp {
     [super setUp];
 
-    [self deleteAllRealmFiles];
-
-    _testRealm = [RLMRealm realmWithPath:[self testRealmPath] readOnly:NO error:nil];
-
     _dataManager = [DataManager sharedInstance];
-    _dataManager.realm = _testRealm;
 
     [_dataManager setLatestComicDownloaded:0];
 
@@ -38,31 +30,13 @@ static NSString *kRealmPathForTesting = @"test.realm";
 }
 
 - (void)tearDown {
-    [self deleteAllRealmFiles];
-
     [_dataManager setLatestComicDownloaded:0];
 
-    _testRealm = nil;
     _dataManager = nil;
 
     [[StubManager sharedInstance] removeAllStubs];
 
     [super tearDown];
-}
-
-- (void)deleteAllRealmFiles {
-    NSString *testRealmPath = [self testRealmPath];
-
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    [fileManager removeItemAtPath:testRealmPath error:nil];
-
-    NSString *lockPath = [testRealmPath stringByAppendingString:@".lock"];
-    [fileManager removeItemAtPath:lockPath error:nil];
-}
-
-- (NSString *)testRealmPath {
-    NSString *basePath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-    return [basePath stringByAppendingPathComponent:kRealmPathForTesting];
 }
 
 - (void)testSingleton {
