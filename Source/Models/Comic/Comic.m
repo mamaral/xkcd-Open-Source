@@ -20,21 +20,21 @@
 - (instancetype)initComicWithDictionary:(NSDictionary *)dictionary {
     self = [super init];
 
-    self.num = [dictionary[kNumKey] integerValue] ?: -1;
-    self.comicID = [dictionary[kNumKey] stringValue] ?: @"-1";
+    self.num = [dictionary[kNumKey] integerValue] ?: kDefaultComicNum;
+    self.comicID = [dictionary[kNumKey] stringValue] ?: @"0";
     self.title = dictionary[kTitleKey] ?: @"";
     self.safeTitle = dictionary[kSafeTitleKey] ?: @"";
     self.alt = dictionary[kAltKey] ?: @"";
     self.transcript = dictionary[kTranscriptKey] ?: @"";
-    self.imageURLString = dictionary[kImageURLStringKey] ?: @"http://xkcd.com/";
+    self.imageURLString = dictionary[kImageURLStringKey] ?: @"";
     self.day = dictionary[kDayKey] ?: @"";
     self.month = dictionary[kMonthKey] ?: @"";
     self.year = dictionary[kYearKey] ?: @"";
-    self.aspectRatio = dictionary[kAspectRatioKey] ? [dictionary[kAspectRatioKey] floatValue] : 1.0;
+    self.aspectRatio = dictionary[kAspectRatioKey] ? [dictionary[kAspectRatioKey] floatValue] : kDefaultAspectRatio;
     self.viewed = NO;
 
     NSString *month = self.month.length > 0 ? [[[NSDateFormatter new] monthSymbols] objectAtIndex:([self.month integerValue] - 1)] : @"";
-    self.formattedDateString = (month.length > 0 && self.day.length > 0 && self.year.length > 0) ? [NSString stringWithFormat:@"%@ %@,  %@", month, self.day, self.year] : @"";
+    self.formattedDateString = (month.length > 0 && self.day.length > 0 && self.year.length > 0) ? [NSString stringWithFormat:@"%@ %@, %@", month, self.day, self.year] : @"";
 
     return self;
 }

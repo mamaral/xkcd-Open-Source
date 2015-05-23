@@ -8,17 +8,15 @@
 
 #import "ThemeManager.h"
 
-static NSString * const kXkcdFontName = @"xkcd-Regular";
-
 @implementation ThemeManager
 
 + (void)setupTheme {
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor], NSFontAttributeName : [[self class] xkcdFontWithSize:22]}];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor], NSFontAttributeName : [[self class] xkcdFontWithSize:kDefaultXKCDTitleFontSize]}];
     [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
 }
 
 + (UIFont *)xkcdFontWithSize:(CGFloat)size {
-    return [UIFont fontWithName:kXkcdFontName size:size];
+    return [UIFont fontWithName:kXKCDFontName size:size];
 }
 
 + (UIColor *)xkcdLightBlue {
@@ -26,20 +24,20 @@ static NSString * const kXkcdFontName = @"xkcd-Regular";
 }
 
 + (UIImage *)loadingImage {
-    return [UIImage imageNamed:@"loading"];
+    return [UIImage imageNamed:kDefaultLoadingImageName];
 }
 
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color {
     layer.cornerRadius = radius;
     layer.borderColor = color.CGColor;
-    layer.borderWidth = 1.25;
+    layer.borderWidth = kDefaultBorderWidth;
 }
 
 + (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity {
     layer.shadowColor = [UIColor blackColor].CGColor;
-    layer.shadowOffset = CGSizeMake(0.0, 0.0);
-    layer.shadowOpacity = 0.9;
-    layer.shadowRadius = 15.0;
+    layer.shadowOffset = CGSizeZero;
+    layer.shadowOpacity = opacity;
+    layer.shadowRadius = radius;
 }
 
 @end

@@ -8,7 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+static NSString * const kXKCDFontName = @"xkcd-Regular";
+
+static NSString * const kDefaultLoadingImageName = @"loading";
+
+static CGFloat const kDefaultXKCDTitleFontSize = 22.0;
+
 static CGFloat const kDefaultCornerRadius = 7.0;
+static CGFloat const kDefaultBorderWidth = 1.25;
 
 @interface ThemeManager : NSObject
 

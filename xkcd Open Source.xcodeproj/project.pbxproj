@@ -25,6 +25,9 @@
 		277317161B06E3E600ED7978 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 277317151B06E3E600ED7978 /* LoadingView.m */; };
 		27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */; };
 		27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984A91B0D641700684AA1 /* ComicTests.m */; };
+		27B984AC1B0FEA1600684AA1 /* ThemeManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984AB1B0FEA1600684AA1 /* ThemeManagerTests.m */; };
+		27B984AE1B0FF19A00684AA1 /* DataManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984AD1B0FF19A00684AA1 /* DataManagerTests.m */; };
+		27B984B21B10152D00684AA1 /* StubManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984B11B10152D00684AA1 /* StubManager.m */; };
 		27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */; };
 		70F7092809A3BE7A7BB3041B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 09A2B0C2ACB019A4B019EC89 /* libPods.a */; };
 		DE6143AD0449792A37D3B29D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 673CC68C4D10E2143071F67E /* libPods.a */; };
@@ -74,6 +77,10 @@
 		27B9849E1B0D602D00684AA1 /* xkcdOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = xkcdOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		27B984A11B0D602D00684AA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		27B984A91B0D641700684AA1 /* ComicTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicTests.m; sourceTree = "<group>"; };
+		27B984AB1B0FEA1600684AA1 /* ThemeManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThemeManagerTests.m; sourceTree = "<group>"; };
+		27B984AD1B0FF19A00684AA1 /* DataManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManagerTests.m; sourceTree = "<group>"; };
+		27B984B01B10152D00684AA1 /* StubManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StubManager.h; sourceTree = "<group>"; };
+		27B984B11B10152D00684AA1 /* StubManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StubManager.m; sourceTree = "<group>"; };
 		27EE4A5E1B07BDAA001454A3 /* ComicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicViewController.h; sourceTree = "<group>"; };
 		27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicViewController.m; sourceTree = "<group>"; };
 		4484B4BA0184CB6D6523840B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -115,7 +122,7 @@
 		2714CCA91B05667400ADF009 = {
 			isa = PBXGroup;
 			children = (
-				2714CCB41B05667400ADF009 /* xkcd Open Source */,
+				2714CCB41B05667400ADF009 /* Source */,
 				27B9849F1B0D602D00684AA1 /* xkcdOSTests */,
 				92D197D67863ECFFF37B8726 /* Pods */,
 				AFFE359F79832C3469DCC437 /* Frameworks */,
@@ -131,7 +138,7 @@
 			path = Products;
 			sourceTree = "<group>";
 		};
-		2714CCB41B05667400ADF009 /* xkcd Open Source */ = {
+		2714CCB41B05667400ADF009 /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				2714CCD71B05669000ADF009 /* App Delegate */,
@@ -142,7 +149,7 @@
 				27AE1AD11B08CFC2002D5280 /* Layout */,
 				2714CCD51B05667E00ADF009 /* Misc */,
 			);
-			path = "xkcd Open Source";
+			path = Source;
 			sourceTree = "<group>";
 		};
 		2714CCB51B05667400ADF009 /* Supporting Files */ = {
@@ -287,7 +294,10 @@
 		27B9849F1B0D602D00684AA1 /* xkcdOSTests */ = {
 			isa = PBXGroup;
 			children = (
+				27B984AF1B10151F00684AA1 /* Test Utilities */,
 				27B984A91B0D641700684AA1 /* ComicTests.m */,
+				27B984AB1B0FEA1600684AA1 /* ThemeManagerTests.m */,
+				27B984AD1B0FF19A00684AA1 /* DataManagerTests.m */,
 				27B984A01B0D602D00684AA1 /* Supporting Files */,
 			);
 			path = xkcdOSTests;
@@ -298,7 +308,16 @@
 			children = (
 				27B984A11B0D602D00684AA1 /* Info.plist */,
 			);
-			name = "Supporting Files";
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		27B984AF1B10151F00684AA1 /* Test Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				27B984B01B10152D00684AA1 /* StubManager.h */,
+				27B984B11B10152D00684AA1 /* StubManager.m */,
+			);
+			path = "Test Utilities";
 			sourceTree = "<group>";
 		};
 		27EE4A5B1B07BD8D001454A3 /* Comic Cell */ = {
@@ -562,6 +581,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */,
+				27B984B21B10152D00684AA1 /* StubManager.m in Sources */,
+				27B984AC1B0FEA1600684AA1 /* ThemeManagerTests.m in Sources */,
+				27B984AE1B0FF19A00684AA1 /* DataManagerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -610,6 +632,8 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
+				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -652,6 +676,8 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
+				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -675,7 +701,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = "xkcd Open Source/Misc/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Source/Misc/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "xkcd Open Source";
@@ -692,7 +718,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = "xkcd Open Source/Misc/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Source/Misc/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "xkcd Open Source";
@@ -715,7 +741,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = xkcdOSTests/Info.plist;
+				INFOPLIST_FILE = "xkcdOSTests/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -735,7 +761,7 @@
 					"$(inherited)",
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = xkcdOSTests/Info.plist;
+				INFOPLIST_FILE = "xkcdOSTests/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
