@@ -213,19 +213,19 @@ static NSString *kRealmPathForTesting = @"test.realm";
 //    [self waitForExpectationsWithTimeout:2.0 handler:nil];
 //}
 
-- (void)testPerformBackgroundFetchFailed {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
-
-    [[StubManager sharedInstance] stubResponseWithStatusCode:500 object:nil delay:0.0];
-
-    [_dataManager performBackgroundFetchWithCompletionHandler:^(UIBackgroundFetchResult result) {
-        XCTAssertEqual(result, UIBackgroundFetchResultFailed);
-
-        [expectation fulfill];
-    }];
-
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
-}
+//- (void)testPerformBackgroundFetchFailed {
+//    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+//
+//    [[StubManager sharedInstance] stubResponseWithStatusCode:500 object:nil delay:0.0];
+//
+//    [_dataManager performBackgroundFetchWithCompletionHandler:^(UIBackgroundFetchResult result) {
+//        XCTAssertEqual(result, UIBackgroundFetchResultFailed);
+//
+//        [expectation fulfill];
+//    }];
+//
+//    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+//}
 
 - (void)testTokenStringFromData {
     NSData *nilTokenData = nil;
