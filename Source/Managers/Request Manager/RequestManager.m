@@ -69,6 +69,12 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 #pragma mark - Device tokens
 
 - (void)sendDeviceToken:(NSString *)token completionHandler:(void (^)(NSError *error))handler {
+    if (!token) {
+        NSError *error = [self errorWithMessage:kRequestManagerNilTokenErrorMessage];
+        handler(error);
+        return;
+    }
+
     NSDictionary *params = @{@"token": token};
 
     [self.manager POST:kTokenPostURLString parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -76,6 +82,13 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         handler(error);
     }];
+}
+
+
+#pragma mark - Error handling
+
+- (NSError *)errorWithMessage:(NSString *)errorMessage {
+    return [NSError errorWithDomain:kRequestManagerErrorDomain code:kRequestManagerErrorCode userInfo:@{kRequestManagerUserInfoKey: errorMessage}];
 }
 
 @end

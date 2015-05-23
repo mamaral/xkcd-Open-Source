@@ -10,6 +10,12 @@
 #import <AFNetworking.h>
 #import "Comic.h"
 
+static NSString * const kRequestManagerErrorDomain = @"Request Manager";
+static NSString * const kRequestManagerUserInfoKey = @"error";
+static NSString * const kRequestManagerNilTokenErrorMessage = @"Request Manager";
+
+static NSInteger const kRequestManagerErrorCode = -1;
+
 static NSString * const kDefaultContentType = @"application/x-www-form-urlencoded";
 static NSString * const kContentTypeKey = @"Content-Type";
 
