@@ -28,6 +28,7 @@
 		27B984AC1B0FEA1600684AA1 /* ThemeManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984AB1B0FEA1600684AA1 /* ThemeManagerTests.m */; };
 		27B984AE1B0FF19A00684AA1 /* DataManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984AD1B0FF19A00684AA1 /* DataManagerTests.m */; };
 		27B984B21B10152D00684AA1 /* StubManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984B11B10152D00684AA1 /* StubManager.m */; };
+		27B984B41B10CB8B00684AA1 /* RequestManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984B31B10CB8B00684AA1 /* RequestManagerTests.m */; };
 		27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */; };
 		70F7092809A3BE7A7BB3041B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 09A2B0C2ACB019A4B019EC89 /* libPods.a */; };
 		DE6143AD0449792A37D3B29D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 673CC68C4D10E2143071F67E /* libPods.a */; };
@@ -81,6 +82,7 @@
 		27B984AD1B0FF19A00684AA1 /* DataManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManagerTests.m; sourceTree = "<group>"; };
 		27B984B01B10152D00684AA1 /* StubManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StubManager.h; sourceTree = "<group>"; };
 		27B984B11B10152D00684AA1 /* StubManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StubManager.m; sourceTree = "<group>"; };
+		27B984B31B10CB8B00684AA1 /* RequestManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RequestManagerTests.m; path = "Test Utilities/RequestManagerTests.m"; sourceTree = "<group>"; };
 		27EE4A5E1B07BDAA001454A3 /* ComicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicViewController.h; sourceTree = "<group>"; };
 		27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicViewController.m; sourceTree = "<group>"; };
 		4484B4BA0184CB6D6523840B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -298,6 +300,7 @@
 				27B984A91B0D641700684AA1 /* ComicTests.m */,
 				27B984AB1B0FEA1600684AA1 /* ThemeManagerTests.m */,
 				27B984AD1B0FF19A00684AA1 /* DataManagerTests.m */,
+				27B984B31B10CB8B00684AA1 /* RequestManagerTests.m */,
 				27B984A01B0D602D00684AA1 /* Supporting Files */,
 			);
 			path = xkcdOSTests;
@@ -584,6 +587,7 @@
 				27B984B21B10152D00684AA1 /* StubManager.m in Sources */,
 				27B984AC1B0FEA1600684AA1 /* ThemeManagerTests.m in Sources */,
 				27B984AE1B0FF19A00684AA1 /* DataManagerTests.m in Sources */,
+				27B984B41B10CB8B00684AA1 /* RequestManagerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

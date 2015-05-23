@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import "RequestManager.h"
+#import "StubManager.h"
 
-@interface RequestManagerTests : XCTestCase
+@interface RequestManagerTests : XCTestCase {
+    RequestManager *_requestManager;
+}
 
 @end
 
@@ -17,24 +21,98 @@
 
 - (void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+
+    _requestManager = [RequestManager sharedInstance];
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    _requestManager = nil;
+
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    XCTAssert(YES, @"Pass");
+- (void)testSingleton {
+    XCTAssertNotNil([RequestManager sharedInstance]);
+    XCTAssertNotNil([RequestManager sharedInstance].manager);
+    XCTAssertNotNil([RequestManager sharedInstance].manager.requestSerializer);
+    XCTAssert([[RequestManager sharedInstance].manager.requestSerializer.HTTPRequestHeaders[kContentTypeKey] isEqualToString:kDefaultContentType]);
 }
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
+- (void)testDownloadComicsSinceWithComics {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    NSDictionary *comic1 = @{
+                             kNumKey: @1,
+                             kTitleKey: @"Title",
+                             kSafeTitleKey: @"Safe title",
+                             kAltKey: @"Alt",
+                             kTranscriptKey: @"Trans",
+                             kImageURLStringKey: @"www.imageURL.com",
+                             kDayKey: @"1",
+                             kMonthKey: @"12",
+                             kYearKey: @"1881",
+                             kAspectRatioKey: @(1.0)
+                             };
+
+    NSDictionary *comic2 = @{
+                             kNumKey: @2,
+                             kTitleKey: @"Title2",
+                             kSafeTitleKey: @"Safe title2",
+                             kAltKey: @"Alt2",
+                             kTranscriptKey: @"Trans2",
+                             kImageURLStringKey: @"www.imageURL2.com",
+                             kDayKey: @"2",
+                             kMonthKey: @"11",
+                             kYearKey: @"1882",
+                             kAspectRatioKey: @(2.0)
+                             };
+
+    NSArray *comics = @[comic1, comic2];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:202 object:comics delay:0.0];
+
+    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(comicDicts);
+        XCTAssertEqual(comicDicts.count, comics.count);
+        XCTAssert([comicDicts containsObject:comic1]);
+        XCTAssert([comicDicts containsObject:comic2]);
+
+        [expectation fulfill];
     }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testDownloadComicsSinceWithNoComics {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:@[] delay:0.0];
+
+    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(comicDicts);
+        XCTAssertEqual(comicDicts.count, 0);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testDownloadComicsSinceWithError {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
+
+    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
+        XCTAssertNotNil(error);
+        XCTAssertNil(comicDicts);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
 }
 
 @end
