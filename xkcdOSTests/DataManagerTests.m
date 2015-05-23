@@ -104,6 +104,10 @@ static NSString *kRealmPathForTesting = @"test.realm";
     XCTAssertEqual([_dataManager latestComicDownloaded], latest);
 }
 
+- (void)testAllSavedComics {
+
+}
+
 - (void)testDownloadLatestComics {
 //    XCTestExpectation *expectation = [self expectationWithDescription:nil];
 //
