@@ -126,7 +126,7 @@
 
     NSString *token = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
-        XCTAssertNotNil(error);
+        XCTAssertNil(error);
 
         [expectation fulfill];
     }];
