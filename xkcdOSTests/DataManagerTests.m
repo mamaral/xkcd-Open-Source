@@ -223,4 +223,14 @@ static NSString *kRealmPathForTesting = @"test.realm";
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
 }
 
+- (void)testTokenStringFromData {
+    NSData *nilTokenData = nil;
+
+    XCTAssertNotNil([_dataManager tokenStringFromData:nilTokenData]);
+    XCTAssert([[_dataManager tokenStringFromData:nilTokenData] isEqualToString:@""]);
+
+    // TODO mock up actual NSData from a token... don't recall off the top of my head
+    // what the format is...
+}
+
 @end

@@ -178,6 +178,10 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 #pragma mark - Converting token data
 
 - (NSString *)tokenStringFromData:(NSData *)data {
+    if (!data) {
+        return @"";
+    }
+
     NSString *token = [NSString stringWithFormat:@"%@", data];
     token = [token stringByReplacingOccurrencesOfString:@"<" withString:@""];
     token = [token stringByReplacingOccurrencesOfString:@">" withString:@""];
