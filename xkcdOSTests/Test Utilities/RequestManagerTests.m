@@ -11,6 +11,10 @@
 #import "RequestManager.h"
 #import "StubManager.h"
 
+@interface RequestManager (Testing)
+- (NSError *)errorWithMessage:(NSString *)errorMessage;
+@end
+
 @interface RequestManagerTests : XCTestCase {
     RequestManager *_requestManager;
 }
@@ -146,6 +150,19 @@
     }];
 
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testErrorWithMessage {
+    NSString *errorMessage = @"My error message.";
+    XCTAssertNotNil([_requestManager errorWithMessage:errorMessage]);
+    XCTAssert([[_requestManager errorWithMessage:errorMessage].domain isEqualToString:kRequestManagerErrorDomain]);
+    XCTAssertEqual([_requestManager errorWithMessage:errorMessage].code, kRequestManagerErrorCode);
+    XCTAssert([[_requestManager errorWithMessage:errorMessage].userInfo[kRequestManagerUserInfoKey] isEqualToString:errorMessage]);
+
+    errorMessage = nil;
+    XCTAssert([[_requestManager errorWithMessage:errorMessage].domain isEqualToString:kRequestManagerErrorDomain]);
+    XCTAssertEqual([_requestManager errorWithMessage:errorMessage].code, kRequestManagerErrorCode);
+    XCTAssert([[_requestManager errorWithMessage:errorMessage].userInfo[kRequestManagerUserInfoKey] isEqualToString:@""]);
 }
 
 @end
