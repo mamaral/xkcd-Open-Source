@@ -76,7 +76,7 @@ static CGFloat const kAltViewPadding = 15.0;
 }
 
 - (void)dismissWithCompletion:(dispatch_block_t)completion {
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         self.alpha = 0.0;
     } completion:^(BOOL finished) {
         completion();
