@@ -115,4 +115,37 @@
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
 }
 
+- (void)testSendDeviceToken {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:nil delay:0.0];
+
+    NSString *token = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
+        XCTAssertNotNil(error);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testSendNilToken {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
+
+    NSString *token = nil;
+    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
+        XCTAssertNotNil(error);
+        XCTAssert([error.domain isEqualToString:kRequestManagerErrorDomain]);
+        XCTAssertEqual(error.code, kRequestManagerErrorCode);
+        XCTAssert([error.userInfo[kRequestManagerUserInfoKey] isEqualToString:kRequestManagerNilTokenErrorMessage]);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
 @end
