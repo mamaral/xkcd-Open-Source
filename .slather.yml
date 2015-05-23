@@ -5,3 +5,5 @@ ignore:
  - source/App Delegate/*
  - source/Misc/*
  - source/Layout/*
+ - source/View Controllers/*
+ - source/Views/*
