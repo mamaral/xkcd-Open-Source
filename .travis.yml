@@ -1,6 +1,6 @@
 language: objective-c
 before_install: gem install cocoapods xcpretty obcd slather -N
 xcode_sdk: iphonesimulator
-xcode_workspace: xkcd\ Open\ Source.xcworkspace
+xcode_workspace: xkcd Open Source.xcworkspace
 xcode_scheme: xkcdOSTests
 after_success: slather
