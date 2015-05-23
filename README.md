@@ -31,7 +31,7 @@
 - [GTrack](https://github.com/gemr/GTrack) for interfacing with Google Analytics.
 - [SDWebImage](https://github.com/rs/SDWebImage) for image downloading / caching.
 - [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage) for that one GIF.
-- [Crashlytics](https://try.crashlytics.com/) for beta distribution, analytics, and crash reporting.
+- [Fabric](https://get.fabric.io/) for beta distribution, analytics, and crash reporting.
 - [xkcd-font](https://github.com/ipython/xkcd-font) because obviously.
 - Stripped, modified, and customized [Mosaic Layout](https://github.com/betzerra/MosaicLayout) for the comic list.
 
