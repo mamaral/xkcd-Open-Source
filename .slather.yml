@@ -1,5 +1,5 @@
 coverage_service: coveralls
-xcworkspace: xkcd\ Open\ Source.xcworkspace
+xcodeproj: xkcd Open Source.xcodeproj
 source_directory: source
 ignore:
  - source/App Delegate/*
