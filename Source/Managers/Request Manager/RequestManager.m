@@ -88,7 +88,7 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 #pragma mark - Error handling
 
 - (NSError *)errorWithMessage:(NSString *)errorMessage {
-    return [NSError errorWithDomain:kRequestManagerErrorDomain code:kRequestManagerErrorCode userInfo:@{kRequestManagerUserInfoKey: errorMessage}];
+    return [NSError errorWithDomain:kRequestManagerErrorDomain code:kRequestManagerErrorCode userInfo:@{kRequestManagerUserInfoKey: errorMessage ?: @""}];
 }
 
 @end
