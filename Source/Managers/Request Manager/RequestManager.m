@@ -44,7 +44,7 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 
 - (AFHTTPRequestOperationManager *)generateHTTPRequestOperationManager {
     AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
-    [serializer setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [serializer setValue:kDefaultContentType forHTTPHeaderField:kContentTypeKey];
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.requestSerializer = serializer;

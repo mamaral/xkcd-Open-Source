@@ -10,6 +10,9 @@
 #import <AFNetworking.h>
 #import "Comic.h"
 
+static NSString * const kDefaultContentType = @"application/x-www-form-urlencoded";
+static NSString * const kContentTypeKey = @"Content-Type";
+
 @interface RequestManager : NSObject
 
 @property (nonatomic, strong) AFHTTPRequestOperationManager *manager;
