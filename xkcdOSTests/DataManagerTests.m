@@ -62,25 +62,7 @@ static NSString *kRealmPathForTesting = @"test.realm";
 }
 
 - (void)testSaveComics {
-    NSDictionary *comicDict = @{
-                                kNumKey: @123,
-                                kTitleKey: @"Title",
-                                kSafeTitleKey: @"Safe title",
-                                kAltKey: @"Alt",
-                                kTranscriptKey: @"Trans",
-                                kImageURLStringKey: @"www.imageURL.com",
-                                kDayKey: @"1",
-                                kMonthKey: @"12",
-                                kYearKey: @"1881",
-                                kAspectRatioKey: @(1.0)
-                                };
-
-//    Comic *comic = [Comic comicFromDictionary:comicDict];
-//
-//    [_dataManager saveComics:@[comic]];
-//
-//    RLMResults *comics = [Comic allObjects];
-//    XCTAssertNotEqual([comics indexOfObject:comic], NSNotFound);
+    
 }
 
 @end
