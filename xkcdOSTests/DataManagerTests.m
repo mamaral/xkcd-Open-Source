@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "DataManager.h"
+#import "StubManager.h"
 
 static NSString *kRealmPathForTesting = @"test.realm";
 
