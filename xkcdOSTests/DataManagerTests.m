@@ -136,7 +136,7 @@ static NSString *kRealmPathForTesting = @"test.realm";
 //
 //    NSArray *comics = @[comic1, comic2];
 //
-//    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:comics delay:0.0];
+//    [[StubManager sharedInstance] stubResponseWithStatusCode:202 object:comics delay:0.0];
 //
 //    [_dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
 //        XCTAssertNil(error);
