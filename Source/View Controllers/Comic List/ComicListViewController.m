@@ -22,7 +22,7 @@
 
     LoadingView *_loadingView;
 
-    BOOL _isSearching;
+    BOOL _searching;
 }
 
 @end
@@ -53,7 +53,12 @@
 
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
+    self.searchBar.placeholder = @"Search comic number or title...";
     self.searchBar.showsCancelButton = YES;
+    self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+
+    // Initially we want to grab what we have stored.
+    [self loadComicsFromDB];
 
     // Fetch comics whenever we get notified more are available.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComicsFromDB) name:NewComicsAvailableNotification object:nil];
@@ -62,12 +67,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    // Initially we want to grab what we have stored.
-    [self loadComicsFromDB];
-
     // If we don't have any, it's the first launch - let's show the loading view
     // and wait for the data manager to tell us new comics are available.
-    if (_comics.count == 0 && ![LoadingView isVisible]) {
+    if (!_searching && _comics.count == 0 && ![LoadingView isVisible]) {
         [LoadingView showInView:self.view];
     }
 }
@@ -158,27 +160,26 @@
 #pragma mark - Searching
 
 - (void)toggleSearch {
-    if (_isSearching) {
+    if (_searching) {
         self.searchBar.text = @"";
 
         self.navigationItem.titleView = nil;
 
-        _isSearching = NO;
-
-        [self handleDoneSearching];
+        _searching = NO;
     }
 
     else {
         self.navigationItem.titleView = self.searchBar;
         [self.searchBar becomeFirstResponder];
 
-        _isSearching = YES;
+        _searching = YES;
     }
 }
 
-- (void)handleDoneSearching {
+- (void)handleSearchCancelled {
     _comics = [[DataManager sharedInstance] allSavedComics];
 
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
     [self.collectionView reloadData];
 }
 
@@ -186,13 +187,28 @@
 #pragma mark - UISearchBar delegate
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    NSString *searchText = searchBar.text;
+    NSString *searchString = searchBar.text;
 
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Comic List Search" action:searchString];
 
+    _comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
+
+    if (_comics.count > 0) {
+        [searchBar resignFirstResponder];
+
+        [self.collectionView setContentOffset:CGPointZero animated:YES];
+    }
+
+    else {
+        // handle no results
+    }
+
+    [self.collectionView reloadData];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     [self toggleSearch];
+    [self handleSearchCancelled];
 }
 
 @end
