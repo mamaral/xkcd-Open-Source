@@ -53,7 +53,6 @@
 
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
-    self.searchBar.placeholder = @"Search comic number or title...";
     self.searchBar.showsCancelButton = YES;
     self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
 
