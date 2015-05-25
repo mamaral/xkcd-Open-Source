@@ -37,6 +37,7 @@ static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 #pragma mark - Getting comics
 
 - (RLMResults *)allSavedComics;
+- (RLMResults *)comicsMatchingSearchString:(NSString *)searchString;
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler;
 
 
