@@ -17,6 +17,9 @@
 #import "LoadingView.h"
 #import "ComicViewController.h"
 
+static NSString * const kComicListTitle = @"xkcd: Open Source";
+static NSString * const kNoSearchResultsMessage = @"No results found...";
+
 @interface ComicListViewController () {
     RLMResults *_comics;
 
@@ -41,7 +44,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = @"xkcd: Open Source";
+    self.title = kComicListTitle;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationController.navigationBar.backIndicatorImage = [UIImage imageNamed:@"back"];
@@ -55,6 +58,14 @@
     self.searchBar.delegate = self;
     self.searchBar.showsCancelButton = YES;
     self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+
+    self.noResultsLabel = [UILabel new];
+    self.noResultsLabel.hidden = YES;
+    self.noResultsLabel.text = kNoSearchResultsMessage;
+    self.noResultsLabel.font = [ThemeManager xkcdFontWithSize:18];
+    self.noResultsLabel.textColor = [UIColor blackColor];
+    self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
+    [self.collectionView addSubview:self.noResultsLabel];
 
     // Initially we want to grab what we have stored.
     [self loadComicsFromDB];
@@ -84,6 +95,10 @@
 
     if ([LoadingView isVisible]) {
         [LoadingView handleLayoutChanged];
+    }
+
+    if (!self.noResultsLabel.isHidden) {
+        [self.noResultsLabel anchorTopCenterFillingWidthWithLeftAndRightPadding:15 topPadding:15 height:20];
     }
 }
 
@@ -179,6 +194,8 @@
 - (void)handleSearchCancelled {
     _comics = [[DataManager sharedInstance] allSavedComics];
 
+    self.noResultsLabel.hidden = YES;
+
     [self.collectionView setContentOffset:CGPointZero animated:YES];
     [self.collectionView reloadData];
 }
@@ -194,6 +211,8 @@
     _comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
 
     if (_comics.count > 0) {
+        self.noResultsLabel.hidden = YES;
+
         [searchBar resignFirstResponder];
 
         [self.collectionView setContentOffset:CGPointZero animated:YES];
@@ -201,6 +220,7 @@
 
     else {
         // handle no results
+        self.noResultsLabel.hidden = NO;
     }
 
     [self.collectionView reloadData];
