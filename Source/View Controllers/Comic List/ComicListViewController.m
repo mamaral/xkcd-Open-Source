@@ -52,11 +52,10 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
 
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
 
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
-    self.searchBar.showsCancelButton = YES;
     self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
 
@@ -178,12 +177,14 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     if (_searching) {
         self.searchBar.text = @"";
 
+        self.navigationItem.rightBarButtonItem = nil;
         self.navigationItem.titleView = nil;
 
         _searching = NO;
     }
 
     else {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(handleSearchCancelled)];
         self.navigationItem.titleView = self.searchBar;
 
         [self.searchBar becomeFirstResponder];
@@ -193,6 +194,8 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 }
 
 - (void)handleSearchCancelled {
+    [self toggleSearch];
+
     _comics = [[DataManager sharedInstance] allSavedComics];
 
     self.noResultsLabel.hidden = YES;
@@ -225,11 +228,6 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     }
 
     [self.collectionView reloadData];
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    [self toggleSearch];
-    [self handleSearchCancelled];
 }
 
 @end
