@@ -176,4 +176,23 @@
     }
 }
 
+- (void)handleDoneSearching {
+    _comics = [[DataManager sharedInstance] allSavedComics];
+
+    [self.collectionView reloadData];
+}
+
+
+#pragma mark - UISearchBar delegate
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    NSString *searchText = searchBar.text;
+
+
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [self toggleSearch];
+}
+
 @end
