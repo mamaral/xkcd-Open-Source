@@ -21,6 +21,8 @@
     RLMResults *_comics;
 
     LoadingView *_loadingView;
+
+    BOOL _isSearching;
 }
 
 @end
@@ -46,6 +48,11 @@
     self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
+
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
+
+    self.searchBar = [UISearchBar new];
+    self.searchBar.delegate = self;
 
     // Fetch comics whenever we get notified more are available.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComicsFromDB) name:NewComicsAvailableNotification object:nil];
@@ -143,6 +150,24 @@
 
     else {
         return isLandscape ? 4 : 2;
+    }
+}
+
+
+#pragma mark - Searching
+
+- (void)toggleSearch {
+    if (_isSearching) {
+        self.navigationItem.titleView = nil;
+
+        _isSearching = NO;
+    }
+
+    else {
+        self.navigationItem.titleView = self.searchBar;
+        [self.searchBar becomeFirstResponder];
+
+        _isSearching = YES;
     }
 }
 
