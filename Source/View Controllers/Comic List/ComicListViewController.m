@@ -169,6 +169,7 @@
 
     else {
         self.navigationItem.titleView = self.searchBar;
+
         [self.searchBar becomeFirstResponder];
 
         _searching = YES;
