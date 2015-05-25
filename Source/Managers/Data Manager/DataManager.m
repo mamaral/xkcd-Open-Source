@@ -114,6 +114,10 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     return [[Comic allObjects] sortedResultsUsingProperty:@"num" ascending:NO];
 }
 
+- (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingProperty:@"num" ascending:NO];
+}
+
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
     // Calculate the starting index.
     NSInteger since = [self latestComicDownloaded];

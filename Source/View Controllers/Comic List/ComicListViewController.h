@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "ComicListFlowLayout.h"
 
-@interface ComicListViewController : UICollectionViewController <ComicListFlowLayoutDelegate>
+@interface ComicListViewController : UICollectionViewController <ComicListFlowLayoutDelegate, UISearchBarDelegate>
+
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) UILabel *noResultsLabel;
 
 @end

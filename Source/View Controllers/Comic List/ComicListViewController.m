@@ -17,10 +17,15 @@
 #import "LoadingView.h"
 #import "ComicViewController.h"
 
+static NSString * const kComicListTitle = @"xkcd: Open Source";
+static NSString * const kNoSearchResultsMessage = @"No results found...";
+
 @interface ComicListViewController () {
     RLMResults *_comics;
 
     LoadingView *_loadingView;
+
+    BOOL _searching;
 }
 
 @end
@@ -39,13 +44,31 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = @"xkcd: Open Source";
+    self.title = kComicListTitle;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationController.navigationBar.backIndicatorImage = [UIImage imageNamed:@"back"];
     self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
+
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
+
+    self.searchBar = [UISearchBar new];
+    self.searchBar.delegate = self;
+    self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+
+    self.noResultsLabel = [UILabel new];
+    self.noResultsLabel.hidden = YES;
+    self.noResultsLabel.text = kNoSearchResultsMessage;
+    self.noResultsLabel.font = [ThemeManager xkcdFontWithSize:18];
+    self.noResultsLabel.textColor = [UIColor blackColor];
+    self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
+    [self.collectionView addSubview:self.noResultsLabel];
+
+    // Initially we want to grab what we have stored.
+    [self loadComicsFromDB];
 
     // Fetch comics whenever we get notified more are available.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComicsFromDB) name:NewComicsAvailableNotification object:nil];
@@ -54,12 +77,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    // Initially we want to grab what we have stored.
-    [self loadComicsFromDB];
-
     // If we don't have any, it's the first launch - let's show the loading view
     // and wait for the data manager to tell us new comics are available.
-    if (_comics.count == 0 && ![LoadingView isVisible]) {
+    if (!_searching && _comics.count == 0 && ![LoadingView isVisible]) {
         [LoadingView showInView:self.view];
     }
 }
@@ -75,6 +95,10 @@
 
     if ([LoadingView isVisible]) {
         [LoadingView handleLayoutChanged];
+    }
+
+    if (!self.noResultsLabel.isHidden) {
+        [self.noResultsLabel anchorTopCenterFillingWidthWithLeftAndRightPadding:15 topPadding:15 height:20];
     }
 }
 
@@ -144,6 +168,66 @@
     else {
         return isLandscape ? 4 : 2;
     }
+}
+
+
+#pragma mark - Searching
+
+- (void)toggleSearch {
+    if (_searching) {
+        self.searchBar.text = @"";
+
+        self.navigationItem.rightBarButtonItem = nil;
+        self.navigationItem.titleView = nil;
+
+        _searching = NO;
+    }
+
+    else {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(handleSearchCancelled)];
+        self.navigationItem.titleView = self.searchBar;
+
+        [self.searchBar becomeFirstResponder];
+
+        _searching = YES;
+    }
+}
+
+- (void)handleSearchCancelled {
+    [self toggleSearch];
+
+    _comics = [[DataManager sharedInstance] allSavedComics];
+
+    self.noResultsLabel.hidden = YES;
+
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
+    [self.collectionView reloadData];
+}
+
+
+#pragma mark - UISearchBar delegate
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    NSString *searchString = searchBar.text;
+
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Comic List Search" action:searchString];
+
+    _comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
+
+    if (_comics.count > 0) {
+        self.noResultsLabel.hidden = YES;
+
+        [searchBar resignFirstResponder];
+
+        [self.collectionView setContentOffset:CGPointZero animated:YES];
+    }
+
+    else {
+        // handle no results
+        self.noResultsLabel.hidden = NO;
+    }
+
+    [self.collectionView reloadData];
 }
 
 @end
