@@ -58,6 +58,7 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     self.searchBar.delegate = self;
     self.searchBar.showsCancelButton = YES;
     self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
 
     self.noResultsLabel = [UILabel new];
     self.noResultsLabel.hidden = YES;
