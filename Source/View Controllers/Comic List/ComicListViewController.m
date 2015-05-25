@@ -53,6 +53,7 @@
 
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
+    self.searchBar.showsCancelButton = YES;
 
     // Fetch comics whenever we get notified more are available.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComicsFromDB) name:NewComicsAvailableNotification object:nil];
@@ -158,9 +159,13 @@
 
 - (void)toggleSearch {
     if (_isSearching) {
+        self.searchBar.text = @"";
+
         self.navigationItem.titleView = nil;
 
         _isSearching = NO;
+
+        [self handleDoneSearching];
     }
 
     else {
