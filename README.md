@@ -38,14 +38,15 @@
 ## Todo List (in no specific order)
 
 - [ ] Gathering user feedback
-- [ ] Searching
+- [x] Searching
 - [ ] Favoriting
 - [ ] Visual indication that comics are read/unread
 - [ ] Lazy-image downloading for offline viewing
 - [ ] Social sharing
 - [ ] Investigate integrating the ***What If?*** series
 - [ ] ***About*** section featuring contributors
-- [ ] Code coverage
+- [x] Code coverage > 25%
+- [ ] Code coverage > 75%
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Want to help?
