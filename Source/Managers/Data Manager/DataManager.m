@@ -115,8 +115,7 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 }
 
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
-    // First iteration will only search the comic number and the title.
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@", searchString, searchString]] sortedResultsUsingProperty:@"num" ascending:NO];
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingProperty:@"num" ascending:NO];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
