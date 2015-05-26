@@ -129,6 +129,9 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     return cell;
 }
 
+
+#pragma mark - UICollectionViewDelegate
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Comic *comic = self.comics[indexPath.item];
 
