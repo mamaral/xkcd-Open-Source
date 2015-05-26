@@ -7,10 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Realm.h>
 #import "ComicListFlowLayout.h"
 
 @interface ComicListViewController : UICollectionViewController <ComicListFlowLayoutDelegate, UISearchBarDelegate>
 
+@property (nonatomic, strong) RLMResults *comics;
+
+@property (nonatomic) BOOL searching;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UILabel *noResultsLabel;
 
