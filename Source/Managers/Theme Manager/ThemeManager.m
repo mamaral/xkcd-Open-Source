@@ -35,6 +35,9 @@
     return [UIImage imageNamed:kDefaultBackImageName];
 }
 
+
+#pragma mark - CALayer schtuff
+
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color {
     layer.cornerRadius = radius;
     layer.borderColor = color.CGColor;
@@ -46,6 +49,24 @@
     layer.shadowOffset = CGSizeZero;
     layer.shadowOpacity = opacity;
     layer.shadowRadius = radius;
+}
+
+
+#pragma mark - Fancy-schmancy parallax
+
++ (void)addParallaxToView:(UIView *)view {
+    UIInterpolatingMotionEffect *verticalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+    verticalMotionEffect.minimumRelativeValue = @(-kDefaultParallaxValue);
+    verticalMotionEffect.maximumRelativeValue = @(kDefaultParallaxValue);
+
+    UIInterpolatingMotionEffect *horizontalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+    horizontalMotionEffect.minimumRelativeValue = @(-kDefaultParallaxValue);
+    horizontalMotionEffect.maximumRelativeValue = @(kDefaultParallaxValue);
+
+    UIMotionEffectGroup *group = [UIMotionEffectGroup new];
+    group.motionEffects = @[horizontalMotionEffect, verticalMotionEffect];
+
+    [view addMotionEffect:group];
 }
 
 @end

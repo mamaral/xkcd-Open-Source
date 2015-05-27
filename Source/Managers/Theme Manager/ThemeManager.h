@@ -19,6 +19,8 @@ static CGFloat const kDefaultSearchBarFontSize = 12.0;
 static CGFloat const kDefaultCornerRadius = 7.0;
 static CGFloat const kDefaultBorderWidth = 1.25;
 
+static CGFloat const kDefaultParallaxValue = 5.0;
+
 @interface ThemeManager : NSObject
 
 + (void)setupTheme;
@@ -31,5 +33,7 @@ static CGFloat const kDefaultBorderWidth = 1.25;
 
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color;
 + (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity;
+
++ (void)addParallaxToView:(UIView *)view;
 
 @end

@@ -47,6 +47,8 @@ static CGFloat const kAltViewPadding = 10.0;
     self.dateLabel.textColor = [UIColor whiteColor];
     self.dateLabel.text = self.comic.formattedDateString;
     [self addSubview:self.dateLabel];
+
+    [ThemeManager addParallaxToView:self];
 }
 
 - (void)layoutFacade {
