@@ -125,7 +125,6 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ComicCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kComicCellReuseIdentifier forIndexPath:indexPath];
     cell.comic = self.comics[indexPath.item];
-    
     return cell;
 }
 
