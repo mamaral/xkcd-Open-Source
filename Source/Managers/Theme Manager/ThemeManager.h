@@ -11,6 +11,7 @@
 static NSString * const kXKCDFontName = @"xkcd-Regular";
 
 static NSString * const kDefaultLoadingImageName = @"loading";
+static NSString * const kDefaultBackImageName = @"back";
 
 static CGFloat const kDefaultXKCDTitleFontSize = 22.0;
 static CGFloat const kDefaultSearchBarFontSize = 12.0;
@@ -24,7 +25,9 @@ static CGFloat const kDefaultBorderWidth = 1.25;
 
 + (UIFont *)xkcdFontWithSize:(CGFloat)size;
 + (UIColor *)xkcdLightBlue;
+
 + (UIImage *)loadingImage;
++ (UIImage *)backImage;
 
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color;
 + (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity;

@@ -31,6 +31,10 @@
     return [UIImage imageNamed:kDefaultLoadingImageName];
 }
 
++ (UIImage *)backImage {
+    return [UIImage imageNamed:kDefaultBackImageName];
+}
+
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color {
     layer.cornerRadius = radius;
     layer.borderColor = color.CGColor;

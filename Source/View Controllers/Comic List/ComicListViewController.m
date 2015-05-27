@@ -40,8 +40,8 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     self.title = kComicListTitle;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationController.navigationBar.backIndicatorImage = [UIImage imageNamed:@"back"];
-    self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
+    self.navigationController.navigationBar.backIndicatorImage = [ThemeManager backImage];
+    self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [ThemeManager backImage];
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
 
