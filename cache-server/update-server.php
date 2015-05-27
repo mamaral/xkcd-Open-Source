@@ -57,7 +57,8 @@ $insertStmt->execute([ ':num' => $latestComic->num, 'json' => json_encode($lates
 $payload = [
 	'aps' => [
 		'alert' => 'New comic: ' . $latestComic->title,
-		'sound' => 'default',
+		'sound' => 'silent.m4a',
+		'badge' => 1,
 		'content-available' => 1
 	]
 ];
