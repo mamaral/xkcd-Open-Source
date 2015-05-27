@@ -7,26 +7,19 @@
 //
 
 #import "ComicListViewController.h"
-#import <Realm.h>
 #import <GTTracker.h>
 #import <UIView+Facade.h>
 #import "DataManager.h"
 #import "ThemeManager.h"
+#import "LoadingView.h"
 #import "Comic.h"
 #import "ComicCell.h"
-#import "LoadingView.h"
 #import "ComicViewController.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
 
-@interface ComicListViewController () {
-    RLMResults *_comics;
-
-    LoadingView *_loadingView;
-
-    BOOL _searching;
-}
+@interface ComicListViewController ()
 
 @end
 
@@ -47,8 +40,8 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     self.title = kComicListTitle;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationController.navigationBar.backIndicatorImage = [UIImage imageNamed:@"back"];
-    self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
+    self.navigationController.navigationBar.backIndicatorImage = [ThemeManager backImage];
+    self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [ThemeManager backImage];
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
 
@@ -79,7 +72,7 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 
     // If we don't have any, it's the first launch - let's show the loading view
     // and wait for the data manager to tell us new comics are available.
-    if (!_searching && _comics.count == 0 && ![LoadingView isVisible]) {
+    if (!self.searching && self.comics.count == 0 && ![LoadingView isVisible]) {
         [LoadingView showInView:self.view];
     }
 }
@@ -107,10 +100,10 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 
 - (void)loadComicsFromDB {
     // Grab the comics we have saved.
-    _comics = [[DataManager sharedInstance] allSavedComics];
+    self.comics = [[DataManager sharedInstance] allSavedComics];
 
     // If we have comics and the loading view is present, tell it to handle that we're done.
-    if (_comics.count > 0 && [LoadingView isVisible]) {
+    if (self.comics.count > 0 && [LoadingView isVisible]) {
         [LoadingView handleDoneLoading];
     }
 
@@ -126,18 +119,20 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return _comics.count;
+    return self.comics.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ComicCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kComicCellReuseIdentifier forIndexPath:indexPath];
-    cell.comic = _comics[indexPath.item];
-    
+    cell.comic = self.comics[indexPath.item];
     return cell;
 }
 
+
+#pragma mark - UICollectionViewDelegate
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    Comic *comic = _comics[indexPath.item];
+    Comic *comic = self.comics[indexPath.item];
 
     [self.navigationController pushViewController:[[ComicViewController alloc] initWithComic:comic] animated:YES];
 }
@@ -146,13 +141,13 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 #pragma mark - Layout delegate
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView relativeHeightForItemAtIndexPath:(NSIndexPath *)indexPath {
-    Comic *comic = _comics[indexPath.item];
+    Comic *comic = self.comics[indexPath.item];
     CGFloat aspectRatio = comic.aspectRatio;
     return 1.0 / aspectRatio;
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldBeDoubleColumnAtIndexPath:(NSIndexPath *)indexPath {
-    Comic *comic = _comics[indexPath.item];
+    Comic *comic = self.comics[indexPath.item];
     CGFloat aspectRatio = comic.aspectRatio;
     return aspectRatio > 1.0;
 }
@@ -174,31 +169,32 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 #pragma mark - Searching
 
 - (void)toggleSearch {
-    if (_searching) {
-        self.searchBar.text = @"";
-
-        self.navigationItem.rightBarButtonItem = nil;
-        self.navigationItem.titleView = nil;
-
-        _searching = NO;
+    if (!self.searching) {
+        [self enableSearch];
     }
 
     else {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(handleSearchCancelled)];
-        self.navigationItem.titleView = self.searchBar;
-
-        [self.searchBar becomeFirstResponder];
-
-        _searching = YES;
+        [self cancelSearch];
     }
 }
 
-- (void)handleSearchCancelled {
-    [self toggleSearch];
+- (void)enableSearch {
+    self.searching = YES;
 
-    _comics = [[DataManager sharedInstance] allSavedComics];
+    [self.searchBar becomeFirstResponder];
 
+    self.navigationItem.titleView = self.searchBar;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSearch)];
+}
+
+- (void)cancelSearch {
+    self.searching = NO;
+    self.searchBar.text = @"";
+    self.comics = [[DataManager sharedInstance] allSavedComics];
     self.noResultsLabel.hidden = YES;
+
+    self.navigationItem.rightBarButtonItem = nil;
+    self.navigationItem.titleView = nil;
 
     [self.collectionView setContentOffset:CGPointZero animated:YES];
     [self.collectionView reloadData];
@@ -212,9 +208,9 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 
     [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Comic List Search" action:searchString];
 
-    _comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
+    self.comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
 
-    if (_comics.count > 0) {
+    if (self.comics.count > 0) {
         self.noResultsLabel.hidden = YES;
 
         [searchBar resignFirstResponder];
@@ -223,7 +219,6 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     }
 
     else {
-        // handle no results
         self.noResultsLabel.hidden = NO;
     }
 
