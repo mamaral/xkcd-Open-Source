@@ -47,6 +47,10 @@
     XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager loadingImage]), UIImagePNGRepresentation([UIImage imageNamed:kDefaultLoadingImageName]));
 }
 
+- (void)testBackImage {
+    XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager backImage]), UIImagePNGRepresentation([UIImage imageNamed:kDefaultBackImageName]));
+}
+
 - (void)testAddBorderToLayer {
     UIView *testView = [UIView new];
     CGFloat radius = 10;
