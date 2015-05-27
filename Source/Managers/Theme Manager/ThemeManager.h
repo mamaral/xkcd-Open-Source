@@ -19,7 +19,7 @@ static CGFloat const kDefaultSearchBarFontSize = 12.0;
 static CGFloat const kDefaultCornerRadius = 7.0;
 static CGFloat const kDefaultBorderWidth = 1.25;
 
-static CGFloat const kDefaultParallaxValue = 5.0;
+static CGFloat const kDefaultParallaxValue = 10.0;
 
 @interface ThemeManager : NSObject
 
