@@ -33,6 +33,7 @@ static CGFloat const kAltViewPadding = 10.0;
 
     [ThemeManager addBorderToLayer:self.containerView.layer radius:kDefaultCornerRadius color:[UIColor whiteColor]];
     [ThemeManager addShadowToLayer:self.containerView.layer radius:15.0 opacity:0.8];
+    [ThemeManager addParallaxToView:self.containerView];
 
     self.altLabel = [UILabel new];
     self.altLabel.text = self.comic.alt;
@@ -47,8 +48,6 @@ static CGFloat const kAltViewPadding = 10.0;
     self.dateLabel.textColor = [UIColor whiteColor];
     self.dateLabel.text = self.comic.formattedDateString;
     [self addSubview:self.dateLabel];
-
-    [ThemeManager addParallaxToView:self];
 }
 
 - (void)layoutFacade {
