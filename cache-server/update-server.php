@@ -58,7 +58,7 @@ $payload = [
 	'aps' => [
 		'alert' => 'New comic: ' . $latestComic->title,
 		'sound' => 'silent.mp3',
-		'badge' => '1',
+		'badge' => 1,
 		'content-available' => 1
 	]
 ];

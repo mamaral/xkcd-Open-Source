@@ -11,7 +11,7 @@ $payload = [
 	'aps' => [
 		'alert' => 'Test push notification',
 		'sound' => 'silent.mp3',
-		'badge' => '1',
+		'badge' => 1,
 		'content-available' => 1
 	]
 ];
