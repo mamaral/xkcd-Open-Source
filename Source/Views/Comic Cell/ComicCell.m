@@ -10,6 +10,7 @@
 #import <UIView+Facade.h>
 #import <UIImageView+WebCache.h>
 #import "ThemeManager.h"
+#import "DataManager.h"
 
 static CGFloat const kComicCellNumberLabelWidth = 35.0;
 
@@ -71,7 +72,28 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
 - (void)setComic:(Comic *)comic {
     _comic = comic;
 
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString] placeholderImage:[ThemeManager loadingImage]];
+    // If we have the image data stored locally, use it directly.
+    if (comic.hasImageData) {
+        self.imageView.image = [UIImage imageWithData:comic.imageData];
+    }
+
+    // Otherwise lets harness the coolness of SDWebImage to set our placeholder, and point the image view at the
+    // image URL and SDWebImage will let us know when it's done downloading/retrieving from the cache. At that point
+    // lets store it on the comic so we can save us the trouble of having to do this again in the future, especially
+    // when we have no internet connectivity.
+    else {
+        [self.imageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString] placeholderImage:[ThemeManager loadingImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            if (!image || error) {
+                return;
+            }
+
+            [[DataManager sharedInstance].realm beginWriteTransaction];
+            comic.imageData = UIImagePNGRepresentation(image);
+            comic.hasImageData = YES;
+            [[DataManager sharedInstance].realm commitWriteTransaction];
+        }];
+    }
+
     self.numberLabel.text = [NSString stringWithFormat:@"%ld", (long)comic.num];
 }
 

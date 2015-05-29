@@ -10,7 +10,7 @@
 #import "RequestManager.h"
 #import <GTTracker.h>
 
-static NSInteger const kCurrentSchemaVersion = 1;
+static NSInteger const kCurrentSchemaVersion = 2;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 @implementation DataManager {
