@@ -8,10 +8,8 @@
 ## A free, ad-free, open-source, native, and universal xkcd.com reader for iOS.
 
 
-![list](Screenshots/list.png)
-![comic](Screenshots/comic.png)
-![alt](Screenshots/alt.png)
-![iPad](Screenshots/ipad.png)
+![portrait](Screenshots/demo.png)
+![landscape](Screenshots/demo_landscape.png)
 
 # Features include:
 
@@ -39,7 +37,7 @@
 
 - [ ] Gathering user feedback
 - [x] Searching
-- [ ] Favoriting
+- [ ] Favoriting?
 - [ ] Visual indication that comics are read/unread
 - [ ] Lazy-image downloading for offline viewing
 - [ ] Social sharing
@@ -48,6 +46,16 @@
 - [x] Code coverage > 25%
 - [ ] Code coverage > 75%
 - [ ] Getting Randall Munroe to acknowledge my existence
+
+## Version History
+- v1.1 ***(in development)***
+	- Improved scrolling performance
+	- Search *beta*
+	- Silent push notifications w/ vibration & app badge
+	- Bug fixes
+
+- v1.0 ***(submitted to Apple - not yet in review)***
+	- Initial Release
 
 ## Want to help?
 
