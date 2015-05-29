@@ -47,6 +47,10 @@
     XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager loadingImage]), UIImagePNGRepresentation([UIImage imageNamed:kDefaultLoadingImageName]));
 }
 
+- (void)testBackImage {
+    XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager backImage]), UIImagePNGRepresentation([UIImage imageNamed:kDefaultBackImageName]));
+}
+
 - (void)testAddBorderToLayer {
     UIView *testView = [UIView new];
     CGFloat radius = 10;
@@ -70,6 +74,22 @@
     XCTAssertEqualWithAccuracy(testView.layer.shadowOpacity, opacity, 0.01);
     XCTAssertEqual(testView.layer.shadowColor, [UIColor blackColor].CGColor);
     XCTAssert(CGSizeEqualToSize(testView.layer.shadowOffset, CGSizeZero));
+}
+
+- (void)testAddParallax {
+    UIView *testView = [UIView new];
+
+    [ThemeManager addParallaxToView:testView];
+
+    XCTAssertNotNil(testView.motionEffects);
+
+    UIMotionEffectGroup *motionEffects = [testView.motionEffects firstObject];
+    XCTAssertNotNil(motionEffects);
+
+    for (UIInterpolatingMotionEffect *motionEffect in motionEffects.motionEffects) {
+        XCTAssertEqualWithAccuracy([motionEffect.minimumRelativeValue floatValue], -kDefaultParallaxValue, 0.01);
+        XCTAssertEqualWithAccuracy([motionEffect.maximumRelativeValue floatValue], kDefaultParallaxValue, 0.01);
+    }
 }
 
 @end

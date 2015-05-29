@@ -48,7 +48,7 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 - (void)initializeRealm {
     // Currently no need for migrations, so we can leave the migrations block empty.
-    [RLMRealm setSchemaVersion:kCurrentSchemaVersion forRealmAtPath:[RLMRealm defaultRealmPath] withMigrationBlock:^(RLMMigration *migration, NSUInteger oldSchemaVersion) {}];
+    [RLMRealm setSchemaVersion:kCurrentSchemaVersion forRealmAtPath:[RLMRealm defaultRealmPath] withMigrationBlock:^(RLMMigration *migration, uint64_t oldSchemaVersion) {}];
 
     self.realm = [RLMRealm defaultRealm];
 }
@@ -112,6 +112,10 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 - (RLMResults *)allSavedComics {
     return [[Comic allObjects] sortedResultsUsingProperty:@"num" ascending:NO];
+}
+
+- (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingProperty:@"num" ascending:NO];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {

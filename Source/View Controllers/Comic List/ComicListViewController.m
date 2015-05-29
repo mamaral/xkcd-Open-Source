@@ -7,21 +7,19 @@
 //
 
 #import "ComicListViewController.h"
-#import <Realm.h>
 #import <GTTracker.h>
 #import <UIView+Facade.h>
 #import "DataManager.h"
 #import "ThemeManager.h"
+#import "LoadingView.h"
 #import "Comic.h"
 #import "ComicCell.h"
-#import "LoadingView.h"
 #import "ComicViewController.h"
 
-@interface ComicListViewController () {
-    RLMResults *_comics;
+static NSString * const kComicListTitle = @"xkcd: Open Source";
+static NSString * const kNoSearchResultsMessage = @"No results found...";
 
-    LoadingView *_loadingView;
-}
+@interface ComicListViewController ()
 
 @end
 
@@ -39,13 +37,31 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = @"xkcd: Open Source";
+    self.title = kComicListTitle;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationController.navigationBar.backIndicatorImage = [UIImage imageNamed:@"back"];
-    self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
+    self.navigationController.navigationBar.backIndicatorImage = [ThemeManager backImage];
+    self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [ThemeManager backImage];
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
+
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
+
+    self.searchBar = [UISearchBar new];
+    self.searchBar.delegate = self;
+    self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+
+    self.noResultsLabel = [UILabel new];
+    self.noResultsLabel.hidden = YES;
+    self.noResultsLabel.text = kNoSearchResultsMessage;
+    self.noResultsLabel.font = [ThemeManager xkcdFontWithSize:18];
+    self.noResultsLabel.textColor = [UIColor blackColor];
+    self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
+    [self.collectionView addSubview:self.noResultsLabel];
+
+    // Initially we want to grab what we have stored.
+    [self loadComicsFromDB];
 
     // Fetch comics whenever we get notified more are available.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComicsFromDB) name:NewComicsAvailableNotification object:nil];
@@ -54,12 +70,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    // Initially we want to grab what we have stored.
-    [self loadComicsFromDB];
-
     // If we don't have any, it's the first launch - let's show the loading view
     // and wait for the data manager to tell us new comics are available.
-    if (_comics.count == 0 && ![LoadingView isVisible]) {
+    if (!self.searching && self.comics.count == 0 && ![LoadingView isVisible]) {
         [LoadingView showInView:self.view];
     }
 }
@@ -76,6 +89,10 @@
     if ([LoadingView isVisible]) {
         [LoadingView handleLayoutChanged];
     }
+
+    if (!self.noResultsLabel.isHidden) {
+        [self.noResultsLabel anchorTopCenterFillingWidthWithLeftAndRightPadding:15 topPadding:15 height:20];
+    }
 }
 
 
@@ -83,10 +100,10 @@
 
 - (void)loadComicsFromDB {
     // Grab the comics we have saved.
-    _comics = [[DataManager sharedInstance] allSavedComics];
+    self.comics = [[DataManager sharedInstance] allSavedComics];
 
     // If we have comics and the loading view is present, tell it to handle that we're done.
-    if (_comics.count > 0 && [LoadingView isVisible]) {
+    if (self.comics.count > 0 && [LoadingView isVisible]) {
         [LoadingView handleDoneLoading];
     }
 
@@ -102,18 +119,20 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return _comics.count;
+    return self.comics.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ComicCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kComicCellReuseIdentifier forIndexPath:indexPath];
-    cell.comic = _comics[indexPath.item];
-    
+    cell.comic = self.comics[indexPath.item];
     return cell;
 }
 
+
+#pragma mark - UICollectionViewDelegate
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    Comic *comic = _comics[indexPath.item];
+    Comic *comic = self.comics[indexPath.item];
 
     [self.navigationController pushViewController:[[ComicViewController alloc] initWithComic:comic] animated:YES];
 }
@@ -122,13 +141,13 @@
 #pragma mark - Layout delegate
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView relativeHeightForItemAtIndexPath:(NSIndexPath *)indexPath {
-    Comic *comic = _comics[indexPath.item];
+    Comic *comic = self.comics[indexPath.item];
     CGFloat aspectRatio = comic.aspectRatio;
     return 1.0 / aspectRatio;
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldBeDoubleColumnAtIndexPath:(NSIndexPath *)indexPath {
-    Comic *comic = _comics[indexPath.item];
+    Comic *comic = self.comics[indexPath.item];
     CGFloat aspectRatio = comic.aspectRatio;
     return aspectRatio > 1.0;
 }
@@ -144,6 +163,66 @@
     else {
         return isLandscape ? 4 : 2;
     }
+}
+
+
+#pragma mark - Searching
+
+- (void)toggleSearch {
+    if (!self.searching) {
+        [self enableSearch];
+    }
+
+    else {
+        [self cancelSearch];
+    }
+}
+
+- (void)enableSearch {
+    self.searching = YES;
+
+    [self.searchBar becomeFirstResponder];
+
+    self.navigationItem.titleView = self.searchBar;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSearch)];
+}
+
+- (void)cancelSearch {
+    self.searching = NO;
+    self.searchBar.text = @"";
+    self.comics = [[DataManager sharedInstance] allSavedComics];
+    self.noResultsLabel.hidden = YES;
+
+    self.navigationItem.rightBarButtonItem = nil;
+    self.navigationItem.titleView = nil;
+
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
+    [self.collectionView reloadData];
+}
+
+
+#pragma mark - UISearchBar delegate
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    NSString *searchString = searchBar.text;
+
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Comic List Search" action:searchString];
+
+    self.comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
+
+    if (self.comics.count > 0) {
+        self.noResultsLabel.hidden = YES;
+
+        [searchBar resignFirstResponder];
+
+        [self.collectionView setContentOffset:CGPointZero animated:YES];
+    }
+
+    else {
+        self.noResultsLabel.hidden = NO;
+    }
+
+    [self.collectionView reloadData];
 }
 
 @end

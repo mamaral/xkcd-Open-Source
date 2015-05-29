@@ -10,7 +10,7 @@
 #import "ThemeManager.h"
 #import <UIView+Facade.h>
 
-static CGFloat const kAltViewPadding = 15.0;
+static CGFloat const kAltViewPadding = 10.0;
 
 @implementation AltView
 
@@ -33,17 +33,18 @@ static CGFloat const kAltViewPadding = 15.0;
 
     [ThemeManager addBorderToLayer:self.containerView.layer radius:kDefaultCornerRadius color:[UIColor whiteColor]];
     [ThemeManager addShadowToLayer:self.containerView.layer radius:15.0 opacity:0.8];
+    [ThemeManager addParallaxToView:self.containerView];
 
     self.altLabel = [UILabel new];
     self.altLabel.text = self.comic.alt;
-    self.altLabel.font = [ThemeManager xkcdFontWithSize:20];
+    self.altLabel.font = [ThemeManager xkcdFontWithSize:18];
     self.altLabel.textColor = [UIColor whiteColor];
     self.altLabel.textAlignment = NSTextAlignmentCenter;
     self.altLabel.numberOfLines = 0;
     [self.containerView addSubview:self.altLabel];
 
     self.dateLabel = [UILabel new];
-    self.dateLabel.font = [ThemeManager xkcdFontWithSize:20];
+    self.dateLabel.font = [ThemeManager xkcdFontWithSize:18];
     self.dateLabel.textColor = [UIColor whiteColor];
     self.dateLabel.text = self.comic.formattedDateString;
     [self addSubview:self.dateLabel];
@@ -61,9 +62,17 @@ static CGFloat const kAltViewPadding = 15.0;
     [self.containerView anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:padding topAndBottomPadding:padding];
     [self.altLabel anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:kAltViewPadding topAndBottomPadding:kAltViewPadding];
     [self.altLabel sizeToFit];
-
     [self.containerView anchorInCenterWithWidth:CGRectGetWidth(self.superview.frame) - (2 * padding) height:CGRectGetHeight(self.altLabel.frame) + (2 * kAltViewPadding)];
     [self.altLabel anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:kAltViewPadding topAndBottomPadding:kAltViewPadding];
+
+    CGFloat maxContainerSize = CGRectGetHeight(self.superview.frame) - (2 * kAltViewPadding) - CGRectGetMaxY(self.dateLabel.frame);
+
+    if (CGRectGetHeight(self.containerView.frame) > maxContainerSize) {
+        [self.containerView anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:2 * kAltViewPadding topAndBottomPadding:6 * kAltViewPadding];
+        [self.altLabel anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:kAltViewPadding topAndBottomPadding:kAltViewPadding];
+
+        self.altLabel.adjustsFontSizeToFitWidth = YES;
+    }
 }
 
 - (void)show {
@@ -76,7 +85,7 @@ static CGFloat const kAltViewPadding = 15.0;
 }
 
 - (void)dismissWithCompletion:(dispatch_block_t)completion {
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         self.alpha = 0.0;
     } completion:^(BOOL finished) {
         completion();

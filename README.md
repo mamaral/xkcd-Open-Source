@@ -3,15 +3,13 @@
 
 [![Build Status](https://travis-ci.org/mamaral/xkcd-Open-Source.svg)](https://travis-ci.org/mamaral/xkcd-Open-Source)
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
-[![Coverage Status](https://coveralls.io/repos/mamaral/xkcd-Open-Source/badge.svg)](https://coveralls.io/r/mamaral/xkcd-Open-Source)
+[![Coverage Status](https://coveralls.io/repos/mamaral/xkcd-Open-Source/badge.svg?branch=v1.1)](https://coveralls.io/r/mamaral/xkcd-Open-Source?branch=v1.1)
 
 ## A free, ad-free, open-source, native, and universal xkcd.com reader for iOS.
 
 
-![list](Screenshots/list.png)
-![comic](Screenshots/comic.png)
-![alt](Screenshots/alt.png)
-![iPad](Screenshots/ipad.png)
+![portrait](Screenshots/demo.png)
+![landscape](Screenshots/demo_landscape.png)
 
 # Features include:
 
@@ -31,22 +29,33 @@
 - [GTrack](https://github.com/gemr/GTrack) for interfacing with Google Analytics.
 - [SDWebImage](https://github.com/rs/SDWebImage) for image downloading / caching.
 - [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage) for that one GIF.
-- [Crashlytics](https://try.crashlytics.com/) for beta distribution, analytics, and crash reporting.
+- [Fabric](https://get.fabric.io/) for beta distribution, analytics, and crash reporting.
 - [xkcd-font](https://github.com/ipython/xkcd-font) because obviously.
 - Stripped, modified, and customized [Mosaic Layout](https://github.com/betzerra/MosaicLayout) for the comic list.
 
 ## Todo List (in no specific order)
 
 - [ ] Gathering user feedback
-- [ ] Searching
-- [ ] Favoriting
+- [x] Searching
+- [ ] Favoriting?
 - [ ] Visual indication that comics are read/unread
 - [ ] Lazy-image downloading for offline viewing
 - [ ] Social sharing
 - [ ] Investigate integrating the ***What If?*** series
 - [ ] ***About*** section featuring contributors
-- [ ] Code coverage
+- [x] Code coverage > 25%
+- [ ] Code coverage > 75%
 - [ ] Getting Randall Munroe to acknowledge my existence
+
+## Version History
+- v1.1 ***(in development)***
+	- Improved scrolling performance
+	- Search *beta*
+	- Silent push notifications w/ vibration & app badge
+	- Bug fixes
+
+- v1.0 ***(submitted to Apple - not yet in review)***
+	- Initial Release
 
 ## Want to help?
 
