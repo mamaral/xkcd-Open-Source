@@ -39,7 +39,7 @@
 - [x] Searching
 - [ ] Favoriting?
 - [ ] Visual indication that comics are read/unread
-- [ ] Lazy-image downloading for offline viewing
+- [x] Lazy-image downloading for offline viewing
 - [ ] Social sharing
 - [ ] Investigate integrating the ***What If?*** series
 - [ ] ***About*** section featuring contributors
@@ -50,6 +50,7 @@
 ## Version History
 - v1.1 ***(in development)***
 	- Improved scrolling performance
+	- Lazy image downloading for offline viewing
 	- Search *beta*
 	- Silent push notifications w/ vibration & app badge
 	- Bug fixes
