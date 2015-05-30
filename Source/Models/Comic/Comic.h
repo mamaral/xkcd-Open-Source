@@ -38,8 +38,6 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 @property NSString *year;
 @property NSString *formattedDateString;
 @property CGFloat aspectRatio;
-@property NSData *imageData;
-@property BOOL hasImageData;
 @property BOOL viewed;
 
 
