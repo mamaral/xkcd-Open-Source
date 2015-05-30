@@ -49,7 +49,7 @@
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
-- v1.1 ***(in development)***
+- v1.1 ***(Submitted to Apple - awaiting review)***
 	- Improved scrolling performance
 	- Search *beta*
 	- Silent push notifications w/ vibration & app badge
