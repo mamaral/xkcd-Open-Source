@@ -35,16 +35,18 @@
 
 ## Todo List (in no specific order)
 
-- [ ] Gathering user feedback
 - [x] Searching
+- [x] Lazy-image downloading for offline viewing
+- [x] Code coverage > 25%
+- [x] Code coverage > 50%
+- [ ] Code coverage > 75%
+- [ ] Code coverage == 100%
+- [ ] Gathering user feedback
 - [ ] Favoriting?
 - [ ] Visual indication that comics are read/unread
-- [x] Lazy-image downloading for offline viewing
 - [ ] Social sharing
 - [ ] Investigate integrating the ***What If?*** series
 - [ ] ***About*** section featuring contributors
-- [x] Code coverage > 25%
-- [ ] Code coverage > 75%
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
@@ -55,7 +57,7 @@
 	- Silent push notifications w/ vibration & app badge
 	- Bug fixes
 
-- v1.0 ***(submitted to Apple - not yet in review)***
+- v1.0 ***(Available for download in the App Store)***
 	- Initial Release
 
 ## Want to help?
