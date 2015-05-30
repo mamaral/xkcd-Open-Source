@@ -36,7 +36,6 @@
 ## Todo List (in no specific order)
 
 - [x] Searching
-- [x] Lazy-image downloading for offline viewing
 - [x] Code coverage > 25%
 - [x] Code coverage > 50%
 - [ ] Code coverage > 75%
@@ -52,7 +51,6 @@
 ## Version History
 - v1.1 ***(in development)***
 	- Improved scrolling performance
-	- Lazy image downloading for offline viewing
 	- Search *beta*
 	- Silent push notifications w/ vibration & app badge
 	- Bug fixes
