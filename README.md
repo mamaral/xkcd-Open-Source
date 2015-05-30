@@ -14,12 +14,13 @@
 # Features include:
 
 - Notifications when new comics are released
-- GMOs
+- Search for your favorite comics by text or number
+- Maximum GMOs
 - Increased meta
 - Optimized electron-per-pixel count
 - Quantum entanglement
 - The most skeptical algorithms
-- Pizza
+- Now with ***even more*** Pizza
 
 ## Architecture
 
@@ -57,6 +58,13 @@
 
 - v1.0 ***(Available for download in the App Store)***
 	- Initial Release
+
+
+## Contributors
+
+- [Yours Truly](https://github.com/mamaral) - Architect of the iOS app.
+- [Sean Ferguson](https://github.com/fergusean) - Architect of the server that pulls content from xkcd and pushes to clients.
+- [Ryan Copley](https://github.com/RyanCopley) - CI build improvements.
 
 ## Want to help?
 
