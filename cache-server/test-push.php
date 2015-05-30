@@ -10,7 +10,8 @@ $db = new PDO(DB_DSN, DB_USER, DB_PASSWORD);
 $payload = [
 	'aps' => [
 		'alert' => 'Test push notification',
-		'sound' => 'default',
+		'sound' => 'silent.m4a',
+		'badge' => 1,
 		'content-available' => 1
 	]
 ];

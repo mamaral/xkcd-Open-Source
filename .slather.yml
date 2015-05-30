@@ -1,0 +1,9 @@
+coverage_service: coveralls
+xcodeproj: xkcd Open Source.xcodeproj
+source_directory: source
+ignore:
+ - source/App Delegate/*
+ - source/Misc/*
+ - source/Layout/*
+ - source/View Controllers/*
+ - source/Views/*
