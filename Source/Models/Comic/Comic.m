@@ -54,9 +54,9 @@
              kAltKey: [NSString stringWithFormat:@"Alt%ld", (long)rand],
              kTranscriptKey: [NSString stringWithFormat:@"Transcript%ld", (long)rand],
              kImageURLStringKey: [NSString stringWithFormat:@"www.xkcd.com/comics/%ld", (long)rand],
-             kDayKey: [NSString stringWithFormat:@"%ld", (long)arc4random_uniform(31)],
-             kMonthKey: [NSString stringWithFormat:@"%ld", (long)arc4random_uniform(12)],
-             kYearKey: [NSString stringWithFormat:@"%ld", (long)arc4random_uniform(1984)],
+             kDayKey: [NSString stringWithFormat:@"%ld", (long)(arc4random_uniform(30) + 1)],
+             kMonthKey: [NSString stringWithFormat:@"%ld", (long)(arc4random_uniform(11) + 1)],
+             kYearKey: [NSString stringWithFormat:@"%ld", (long)(arc4random_uniform(1983) + 1)],
              kAspectRatioKey: @(rand)
              };
 }
