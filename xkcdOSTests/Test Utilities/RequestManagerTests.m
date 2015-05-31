@@ -27,10 +27,14 @@
     [super setUp];
 
     _requestManager = [RequestManager sharedInstance];
+
+    [[StubManager sharedInstance] removeAllStubs];
 }
 
 - (void)tearDown {
     _requestManager = nil;
+
+    [[StubManager sharedInstance] removeAllStubs];
 
     [super tearDown];
 }
@@ -42,115 +46,92 @@
     XCTAssert([[RequestManager sharedInstance].manager.requestSerializer.HTTPRequestHeaders[kContentTypeKey] isEqualToString:kDefaultContentType]);
 }
 
-//- (void)testDownloadComicsSinceWithComics {
-//    XCTestExpectation *expectation = [self expectationWithDescription:nil];
-//
-//    NSDictionary *comic1 = @{
-//                             kNumKey: @1,
-//                             kTitleKey: @"Title",
-//                             kSafeTitleKey: @"Safe title",
-//                             kAltKey: @"Alt",
-//                             kTranscriptKey: @"Trans",
-//                             kImageURLStringKey: @"www.imageURL.com",
-//                             kDayKey: @"1",
-//                             kMonthKey: @"12",
-//                             kYearKey: @"1881",
-//                             kAspectRatioKey: @(1.0)
-//                             };
-//
-//    NSDictionary *comic2 = @{
-//                             kNumKey: @2,
-//                             kTitleKey: @"Title2",
-//                             kSafeTitleKey: @"Safe title2",
-//                             kAltKey: @"Alt2",
-//                             kTranscriptKey: @"Trans2",
-//                             kImageURLStringKey: @"www.imageURL2.com",
-//                             kDayKey: @"2",
-//                             kMonthKey: @"11",
-//                             kYearKey: @"1882",
-//                             kAspectRatioKey: @(2.0)
-//                             };
-//
-//    NSArray *comics = @[comic1, comic2];
-//
-//    [[StubManager sharedInstance] stubResponseWithStatusCode:202 object:comics delay:0.0];
-//
-//    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
-//        XCTAssertNil(error);
-//        XCTAssertNotNil(comicDicts);
-//        XCTAssertEqual(comicDicts.count, comics.count);
-//        XCTAssert([comicDicts containsObject:comic1]);
-//        XCTAssert([comicDicts containsObject:comic2]);
-//
-//        [expectation fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:2.0 handler:nil];
-//}
-//
-//- (void)testDownloadComicsSinceWithNoComics {
-//    XCTestExpectation *expectation = [self expectationWithDescription:nil];
-//
-//    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:@[] delay:0.0];
-//
-//    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
-//        XCTAssertNil(error);
-//        XCTAssertNotNil(comicDicts);
-//        XCTAssertEqual(comicDicts.count, 0);
-//
-//        [expectation fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:2.0 handler:nil];
-//}
-//
-//- (void)testDownloadComicsSinceWithError {
-//    XCTestExpectation *expectation = [self expectationWithDescription:nil];
-//
-//    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
-//
-//    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
-//        XCTAssertNotNil(error);
-//        XCTAssertNil(comicDicts);
-//
-//        [expectation fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:2.0 handler:nil];
-//}
-//
-//- (void)testSendDeviceToken {
-//    XCTestExpectation *expectation = [self expectationWithDescription:nil];
-//
-//    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:nil delay:0.0];
-//
-//    NSString *token = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-//    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
-//        XCTAssertNil(error);
-//
-//        [expectation fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:2.0 handler:nil];
-//}
-//
-//- (void)testSendNilToken {
-//    XCTestExpectation *expectation = [self expectationWithDescription:nil];
-//
-//    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
-//
-//    NSString *token = nil;
-//    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
-//        XCTAssertNotNil(error);
-//        XCTAssert([error.domain isEqualToString:kRequestManagerErrorDomain]);
-//        XCTAssertEqual(error.code, kRequestManagerErrorCode);
-//        XCTAssert([error.userInfo[kRequestManagerUserInfoKey] isEqualToString:kRequestManagerNilTokenErrorMessage]);
-//
-//        [expectation fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:2.0 handler:nil];
-//}
+- (void)testDownloadComicsSinceWithComics {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    NSDictionary *comic1 = [Comic comicDictForTestsWithID:1];
+    NSDictionary *comic2 = [Comic comicDictForTestsWithID:2];
+
+    NSArray *comics = @[comic1, comic2];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:202 object:comics delay:0.0];
+
+    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(comicDicts);
+        XCTAssertEqual(comicDicts.count, comics.count);
+        XCTAssert([comicDicts containsObject:comic1]);
+        XCTAssert([comicDicts containsObject:comic2]);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testDownloadComicsSinceWithNoComics {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:@[] delay:0.0];
+
+    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(comicDicts);
+        XCTAssertEqual(comicDicts.count, 0);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testDownloadComicsSinceWithError {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
+
+    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
+        XCTAssertNotNil(error);
+        XCTAssertNil(comicDicts);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testSendDeviceToken {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:nil delay:0.0];
+
+    NSString *token = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testSendNilToken {
+    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
+
+    NSString *token = nil;
+    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
+        XCTAssertNotNil(error);
+        XCTAssert([error.domain isEqualToString:kRequestManagerErrorDomain]);
+        XCTAssertEqual(error.code, kRequestManagerErrorCode);
+        XCTAssert([error.userInfo[kRequestManagerUserInfoKey] isEqualToString:kRequestManagerNilTokenErrorMessage]);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
 
 - (void)testErrorWithMessage {
     NSString *errorMessage = @"My error message.";
