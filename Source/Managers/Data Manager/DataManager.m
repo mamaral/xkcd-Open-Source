@@ -58,11 +58,7 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 - (void)saveComics:(NSArray *)comics {
     [self.realm beginWriteTransaction];
-
-    for (Comic *comic in comics) {
-        [Comic createOrUpdateInDefaultRealmWithValue:comic];
-    }
-
+    [self.realm addOrUpdateObjectsFromArray:comics];
     [self.realm commitWriteTransaction];
 }
 
