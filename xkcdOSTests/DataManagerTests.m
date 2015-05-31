@@ -26,11 +26,19 @@
 
     [_dataManager setLatestComicDownloaded:0];
 
+    [_dataManager.realm beginWriteTransaction];
+    [_dataManager.realm deleteAllObjects];
+    [_dataManager.realm commitWriteTransaction];
+
     [[StubManager sharedInstance] removeAllStubs];
 }
 
 - (void)tearDown {
     [_dataManager setLatestComicDownloaded:0];
+
+    [_dataManager.realm beginWriteTransaction];
+    [_dataManager.realm deleteAllObjects];
+    [_dataManager.realm commitWriteTransaction];
 
     _dataManager = nil;
 
