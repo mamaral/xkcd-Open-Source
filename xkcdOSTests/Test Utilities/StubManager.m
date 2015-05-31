@@ -24,7 +24,7 @@
 
 - (void)stubResponseWithStatusCode:(int)statusCode object:(id)object delay:(NSTimeInterval)delay {
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
-        return YES;
+        return [request.URL.absoluteString hasPrefix:@"http://xkcdos.app.sgnl24.com/"];
     } withStubResponse:^OHHTTPStubsResponse *(NSURLRequest *request) {
         return [[OHHTTPStubsResponse responseWithJSONObject:object ?: @{} statusCode:statusCode headers:nil] responseTime:delay];
     }];
