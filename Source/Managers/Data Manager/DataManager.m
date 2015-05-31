@@ -129,7 +129,7 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
         // Convert the dictionaries to our comic models, also keeping track of the newest
         // latest comic.
         NSMutableArray *comics = [NSMutableArray arrayWithCapacity:comicDicts.count];
-        NSInteger latestDownloaded = [self latestComicDownloaded];
+        NSInteger latestDownloaded = since;
 
         for (NSDictionary *comicDict in comicDicts) {
             Comic *comic = [Comic comicFromDictionary:comicDict];
