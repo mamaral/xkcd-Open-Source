@@ -5,7 +5,7 @@
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 [![Coverage Status](https://coveralls.io/repos/mamaral/xkcd-Open-Source/badge.svg?branch=master)](https://coveralls.io/r/mamaral/xkcd-Open-Source?branch=master)
 
-## A free, ad-free, open-source, native, and universal xkcd.com reader for iOS. [Download it from the app store today!]((https://itunes.apple.com/us/app/xkcd-open-source/id995811425?mt=8))
+## A free, ad-free, open-source, native, and universal xkcd.com reader for iOS. [Download it from the app store today!](https://itunes.apple.com/us/app/xkcd-open-source/id995811425?mt=8)
 
 
 ![portrait](Screenshots/demo.png)
