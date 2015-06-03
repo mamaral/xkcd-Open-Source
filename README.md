@@ -39,7 +39,7 @@
 - [x] Searching
 - [x] Code coverage > 25%
 - [x] Code coverage > 50%
-- [ ] Code coverage > 75%
+- [x] Code coverage > 75%
 - [ ] Code coverage == 100%
 - [ ] Gathering user feedback
 - [ ] Favoriting?
