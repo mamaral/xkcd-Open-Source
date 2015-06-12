@@ -7,7 +7,7 @@
 
 ## A free, ad-free, open-source, native, and universal xkcd.com reader for iOS. 
 
-[Download it from the app store today!](https://itunes.apple.com/us/app/xkcd-open-source/id995811425?mt=8)
+## [Download it from the app store today!](https://itunes.apple.com/us/app/xkcd-open-source/id995811425?mt=8)
 
 
 ![portrait](Screenshots/demo.png)
