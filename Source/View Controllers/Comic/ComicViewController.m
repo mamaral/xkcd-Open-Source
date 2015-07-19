@@ -46,10 +46,6 @@ static CGFloat const kAltButtonSize = 60.0;
     [super viewDidAppear:animated];
 
     [[GTTracker sharedInstance] sendScreenEventWithTitle:@"Comic"];
-
-    if (!self.comic.viewed) {
-        [[DataManager sharedInstance] markComicViewed:self.comic];
-    }
 }
 
 - (void)viewWillLayoutSubviews {

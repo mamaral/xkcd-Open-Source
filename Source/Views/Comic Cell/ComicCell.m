@@ -42,10 +42,13 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
     self.imageView.clipsToBounds = YES;
     [self.containerView addSubview:self.imageView];
 
+    self.maskView = [UIView new];
+    self.maskView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.4];
+    [self.containerView addSubview:self.maskView];
+
     self.numberLabel = [UILabel new];
     self.numberLabel.textAlignment = NSTextAlignmentCenter;
     self.numberLabel.textColor = [UIColor whiteColor];
-    self.numberLabel.backgroundColor = [ThemeManager xkcdLightBlue];
     self.numberLabel.font = [ThemeManager xkcdFontWithSize:11];
     self.numberLabel.adjustsFontSizeToFitWidth = YES;
     self.numberLabel.clipsToBounds = YES;
@@ -74,6 +77,8 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
 
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString] placeholderImage:[ThemeManager loadingImage]];
 
+    self.maskView.alpha = comic.viewed ? 1.0 : 0.0;
+    self.numberLabel.backgroundColor = comic.viewed ? [ThemeManager comicViewedColor] : [ThemeManager xkcdLightBlue];
     self.numberLabel.text = [NSString stringWithFormat:@"%ld", (long)comic.num];
 }
 
