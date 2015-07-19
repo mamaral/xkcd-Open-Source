@@ -14,7 +14,7 @@
 #pragma mark - Initialization
 
 + (instancetype)comicFromDictionary:(NSDictionary *)dictionary {
-    return [[[self class] alloc] initComicWithDictionary:dictionary];;
+    return [[[self class] alloc] initComicWithDictionary:dictionary];
 }
 
 - (instancetype)initComicWithDictionary:(NSDictionary *)dictionary {
