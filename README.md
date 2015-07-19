@@ -36,19 +36,23 @@
 ## Todo List (in no specific order)
 
 - [x] Searching
+- [x] Visual indication that comics are read/unread
 - [x] Code coverage > 25%
 - [x] Code coverage > 50%
 - [x] Code coverage > 75%
 - [ ] Code coverage == 100%
 - [ ] Gathering user feedback
 - [ ] Favoriting?
-- [ ] Visual indication that comics are read/unread
 - [ ] Social sharing
-- [ ] Investigate integrating the ***What If?*** series
+- [x] Investigate integrating the ***What If?*** series (probably not happening for now...)
 - [ ] ***About*** section featuring contributors
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
+- v1.2 ***(Submitted to Apple)
+        - Visual indication tht comics are read vs. unread
+        - Improved comic view layout
+
 - v1.1 ***(Available for download in the App Store)***
 	- Improved scrolling performance
 	- Search *beta*
