@@ -135,6 +135,13 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     Comic *comic = self.comics[indexPath.item];
 
     [self.navigationController pushViewController:[[ComicViewController alloc] initWithComic:comic] animated:YES];
+
+
+    if (!comic.viewed) {
+        [[DataManager sharedInstance] markComicViewed:comic];
+
+        [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+    }
 }
 
 

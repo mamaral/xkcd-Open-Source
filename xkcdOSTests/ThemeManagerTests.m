@@ -43,6 +43,10 @@
     XCTAssertEqualObjects([ThemeManager xkcdLightBlue], [UIColor colorWithRed:151/255.0 green:169/255.0 blue:199/255.0 alpha:1.0]);
 }
 
+- (void)testComicViewedColor {
+    XCTAssertEqualObjects([ThemeManager comicViewedColor], [UIColor colorWithRed:130/255.0 green:130/255.0 blue:130/255.0 alpha:1.0]);
+}
+
 - (void)testLoadingImage {
     XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager loadingImage]), UIImagePNGRepresentation([UIImage imageNamed:kDefaultLoadingImageName]));
 }

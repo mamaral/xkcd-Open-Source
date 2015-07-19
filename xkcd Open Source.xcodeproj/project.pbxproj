@@ -437,7 +437,7 @@
 		2714CCAA1B05667400ADF009 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Mike Amaral";
 				TargetAttributes = {
 					2714CCB11B05667400ADF009 = {
@@ -634,6 +634,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
@@ -708,6 +709,7 @@
 				INFOPLIST_FILE = "Source/Misc/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource;
 				PRODUCT_NAME = "xkcd Open Source";
 			};
 			name = Debug;
@@ -725,6 +727,7 @@
 				INFOPLIST_FILE = "Source/Misc/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource;
 				PRODUCT_NAME = "xkcd Open Source";
 				PROVISIONING_PROFILE = "d31a2265-7d81-4e2d-8f85-9962d74868b2";
 			};
@@ -748,6 +751,7 @@
 				INFOPLIST_FILE = "xkcdOSTests/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.MikeAmaral.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/xkcd Open Source.app/xkcd Open Source";
 			};
@@ -768,6 +772,7 @@
 				INFOPLIST_FILE = "xkcdOSTests/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.MikeAmaral.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/xkcd Open Source.app/xkcd Open Source";
 			};

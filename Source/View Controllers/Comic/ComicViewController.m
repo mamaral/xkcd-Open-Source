@@ -13,7 +13,9 @@
 #import "ThemeManager.h"
 #import "DataManager.h"
 
-static CGFloat const kAltButtonSize = 60.0;
+static CGFloat const kComicViewControllerPadding = 10.0;
+static CGFloat const kAltButtonSize = 40.0;
+static CGFloat const kAltButtonPadding = 25.0;
 
 @interface ComicViewController () {
     BOOL _viewedAlt;
@@ -46,10 +48,6 @@ static CGFloat const kAltButtonSize = 60.0;
     [super viewDidAppear:animated];
 
     [[GTTracker sharedInstance] sendScreenEventWithTitle:@"Comic"];
-
-    if (!self.comic.viewed) {
-        [[DataManager sharedInstance] markComicViewed:self.comic];
-    }
 }
 
 - (void)viewWillLayoutSubviews {
@@ -103,8 +101,8 @@ static CGFloat const kAltButtonSize = 60.0;
 - (void)layoutFacade {
     [self.containerView fillSuperview];
     self.containerView.contentSize = self.containerView.frame.size;
-    [self.comicImageView anchorInCenterFillingWidthAndHeightWithLeftAndRightPadding:10 topAndBottomPadding:10];
-    [self.showAltButton anchorBottomRightWithRightPadding:30 bottomPadding:30 width:kAltButtonSize height:kAltButtonSize];
+    [self.showAltButton anchorBottomRightWithRightPadding:kAltButtonPadding bottomPadding:kAltButtonPadding width:kAltButtonSize height:kAltButtonSize];
+    [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.showAltButton.yMin - (2 * kComicViewControllerPadding)];
 
     if (self.altView.isVisible) {
         [self.altView layoutFacade];

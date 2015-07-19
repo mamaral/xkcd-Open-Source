@@ -26,7 +26,9 @@ static CGFloat const kDefaultParallaxValue = 10.0;
 + (void)setupTheme;
 
 + (UIFont *)xkcdFontWithSize:(CGFloat)size;
+
 + (UIColor *)xkcdLightBlue;
++ (UIColor *)comicViewedColor;
 
 + (UIImage *)loadingImage;
 + (UIImage *)backImage;
