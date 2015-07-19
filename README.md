@@ -35,16 +35,16 @@
 
 ## Todo List (in no specific order)
 
+- [x] Gathering user feedback (ongoing)
 - [x] Searching
 - [x] Visual indication that comics are read/unread
+- [x] Investigate integrating the ***What If?*** series (probably not happening for now...)
 - [x] Code coverage > 25%
 - [x] Code coverage > 50%
 - [x] Code coverage > 75%
 - [ ] Code coverage == 100%
-- [ ] Gathering user feedback
 - [ ] Favoriting?
 - [ ] Social sharing
-- [x] Investigate integrating the ***What If?*** series (probably not happening for now...)
 - [ ] ***About*** section featuring contributors
 - [ ] Getting Randall Munroe to acknowledge my existence
 
