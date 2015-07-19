@@ -49,9 +49,9 @@
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
-- v1.2 ***(Submitted to Apple)
-        - Visual indication tht comics are read vs. unread
-        - Improved comic view layout
+- v1.2 ***(Submitted to Apple)***
+ 	- Visual indication tht comics are read vs. unread
+ 	- Improved comic view layout so some comics won't be cut off by the alt button
 
 - v1.1 ***(Available for download in the App Store)***
 	- Improved scrolling performance
