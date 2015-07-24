@@ -32,30 +32,22 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
     application.applicationIconBadgeNumber = 0;
 
-    [ThemeManager setupTheme];
-
-    [Fabric with:@[CrashlyticsKit]];
-
-    [self initializeAnalytics];
+    [self setupThirdPartyLibraries];
     [self setupPushNotifications];
 
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
-
     [self.window makeKeyAndVisible];
 
     return YES;
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    [[GTTracker sharedInstance] startAnalyticsSession];
-}
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    [[GTTracker sharedInstance] endAnalyticsSession];
-}
+#pragma mark - Third-party library setup
 
-- (void)applicationWillTerminate:(UIApplication *)application {
-    [[GTTracker sharedInstance] endAnalyticsSession];
+- (void)setupThirdPartyLibraries {
+    [ThemeManager setupTheme];
+    [Fabric with:@[CrashlyticsKit]];
+    [[GTTracker sharedInstance] initializeAnalyticsWithTrackingID:kAnalyticsTrackingID logLevel:kGAILogLevelError];
 }
 
 
@@ -83,16 +75,6 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     [[DataManager sharedInstance] performBackgroundFetchWithCompletionHandler:completionHandler];
-}
-
-
-#pragma mark - Analytics
-
-- (void)initializeAnalytics {
-    // Start up the GTTracker.
-    GTTracker *tracker = [GTTracker sharedInstance];
-    tracker.loggingEnabled = NO;
-    [tracker initializeAnalyticsWithTrackingID:kAnalyticsTrackingID logLevel:kGAILogLevelError];
 }
 
 @end
