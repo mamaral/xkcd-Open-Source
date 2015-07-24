@@ -17,9 +17,7 @@
 
 static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
-@interface AppDelegate () {
-    DataManager *_dataManager;
-}
+@interface AppDelegate ()
 
 @end
 
@@ -32,7 +30,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    _dataManager = [DataManager sharedInstance];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 
     [ThemeManager setupTheme];
 
@@ -40,7 +38,6 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
     [self initializeAnalytics];
     [self setupPushNotifications];
-    [self clearAppBadge];
 
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
 
@@ -73,21 +70,19 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSString *token = [_dataManager tokenStringFromData:deviceToken];
+    NSString *token = [[DataManager sharedInstance] tokenStringFromData:deviceToken];
     
     [[RequestManager sharedInstance] sendDeviceToken:token completionHandler:^(NSError *error) {
         if (error) {
             NSLog(@"Sending token to server failed with error: %@", error);
+            
+            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Token Request Failed" action:error.localizedDescription];
         }
     }];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [_dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
-}
-
-- (void)clearAppBadge {
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [[DataManager sharedInstance] performBackgroundFetchWithCompletionHandler:completionHandler];
 }
 
 
