@@ -30,7 +30,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    application.applicationIconBadgeNumber = 0;
 
     [ThemeManager setupTheme];
 
