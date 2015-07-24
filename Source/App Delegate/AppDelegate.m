@@ -100,15 +100,4 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
     [tracker initializeAnalyticsWithTrackingID:kAnalyticsTrackingID logLevel:kGAILogLevelError];
 }
 
-
-// TODO: Implement / test background fetch
-//
-//#pragma mark - Background fetch
-//
-//- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-//    // Let the data manger handle the fetch.
-//    [[DataManager sharedInstance] performBackgroundFetchWithCompletionHandler:completionHandler];
-//}
-
-
 @end
