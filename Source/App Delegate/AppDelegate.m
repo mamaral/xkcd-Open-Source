@@ -51,8 +51,6 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     [[GTTracker sharedInstance] startAnalyticsSession];
-
-    [self clearAppBadge];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
