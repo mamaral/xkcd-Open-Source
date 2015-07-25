@@ -165,7 +165,7 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
         else if (newData) {
             completionHandler(UIBackgroundFetchResultNewData);
 
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"NEW_COMICS_AVAILABLE" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:NewComicsAvailableNotification object:nil];
         }
 
         else {

@@ -81,6 +81,11 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     [super viewDidAppear:animated];
 
     [[GTTracker sharedInstance] sendScreenEventWithTitle:@"Comic List"];
+
+    // Clear the app badge here, as we can be reasonably sure at this point anything new
+    // will have been seen, and we won't run into annoying issues related to the app
+    // life-cycle that we've experienced before.
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 
 - (void)viewWillLayoutSubviews {

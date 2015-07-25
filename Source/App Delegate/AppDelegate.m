@@ -17,9 +17,7 @@
 
 static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
-@interface AppDelegate () {
-    DataManager *_dataManager;
-}
+@interface AppDelegate ()
 
 @end
 
@@ -32,35 +30,24 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    _dataManager = [DataManager sharedInstance];
+    application.applicationIconBadgeNumber = 0;
 
-    [ThemeManager setupTheme];
-
-    [Fabric with:@[CrashlyticsKit]];
-
-    [self initializeAnalytics];
+    [self setupThirdPartyLibraries];
     [self setupPushNotifications];
-    [self clearAppBadge];
 
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
-
     [self.window makeKeyAndVisible];
 
     return YES;
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    [[GTTracker sharedInstance] startAnalyticsSession];
 
-    [self clearAppBadge];
-}
+#pragma mark - Third-party library setup
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    [[GTTracker sharedInstance] endAnalyticsSession];
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    [[GTTracker sharedInstance] endAnalyticsSession];
+- (void)setupThirdPartyLibraries {
+    [ThemeManager setupTheme];
+    [Fabric with:@[CrashlyticsKit]];
+    [[GTTracker sharedInstance] initializeAnalyticsWithTrackingID:kAnalyticsTrackingID logLevel:kGAILogLevelError];
 }
 
 
@@ -75,42 +62,19 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSString *token = [_dataManager tokenStringFromData:deviceToken];
+    NSString *token = [[DataManager sharedInstance] tokenStringFromData:deviceToken];
     
     [[RequestManager sharedInstance] sendDeviceToken:token completionHandler:^(NSError *error) {
         if (error) {
             NSLog(@"Sending token to server failed with error: %@", error);
+            
+            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Token Request Failed" action:error.localizedDescription];
         }
     }];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [_dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
+    [[DataManager sharedInstance] performBackgroundFetchWithCompletionHandler:completionHandler];
 }
-
-- (void)clearAppBadge {
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-}
-
-
-#pragma mark - Analytics
-
-- (void)initializeAnalytics {
-    // Start up the GTTracker.
-    GTTracker *tracker = [GTTracker sharedInstance];
-    tracker.loggingEnabled = NO;
-    [tracker initializeAnalyticsWithTrackingID:kAnalyticsTrackingID logLevel:kGAILogLevelError];
-}
-
-
-// TODO: Implement / test background fetch
-//
-//#pragma mark - Background fetch
-//
-//- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-//    // Let the data manger handle the fetch.
-//    [[DataManager sharedInstance] performBackgroundFetchWithCompletionHandler:completionHandler];
-//}
-
 
 @end
