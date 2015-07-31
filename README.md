@@ -50,8 +50,9 @@
 
 ## Version History
 - v1.2 ***(Submitted to Apple)***
- 	- Visual indication tht comics are read vs. unread
+ 	- Visual indication thatt comics are read vs. unread
  	- Improved comic view layout so some comics won't be cut off by the alt button
+ 	- *Hopefully* corrected issue related to disappearing push notifications
 
 - v1.1 ***(Available for download in the App Store)***
 	- Improved scrolling performance
