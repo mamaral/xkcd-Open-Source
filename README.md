@@ -33,16 +33,19 @@
 - [x] Code coverage > 50%
 - [x] Code coverage > 75%
 - [ ] Code coverage == 100%
-- [ ] Favoriting
+- [x] Favoriting
 - [ ] Social sharing
-- [ ] Back and next movement between comics
-- [ ] View a random comic
+- [x] 'Next' and 'prev' movement between comics
+- [x] View a random comic
 - [ ] ***About*** section featuring contributors
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
 - v2.0 ***(In development)***
-   - Add some of the features from the TODO list.
+   - Added the ability to favorite a comic, which is indicated on the comic list with a pretty red heart. Along with this, you're able to toggle a filter on the comic list to see only favorites
+   - Roll-the-dice to view a random comic
+   - Navigate forward and backward through comics directly from the comic view controller
+   - Fixed a potential issue with comics not loading on the first launch
 
 - v1.2 ***(Available for download in the App Store)***
  	- Visual indication tht comics are read vs. unread
