@@ -12,6 +12,7 @@ static NSString * const kXKCDFontName = @"xkcd-Regular";
 
 static NSString * const kDefaultLoadingImageName = @"loading";
 static NSString * const kDefaultBackImageName = @"back";
+static NSString * const kDefaultFavoriteImageName = @"favorite";
 
 static CGFloat const kDefaultXKCDTitleFontSize = 22.0;
 static CGFloat const kDefaultSearchBarFontSize = 12.0;
@@ -32,9 +33,7 @@ static CGFloat const kDefaultParallaxValue = 10.0;
 
 + (UIImage *)loadingImage;
 + (UIImage *)backImage;
-+ (UIImage *)comicListTabBarImage;
-+ (UIImage *)favoritesTabBarImage;
-+ (UIImage *)aboutTabBarImage;
++ (UIImage *)favoriteImage;
 
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color;
 + (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity;

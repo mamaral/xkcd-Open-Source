@@ -36,7 +36,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
     [self setupThirdPartyLibraries];
     [self setupPushNotifications];
 
-    self.window.rootViewController = [self generateAppRootViewController];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
     [self.window makeKeyAndVisible];
 
     return YES;

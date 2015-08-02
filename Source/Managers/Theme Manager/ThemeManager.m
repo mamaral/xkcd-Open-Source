@@ -39,16 +39,8 @@
     return [UIImage imageNamed:kDefaultBackImageName];
 }
 
-+ (UIImage *)comicListTabBarImage {
-    return [UIImage imageNamed:kDefaultBackImageName];
-}
-
-+ (UIImage *)favoritesTabBarImage {
-    return [UIImage imageNamed:kDefaultBackImageName];
-}
-
-+ (UIImage *)aboutTabBarImage {
-    return [UIImage imageNamed:kDefaultBackImageName];
++ (UIImage *)favoriteImage {
+    return [UIImage imageNamed:kDefaultFavoriteImageName];
 }
 
 
