@@ -13,6 +13,7 @@
 #import "DataManager.h"
 
 static CGFloat const kComicCellNumberLabelWidth = 35.0;
+static CGFloat const kFavoriteIconSize = 55.0;
 
 @implementation ComicCell
 
@@ -73,7 +74,7 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
     [self.maskView fillSuperview];
     [self.numberLabel anchorBottomRightWithRightPadding:4 bottomPadding:4 width:kComicCellNumberLabelWidth height:kComicCellNumberLabelWidth];
     [self.highlightedMask fillSuperview];
-    [self.favoritedIcon anchorTopLeftWithLeftPadding:2 topPadding:2 width:40 height:40];
+    [self.favoritedIcon anchorTopLeftWithLeftPadding:2 topPadding:2 width:kFavoriteIconSize height:kFavoriteIconSize];
 }
 
 - (void)setComic:(Comic *)comic {
