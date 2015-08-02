@@ -35,7 +35,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
     [self setupThirdPartyLibraries];
     [self setupPushNotifications];
 
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
+    self.window.rootViewController = [self generateAppRootViewController];
     [self.window makeKeyAndVisible];
 
     return YES;
@@ -75,6 +75,19 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     [[DataManager sharedInstance] performBackgroundFetchWithCompletionHandler:completionHandler];
+}
+
+
+#pragma mark - App Navigation Hierarchy
+
+- (UITabBarController *)generateAppRootViewController {
+    UINavigationController *comicListNC = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
+    UINavigationController *aboutNC = [[UINavigationController alloc] initWithRootViewController:[UIViewController new]];
+
+    UITabBarController *tabBarController = [UITabBarController new];
+    tabBarController.viewControllers = @[comicListNC, aboutNC];
+
+    return tabBarController;
 }
 
 @end

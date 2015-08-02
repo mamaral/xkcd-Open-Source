@@ -39,6 +39,18 @@
     return [UIImage imageNamed:kDefaultBackImageName];
 }
 
++ (UIImage *)comicListTabBarImage {
+    return [UIImage imageNamed:kDefaultBackImageName];
+}
+
++ (UIImage *)favoritesTabBarImage {
+    return [UIImage imageNamed:kDefaultBackImageName];
+}
+
++ (UIImage *)aboutTabBarImage {
+    return [UIImage imageNamed:kDefaultBackImageName];
+}
+
 
 #pragma mark - CALayer schtuff
 

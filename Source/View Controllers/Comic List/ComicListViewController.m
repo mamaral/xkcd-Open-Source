@@ -17,6 +17,7 @@
 #import "ComicViewController.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
+static NSString * const kComicListTabBarTitle = @"Explore";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
 
 @interface ComicListViewController ()
@@ -38,10 +39,13 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     [super viewDidLoad];
 
     self.title = kComicListTitle;
-    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.navigationController.title = kComicListTabBarTitle;
+    self.navigationController.tabBarItem.image = [ThemeManager comicListTabBarImage];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationController.navigationBar.backIndicatorImage = [ThemeManager backImage];
     self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [ThemeManager backImage];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.hidesBottomBarWhenPushed = YES;
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
 

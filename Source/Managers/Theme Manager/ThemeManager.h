@@ -32,6 +32,9 @@ static CGFloat const kDefaultParallaxValue = 10.0;
 
 + (UIImage *)loadingImage;
 + (UIImage *)backImage;
++ (UIImage *)comicListTabBarImage;
++ (UIImage *)favoritesTabBarImage;
++ (UIImage *)aboutTabBarImage;
 
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color;
 + (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity;
