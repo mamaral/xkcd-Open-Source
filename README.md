@@ -10,16 +10,6 @@
 ![portrait](Screenshots/demo.png)
 ![landscape](Screenshots/demo_landscape.png)
 
-# Features include:
-
-- Notifications when new comics are released
-- Search for your favorite comics by text or number
-- Maximum GMOs
-- Increased meta
-- Optimized electron-per-pixel count
-- Quantum entanglement
-- The most skeptical algorithms
-- Now with ***even more*** Pizza
 
 ## Architecture
 
@@ -43,17 +33,22 @@
 - [x] Code coverage > 50%
 - [x] Code coverage > 75%
 - [ ] Code coverage == 100%
-- [ ] Favoriting?
+- [ ] Favoriting
 - [ ] Social sharing
+- [ ] Back and next movement between comics
+- [ ] View a random comic
 - [ ] ***About*** section featuring contributors
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
-- v1.2 ***(Submitted to Apple)***
+- v2.0 ***(In development)***
+   - Add some of the features from the TODO list.
+
+- v1.2 ***(Available for download in the App Store)***
  	- Visual indication tht comics are read vs. unread
  	- Improved comic view layout so some comics won't be cut off by the alt button
 
-- v1.1 ***(Available for download in the App Store)***
+- v1.1
 	- Improved scrolling performance
 	- Search *beta*
 	- Silent push notifications w/ vibration & app badge
