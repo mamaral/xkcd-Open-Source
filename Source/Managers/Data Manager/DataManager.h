@@ -7,7 +7,6 @@
 //
 
 #import <Realm.h>
-#import "AppDelegate.h"
 #import "Comic.h"
 
 static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
