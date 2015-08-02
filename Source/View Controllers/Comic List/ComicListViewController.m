@@ -149,7 +149,10 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 #pragma mark - Actions
 
 - (void)showComic:(Comic *)comic atIndexPath:(NSIndexPath *)indexPath {
-    [self.navigationController pushViewController:[[ComicViewController alloc] initWithComic:comic] animated:YES];
+    ComicViewController *comicVC = [ComicViewController new];
+    comicVC.comic = comic;
+
+    [self.navigationController pushViewController:comicVC animated:YES];
 
 
     if (!comic.viewed) {

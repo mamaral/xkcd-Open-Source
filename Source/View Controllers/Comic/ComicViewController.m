@@ -28,10 +28,10 @@ static CGFloat const kAltButtonPadding = 25.0;
 
 @implementation ComicViewController
 
-- (instancetype)initWithComic:(Comic *)comic {
+- (instancetype)init {
     self = [super init];
 
-    self.comic = comic;
+    [self createViewComponents];
 
     return self;
 }
@@ -39,12 +39,11 @@ static CGFloat const kAltButtonPadding = 25.0;
 
 #pragma mark - View life cycle
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)viewDidLoad {
+    [super viewDidLoad];
 
     self.edgesForExtendedLayout = UIRectEdgeNone;
-
-    [self createViewComponents];
+    self.view.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -66,9 +65,6 @@ static CGFloat const kAltButtonPadding = 25.0;
 }
 
 - (void)createViewComponents {
-    self.title = self.comic.safeTitle;
-    self.view.backgroundColor = [UIColor whiteColor];
-    
     self.containerView = [UIScrollView new];
     self.containerView.backgroundColor = [UIColor whiteColor];
     self.containerView.scrollEnabled = YES;
@@ -80,7 +76,6 @@ static CGFloat const kAltButtonPadding = 25.0;
     self.comicImageView = [UIImageView new];
     self.comicImageView.contentMode = UIViewContentModeScaleAspectFit;
     self.comicImageView.userInteractionEnabled = YES;
-    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:self.comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
     [self.containerView addSubview:self.comicImageView];
 
     self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -118,6 +113,17 @@ static CGFloat const kAltButtonPadding = 25.0;
     if (self.altView.isVisible) {
         [self.altView layoutFacade];
     }
+}
+
+
+#pragma mark - Setters
+
+- (void)setComic:(Comic *)comic {
+    _comic = comic;
+
+    self.title = comic.safeTitle;
+
+    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
 }
 
 

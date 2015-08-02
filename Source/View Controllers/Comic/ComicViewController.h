@@ -23,6 +23,4 @@
 
 @property (nonatomic, strong) UIButton *favoriteButton;
 
-- (instancetype)initWithComic:(Comic *)comic;
-
 @end
