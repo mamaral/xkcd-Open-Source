@@ -20,6 +20,8 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
 static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 
+static CGFloat const kRandomComicButtonSize = 60.0;
+
 @interface ComicListViewController ()
 
 @end
@@ -66,6 +68,18 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
     self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
     [self.collectionView addSubview:self.noResultsLabel];
 
+    self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
+    self.randomComicButton.imageEdgeInsets = UIEdgeInsetsMake(1, 1, 1, 1);
+    self.randomComicButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    self.randomComicButton.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    [self.randomComicButton addTarget:self action:@selector(showRandomComic) forControlEvents:UIControlEventTouchUpInside];
+    [self.randomComicButton setBackgroundColor:[ThemeManager xkcdLightBlue]];
+    [self.view addSubview:self.randomComicButton];
+
+    [ThemeManager addBorderToLayer:self.randomComicButton.layer radius:kRandomComicButtonSize / 2.0 color:[UIColor whiteColor]];
+    [ThemeManager addShadowToLayer:self.randomComicButton.layer radius:10.0 opacity:0.4];
+
     // Initially we want to grab what we have stored.
     [self loadComicsFromDB];
 
@@ -111,6 +125,8 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
     if (!self.noResultsLabel.isHidden) {
         [self.noResultsLabel anchorTopCenterFillingWidthWithLeftAndRightPadding:15 topPadding:15 height:20];
     }
+
+    [self.randomComicButton anchorBottomRightWithRightPadding:15 bottomPadding:15 width:kRandomComicButtonSize height:kRandomComicButtonSize];
 }
 
 
@@ -127,6 +143,28 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 
     // Reload the collection view.
     [self.collectionView reloadData];
+}
+
+
+#pragma mark - Actions
+
+- (void)showComic:(Comic *)comic atIndexPath:(NSIndexPath *)indexPath {
+    [self.navigationController pushViewController:[[ComicViewController alloc] initWithComic:comic] animated:YES];
+
+
+    if (!comic.viewed) {
+        [[DataManager sharedInstance] markComicViewed:comic];
+
+        if (indexPath) {
+            [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+        }
+    }
+}
+
+- (void)showRandomComic {
+    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
+
+    [self showComic:[[DataManager sharedInstance] randomComic] atIndexPath:nil];
 }
 
 
@@ -152,14 +190,7 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Comic *comic = self.comics[indexPath.item];
 
-    [self.navigationController pushViewController:[[ComicViewController alloc] initWithComic:comic] animated:YES];
-
-
-    if (!comic.viewed) {
-        [[DataManager sharedInstance] markComicViewed:comic];
-
-        [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
-    }
+    [self showComic:comic atIndexPath:indexPath];
 }
 
 

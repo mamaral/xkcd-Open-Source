@@ -11,6 +11,13 @@
 static NSString * const kXKCDFontName = @"xkcd-Regular";
 
 static NSString * const kDefaultLoadingImageName = @"loading";
+static NSString * const kRandomImageName1 = @"r1";
+static NSString * const kRandomImageName2 = @"r2";
+static NSString * const kRandomImageName3 = @"r3";
+static NSString * const kRandomImageName4 = @"r4";
+static NSString * const kRandomImageName5 = @"r5";
+static NSString * const kRandomImageName6 = @"r6";
+static NSString * const kDefaultRandomImageName = @"r1";
 static NSString * const kDefaultBackImageName = @"back";
 static NSString * const kDefaultFavoriteImageName = @"favorite";
 
@@ -32,6 +39,7 @@ static CGFloat const kDefaultParallaxValue = 10.0;
 + (UIColor *)comicViewedColor;
 
 + (UIImage *)loadingImage;
++ (UIImage *)randomImage;
 + (UIImage *)backImage;
 + (UIImage *)favoriteImage;
 

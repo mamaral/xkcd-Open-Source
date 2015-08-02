@@ -17,6 +17,8 @@
 @property (nonatomic, strong) UIBarButtonItem *searchButton;
 @property (nonatomic, strong) UIBarButtonItem *filterFavoritesButton;
 
+@property (nonatomic, strong) UIButton *randomComicButton;
+
 @property (nonatomic) BOOL searching;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UILabel *noResultsLabel;

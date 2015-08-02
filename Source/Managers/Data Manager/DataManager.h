@@ -51,4 +51,10 @@ static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 
 - (NSString *)tokenStringFromData:(NSData *)data;
 
+
+#pragma mark - Randomization
+
+- (NSInteger)randomNumberBetweenMin:(NSUInteger)min andMax:(NSUInteger)max;
+- (Comic *)randomComic;
+
 @end

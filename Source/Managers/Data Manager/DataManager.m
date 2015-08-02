@@ -199,4 +199,17 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     return token;
 }
 
+
+#pragma mark - Randomization
+
+- (NSInteger)randomNumberBetweenMin:(NSUInteger)min andMax:(NSUInteger)max {
+    return (min + arc4random_uniform((u_int32_t)max - (u_int32_t)min + 1));
+}
+
+- (Comic *)randomComic {
+    RLMResults *allComics = [self allSavedComics];
+    NSInteger randomIndex = [self randomNumberBetweenMin:0 andMax:allComics.count - 1];
+    return allComics[randomIndex];
+}
+
 @end

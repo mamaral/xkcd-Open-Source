@@ -7,6 +7,7 @@
 //
 
 #import "ThemeManager.h"
+#import "DataManager.h"
 
 @implementation ThemeManager
 
@@ -33,6 +34,12 @@
 
 + (UIImage *)loadingImage {
     return [UIImage imageNamed:kDefaultLoadingImageName];
+}
+
++ (UIImage *)randomImage {
+    NSInteger randomNumber = [[DataManager sharedInstance] randomNumberBetweenMin:1 andMax:6];
+    NSString *randomImageName = [NSString stringWithFormat:@"r%ld", randomNumber];
+    return [UIImage imageNamed:randomImageName] ?: [UIImage imageNamed:kDefaultRandomImageName];
 }
 
 + (UIImage *)backImage {
