@@ -60,6 +60,9 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
     self.highlightedMask.backgroundColor = [UIColor blackColor];
     self.highlightedMask.alpha = 0.0;
     [self.containerView addSubview:self.highlightedMask];
+
+    self.favoritedIcon = [[UIImageView alloc] initWithImage:[ThemeManager favoriteImage]];
+    [self.contentView addSubview:self.favoritedIcon];
 }
 
 - (void)layoutSubviews {
@@ -70,6 +73,7 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
     [self.maskView fillSuperview];
     [self.numberLabel anchorBottomRightWithRightPadding:4 bottomPadding:4 width:kComicCellNumberLabelWidth height:kComicCellNumberLabelWidth];
     [self.highlightedMask fillSuperview];
+    [self.favoritedIcon anchorTopLeftWithLeftPadding:2 topPadding:2 width:40 height:40];
 }
 
 - (void)setComic:(Comic *)comic {
@@ -80,6 +84,7 @@ static CGFloat const kComicCellNumberLabelWidth = 35.0;
     self.maskView.alpha = comic.viewed ? 1.0 : 0.0;
     self.numberLabel.backgroundColor = comic.viewed ? [ThemeManager comicViewedColor] : [ThemeManager xkcdLightBlue];
     self.numberLabel.text = [NSString stringWithFormat:@"%ld", (long)comic.num];
+    self.favoritedIcon.hidden = !comic.favorite;
 }
 
 - (void)setHighlighted:(BOOL)highlighted {

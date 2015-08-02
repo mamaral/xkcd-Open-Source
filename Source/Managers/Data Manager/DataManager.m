@@ -10,7 +10,7 @@
 #import "RequestManager.h"
 #import <GTTracker.h>
 
-static NSInteger const kCurrentSchemaVersion = 1;
+static NSInteger const kCurrentSchemaVersion = 2;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 @implementation DataManager {
@@ -68,6 +68,12 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     }];
 }
 
+- (void)markComic:(Comic *)comic favorited:(BOOL)favorited {
+    [self.realm transactionWithBlock:^{
+        comic.favorite = favorited;
+    }];
+}
+
 
 #pragma mark - Latest comic info
 
@@ -112,6 +118,10 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
     return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingProperty:@"num" ascending:NO];
+}
+
+- (RLMResults *)allFavorites {
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]] sortedResultsUsingProperty:@"num" ascending:NO];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {

@@ -21,6 +21,8 @@
 @property (nonatomic, strong) UIButton *showAltButton;
 @property (nonatomic, strong) AltView *altView;
 
+@property (nonatomic, strong) UIButton *favoriteButton;
+
 - (instancetype)initWithComic:(Comic *)comic;
 
 @end

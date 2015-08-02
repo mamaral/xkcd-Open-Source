@@ -39,6 +39,7 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 @property NSString *formattedDateString;
 @property CGFloat aspectRatio;
 @property BOOL viewed;
+@property BOOL favorite;
 
 
 #pragma mark - Initialization

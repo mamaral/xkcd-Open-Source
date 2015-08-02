@@ -18,6 +18,7 @@
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
+static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 
 @interface ComicListViewController ()
 
@@ -45,8 +46,12 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
 
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[ThemeManager favoriteImage] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] landscapeImagePhone:nil style:UIBarButtonItemStylePlain target:self action:@selector(toggleFilterFavorites:)];
+    self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
+    self.navigationItem.leftBarButtonItem = self.searchButton;
+
+    self.filterFavoritesButton = [[UIBarButtonItem alloc] initWithImage:[[ThemeManager favoriteImage] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] landscapeImagePhone:nil style:UIBarButtonItemStylePlain target:self action:@selector(toggleFilterFavorites:)];
+    self.filterFavoritesButton.imageInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+    self.navigationItem.rightBarButtonItem = self.filterFavoritesButton;
 
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
@@ -71,11 +76,18 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    // If we don't have any, it's the first launch - let's show the loading view
+    // If we don't have any comics and we're not filtering/searching, it's the first launch - let's show the loading view
     // and wait for the data manager to tell us new comics are available.
-    if (!self.searching && self.comics.count == 0 && ![LoadingView isVisible]) {
+    if (!self.searching && self.comics.count == 0 && ![LoadingView isVisible] && !self.filteringFavorites) {
         [LoadingView showInView:self.view];
     }
+
+    // If we're filtering favorites, fetch an updated list just in case something was unfavorited.
+    if (self.filteringFavorites) {
+        [self filterFavorites];
+    }
+
+    [self.collectionView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -179,54 +191,62 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 }
 
 
-#pragma mark - Searching
+#pragma mark - Searching and Filtering
 
 - (void)toggleSearch {
     if (!self.searching) {
+        self.searching = YES;
+        self.filteringFavorites = NO;
+
         [self enableSearch];
     }
 
     else {
-        [self cancelSearch];
+        [self cancelAllNavBarActions];
+    }
+}
+
+- (void)toggleFilterFavorites:(UIBarButtonItem *)favoritesButton {
+    if (!self.filteringFavorites) {
+        self.filteringFavorites = YES;
+        self.searching = NO;
+
+        [self filterFavorites];
+    }
+
+    else {
+        [self cancelAllNavBarActions];
     }
 }
 
 - (void)enableSearch {
-    self.searching = YES;
-
     [self.searchBar becomeFirstResponder];
 
     self.navigationItem.titleView = self.searchBar;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSearch)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAllNavBarActions)];
 }
 
-- (void)cancelSearch {
-    self.searching = NO;
-    self.searchBar.text = @"";
-    self.comics = [[DataManager sharedInstance] allSavedComics];
-    self.noResultsLabel.hidden = YES;
-
-    self.navigationItem.rightBarButtonItem = nil;
-    self.navigationItem.titleView = nil;
-
-    [self.collectionView setContentOffset:CGPointZero animated:YES];
-    [self.collectionView reloadData];
-}
-
-
-#pragma mark - UISearchBar delegate
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    NSString *searchString = searchBar.text;
+- (void)searchForComicsWithSearchString:(NSString *)searchString {
+    self.comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
 
     [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Comic List Search" action:searchString];
 
-    self.comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
+    self.noResultsLabel.text = kNoSearchResultsMessage;
 
+    [self handleSearchOrFilterComplete];
+}
+
+- (void)filterFavorites {
+    self.comics = [[DataManager sharedInstance] allFavorites];
+
+    self.noResultsLabel.text = kNoFavoritesMessage;
+
+    [self handleSearchOrFilterComplete];
+}
+
+- (void)handleSearchOrFilterComplete {
     if (self.comics.count > 0) {
         self.noResultsLabel.hidden = YES;
-
-        [searchBar resignFirstResponder];
 
         [self.collectionView setContentOffset:CGPointZero animated:YES];
     }
@@ -239,10 +259,29 @@ static NSString * const kNoSearchResultsMessage = @"No results found...";
 }
 
 
-#pragma mark - Filtering favorites
+#pragma mark - Nav bar state
 
-- (void)toggleFilterFavorites:(UIBarButtonItem *)favoritesButton {
+- (void)cancelAllNavBarActions {
+    self.searching = NO;
+    self.filteringFavorites = NO;
+    self.searchBar.text = @"";
+    self.comics = [[DataManager sharedInstance] allSavedComics];
+    self.noResultsLabel.hidden = YES;
 
+    self.navigationItem.leftBarButtonItem = self.searchButton;
+    self.navigationItem.rightBarButtonItem = self.filterFavoritesButton;
+    self.navigationItem.titleView = nil;
+
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
+    [self.collectionView reloadData];
+}
+
+
+
+#pragma mark - UISearchBar delegate
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self searchForComicsWithSearchString:searchBar.text];
 }
 
 @end

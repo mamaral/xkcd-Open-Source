@@ -14,6 +14,9 @@
 #import "DataManager.h"
 
 static CGFloat const kComicViewControllerPadding = 10.0;
+static CGFloat const kFavoritedButtonSize = 50.0;
+static CGFloat const kFavoriteButtonPadding = 20.0;
+static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 static CGFloat const kAltButtonSize = 40.0;
 static CGFloat const kAltButtonPadding = 25.0;
 
@@ -80,6 +83,13 @@ static CGFloat const kAltButtonPadding = 25.0;
     [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:self.comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
     [self.containerView addSubview:self.comicImageView];
 
+    self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.favoriteButton.adjustsImageWhenHighlighted = NO;
+    [self.favoriteButton setImage:[ThemeManager favoriteImage] forState:UIControlStateNormal];
+    [self.favoriteButton addTarget:self action:@selector(toggleComicFavorited) forControlEvents:UIControlEventTouchDown];
+    [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
+    [self.view addSubview:self.favoriteButton];
+
     self.showAltButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.showAltButton.titleLabel.font = [ThemeManager xkcdFontWithSize:22];
     [self.showAltButton setBackgroundColor:[ThemeManager xkcdLightBlue]];
@@ -101,6 +111,7 @@ static CGFloat const kAltButtonPadding = 25.0;
 - (void)layoutFacade {
     [self.containerView fillSuperview];
     self.containerView.contentSize = self.containerView.frame.size;
+    [self.favoriteButton anchorBottomLeftWithLeftPadding:kFavoriteButtonPadding bottomPadding:kFavoriteButtonPadding width:kFavoritedButtonSize height:kFavoritedButtonSize];
     [self.showAltButton anchorBottomRightWithRightPadding:kAltButtonPadding bottomPadding:kAltButtonPadding width:kAltButtonSize height:kAltButtonSize];
     [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.showAltButton.yMin - (2 * kComicViewControllerPadding)];
 
@@ -123,6 +134,17 @@ static CGFloat const kAltButtonPadding = 25.0;
     [self.altView dismissWithCompletion:^{
         [self.altView removeFromSuperview];
     }];
+}
+
+
+#pragma mark - Favorite
+
+- (void)toggleComicFavorited {
+    BOOL isNowFavorited = !self.comic.favorite;
+
+    [[DataManager sharedInstance] markComic:self.comic favorited:isNowFavorited];
+
+    [self.favoriteButton setAlpha:isNowFavorited ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
 }
 
 
