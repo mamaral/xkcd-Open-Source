@@ -46,6 +46,9 @@ static CGFloat const kAltViewPadding = 10.0;
     [self addSubview:self.dateLabel];
 }
 
+
+#pragma mark - Layout
+
 - (void)layoutFacade {
     CGFloat padding = CGRectGetWidth(self.superview.frame) * 0.1;
 
@@ -84,7 +87,9 @@ static CGFloat const kAltViewPadding = 10.0;
 
 #pragma mark - Showing and hiding
 
-- (void)show {
+- (void)showInView:(UIView *)superview {
+    [superview addSubview:self];
+
     [self layoutFacade];
     self.isVisible = YES;
 
@@ -93,14 +98,21 @@ static CGFloat const kAltViewPadding = 10.0;
     }];
 }
 
-- (void)dismissWithCompletion:(dispatch_block_t)completion {
+- (void)dismiss {
     [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         self.alpha = 0.0;
     } completion:^(BOOL finished) {
-        completion();
+        [self removeFromSuperview];
 
         self.isVisible = NO;
     }];
+}
+
+
+#pragma mark - Touch handling
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self dismiss];
 }
 
 @end

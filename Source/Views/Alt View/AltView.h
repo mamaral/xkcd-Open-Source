@@ -20,7 +20,7 @@
 @property (nonatomic) BOOL isVisible;
 
 - (void)layoutFacade;
-- (void)show;
-- (void)dismissWithCompletion:(dispatch_block_t)completion;
+- (void)showInView:(UIView *)superview;
+- (void)dismiss;
 
 @end

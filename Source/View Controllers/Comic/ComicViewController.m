@@ -146,14 +146,11 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     if (!self.altView.isVisible) {
         _viewedAlt = YES;
 
-        [self.view addSubview:self.altView];
-        [self.altView show];
+        [self.altView showInView:self.view];
     }
 
     else {
-        [self.altView dismissWithCompletion:^{
-            [self.altView removeFromSuperview];
-        }];
+        [self.altView dismiss];
     }
 }
 
