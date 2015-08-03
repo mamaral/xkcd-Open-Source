@@ -48,8 +48,9 @@
    - Fixed a potential issue with comics not loading on the first launch
 
 - v1.2 ***(Available for download in the App Store)***
- 	- Visual indication tht comics are read vs. unread
+ 	- Visual indication that comics are read vs. unread
  	- Improved comic view layout so some comics won't be cut off by the alt button
+ 	- *Hopefully* corrected issue related to disappearing push notifications
 
 - v1.1
 	- Improved scrolling performance
