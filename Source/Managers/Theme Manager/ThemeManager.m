@@ -12,10 +12,12 @@
 @implementation ThemeManager
 
 + (void)setupTheme {
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName : [[self class] xkcdFontWithSize:kDefaultXKCDTitleFontSize]}];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor], NSFontAttributeName : [[self class] xkcdFontWithSize:kDefaultXKCDTitleFontSize]}];
     [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
 
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSFontAttributeName: [[self class] xkcdFontWithSize:kDefaultSearchBarFontSize]} forState:UIControlStateNormal];
+
+    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor], NSFontAttributeName : [[self class] xkcdFontWithSize:kDefaultXKCDTitleFontSize]} forState:UIControlStateNormal];
 
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSFontAttributeName: [[self class] xkcdFontWithSize:kDefaultSearchBarFontSize]}];
 }
