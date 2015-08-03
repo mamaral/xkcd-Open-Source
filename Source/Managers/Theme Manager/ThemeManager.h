@@ -24,7 +24,7 @@ static NSString * const kFavoriteOffImageName = @"favorite_off";
 static NSString * const kPrevImageName = @"prev";
 static NSString * const kNextImageName = @"next";
 
-static CGFloat const kDefaultXKCDTitleFontSize = 22.0;
+static CGFloat const kDefaultXKCDTitleFontSize = 20.0;
 static CGFloat const kDefaultSearchBarFontSize = 12.0;
 
 static CGFloat const kDefaultCornerRadius = 7.0;
