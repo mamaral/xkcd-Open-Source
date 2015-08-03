@@ -19,7 +19,10 @@ static NSString * const kRandomImageName5 = @"r5";
 static NSString * const kRandomImageName6 = @"r6";
 static NSString * const kDefaultRandomImageName = @"r1";
 static NSString * const kDefaultBackImageName = @"back";
-static NSString * const kDefaultFavoriteImageName = @"favorite";
+static NSString * const kFavoriteImageName = @"favorite";
+static NSString * const kFavoriteOffImageName = @"favorite_off";
+static NSString * const kPrevImageName = @"prev";
+static NSString * const kNextImageName = @"next";
 
 static CGFloat const kDefaultXKCDTitleFontSize = 22.0;
 static CGFloat const kDefaultSearchBarFontSize = 12.0;
@@ -42,6 +45,9 @@ static CGFloat const kDefaultParallaxValue = 10.0;
 + (UIImage *)randomImage;
 + (UIImage *)backImage;
 + (UIImage *)favoriteImage;
++ (UIImage *)favoriteOffImage;
++ (UIImage *)prevComicImage;
++ (UIImage *)nextComicImage;
 
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color;
 + (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity;

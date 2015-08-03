@@ -47,7 +47,19 @@
 }
 
 + (UIImage *)favoriteImage {
-    return [UIImage imageNamed:kDefaultFavoriteImageName];
+    return [UIImage imageNamed:kFavoriteImageName];
+}
+
++ (UIImage *)favoriteOffImage {
+    return [UIImage imageNamed:kFavoriteOffImageName];
+}
+
++ (UIImage *)prevComicImage {
+    return [UIImage imageNamed:kPrevImageName];
+}
+
++ (UIImage *)nextComicImage {
+    return [UIImage imageNamed:kNextImageName];
 }
 
 

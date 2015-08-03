@@ -14,7 +14,6 @@
 #import "LoadingView.h"
 #import "Comic.h"
 #import "ComicCell.h"
-#import "ComicViewController.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
@@ -51,9 +50,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
     self.navigationItem.leftBarButtonItem = self.searchButton;
 
-    self.filterFavoritesButton = [[UIBarButtonItem alloc] initWithImage:[[ThemeManager favoriteImage] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] landscapeImagePhone:nil style:UIBarButtonItemStylePlain target:self action:@selector(toggleFilterFavorites:)];
-    self.filterFavoritesButton.imageInsets = UIEdgeInsetsMake(10, 10, 10, 10);
-    self.navigationItem.rightBarButtonItem = self.filterFavoritesButton;
+    [self setFilterFavoritesButtonOn:NO];
 
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
@@ -78,7 +75,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     [self.view addSubview:self.randomComicButton];
 
     [ThemeManager addBorderToLayer:self.randomComicButton.layer radius:kRandomComicButtonSize / 2.0 color:[UIColor whiteColor]];
-    [ThemeManager addShadowToLayer:self.randomComicButton.layer radius:10.0 opacity:0.4];
+    [ThemeManager addShadowToLayer:self.randomComicButton.layer radius:10.0 opacity:0.6];
 
     // Initially we want to grab what we have stored.
     [self loadComicsFromDB];
@@ -93,7 +90,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     // If we don't have any comics and we're not filtering/searching, it's the first launch - let's show the loading view
     // and wait for the data manager to tell us new comics are available.
     if (!self.searching && self.comics.count == 0 && ![LoadingView isVisible] && !self.filteringFavorites) {
-        [LoadingView showInView:self.view];
+        [self handleInitialLoadBegan];
     }
 
     // If we're filtering favorites, fetch an updated list just in case something was unfavorited.
@@ -101,7 +98,13 @@ static CGFloat const kRandomComicButtonSize = 60.0;
         [self filterFavorites];
     }
 
-    [self.collectionView reloadData];
+    else if (!self.searching) {
+        [self loadComicsFromDB];
+    }
+
+    else {
+        [self.collectionView reloadData];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -138,11 +141,25 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 
     // If we have comics and the loading view is present, tell it to handle that we're done.
     if (self.comics.count > 0 && [LoadingView isVisible]) {
-        [LoadingView handleDoneLoading];
+        [self handleInitialLoadEnded];
     }
 
     // Reload the collection view.
     [self.collectionView reloadData];
+}
+
+- (void)handleInitialLoadBegan {
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+
+    [LoadingView showInView:self.view];
+}
+
+- (void)handleInitialLoadEnded {
+    self.navigationItem.leftBarButtonItem.enabled = YES;
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+
+    [LoadingView handleDoneLoading];
 }
 
 
@@ -150,21 +167,16 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 
 - (void)showComic:(Comic *)comic atIndexPath:(NSIndexPath *)indexPath {
     ComicViewController *comicVC = [ComicViewController new];
+    comicVC.delegate = self;
+    comicVC.allowComicNavigation = !self.searching && !self.filteringFavorites;
     comicVC.comic = comic;
 
     [self.navigationController pushViewController:comicVC animated:YES];
-
-
-    if (!comic.viewed) {
-        [[DataManager sharedInstance] markComicViewed:comic];
-
-        if (indexPath) {
-            [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
-        }
-    }
 }
 
 - (void)showRandomComic {
+    [self cancelAllNavBarActions];
+
     [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
 
     [self showComic:[[DataManager sharedInstance] randomComic] atIndexPath:nil];
@@ -225,6 +237,21 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 }
 
 
+#pragma mark - Comic view controller delegate
+
+- (Comic *)comicViewController:(ComicViewController *)comicViewController comicBeforeCurrentComic:(Comic *)currentComic {
+    NSInteger indexOfCurrentComic = [self.comics indexOfObject:currentComic];
+
+    return (indexOfCurrentComic != NSNotFound && indexOfCurrentComic > 0) ? self.comics[indexOfCurrentComic - 1] : nil;
+}
+
+- (Comic *)comicViewController:(ComicViewController *)comicViewController comicAfterCurrentComic:(Comic *)currentComic {
+    NSInteger indexOfCurrentComic = [self.comics indexOfObject:currentComic];
+
+    return (indexOfCurrentComic != NSNotFound && indexOfCurrentComic + 1 <= self.comics.count - 1) ? self.comics[indexOfCurrentComic + 1] : nil;
+}
+
+
 #pragma mark - Searching and Filtering
 
 - (void)toggleSearch {
@@ -242,6 +269,8 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 
 - (void)toggleFilterFavorites:(UIBarButtonItem *)favoritesButton {
     if (!self.filteringFavorites) {
+        [self setFilterFavoritesButtonOn:YES];
+
         self.filteringFavorites = YES;
         self.searching = NO;
 
@@ -251,6 +280,15 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     else {
         [self cancelAllNavBarActions];
     }
+}
+
+- (void)setFilterFavoritesButtonOn:(BOOL)on {
+    UIImage *favoriteButtonImage = on ? [ThemeManager favoriteImage] : [ThemeManager favoriteOffImage];
+
+    self.filterFavoritesButton = [[UIBarButtonItem alloc] initWithImage:[favoriteButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] landscapeImagePhone:nil style:UIBarButtonItemStylePlain target:self action:@selector(toggleFilterFavorites:)];
+    self.filterFavoritesButton.imageInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+
+    self.navigationItem.rightBarButtonItem = self.filterFavoritesButton;
 }
 
 - (void)enableSearch {
@@ -303,8 +341,9 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     self.noResultsLabel.hidden = YES;
 
     self.navigationItem.leftBarButtonItem = self.searchButton;
-    self.navigationItem.rightBarButtonItem = self.filterFavoritesButton;
     self.navigationItem.titleView = nil;
+
+    [self setFilterFavoritesButtonOn:NO];
 
     [self.collectionView setContentOffset:CGPointZero animated:YES];
     [self.collectionView reloadData];

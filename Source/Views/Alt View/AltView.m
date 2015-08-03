@@ -14,10 +14,8 @@ static CGFloat const kAltViewPadding = 10.0;
 
 @implementation AltView
 
-- (instancetype)initWithComic:(Comic *)comic {
+- (instancetype)init {
     self = [super init];
-
-    self.comic = comic;
 
     [self setupAltView];
 
@@ -36,7 +34,6 @@ static CGFloat const kAltViewPadding = 10.0;
     [ThemeManager addParallaxToView:self.containerView];
 
     self.altLabel = [UILabel new];
-    self.altLabel.text = self.comic.alt;
     self.altLabel.font = [ThemeManager xkcdFontWithSize:18];
     self.altLabel.textColor = [UIColor whiteColor];
     self.altLabel.textAlignment = NSTextAlignmentCenter;
@@ -46,7 +43,6 @@ static CGFloat const kAltViewPadding = 10.0;
     self.dateLabel = [UILabel new];
     self.dateLabel.font = [ThemeManager xkcdFontWithSize:18];
     self.dateLabel.textColor = [UIColor whiteColor];
-    self.dateLabel.text = self.comic.formattedDateString;
     [self addSubview:self.dateLabel];
 }
 
@@ -74,6 +70,19 @@ static CGFloat const kAltViewPadding = 10.0;
         self.altLabel.adjustsFontSizeToFitWidth = YES;
     }
 }
+
+
+#pragma mark - Setters
+
+- (void)setComic:(Comic *)comic {
+    _comic = comic;
+
+    self.altLabel.text = self.comic.alt;
+    self.dateLabel.text = self.comic.formattedDateString;
+}
+
+
+#pragma mark - Showing and hiding
 
 - (void)show {
     [self layoutFacade];
