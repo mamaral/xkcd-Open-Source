@@ -10,7 +10,7 @@
 #import "RequestManager.h"
 #import <GTTracker.h>
 
-static NSInteger const kCurrentSchemaVersion = 1;
+static NSInteger const kCurrentSchemaVersion = 2;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 @implementation DataManager {
@@ -68,6 +68,12 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     }];
 }
 
+- (void)markComic:(Comic *)comic favorited:(BOOL)favorited {
+    [self.realm transactionWithBlock:^{
+        comic.favorite = favorited;
+    }];
+}
+
 
 #pragma mark - Latest comic info
 
@@ -112,6 +118,10 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
     return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingProperty:@"num" ascending:NO];
+}
+
+- (RLMResults *)allFavorites {
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]] sortedResultsUsingProperty:@"num" ascending:NO];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
@@ -187,6 +197,19 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     token = [token stringByReplacingOccurrencesOfString:@">" withString:@""];
     token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
     return token;
+}
+
+
+#pragma mark - Randomization
+
+- (NSInteger)randomNumberBetweenMin:(NSUInteger)min andMax:(NSUInteger)max {
+    return (min + arc4random_uniform((u_int32_t)max - (u_int32_t)min + 1));
+}
+
+- (Comic *)randomComic {
+    RLMResults *allComics = [self allSavedComics];
+    NSInteger randomIndex = [self randomNumberBetweenMin:0 andMax:allComics.count - 1];
+    return allComics[randomIndex];
 }
 
 @end

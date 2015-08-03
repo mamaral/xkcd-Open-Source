@@ -7,9 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "RequestManager.h"
 #import "ComicListViewController.h"
-#import "DataManager.h"
 #import "ThemeManager.h"
 #import <GTTracker.h>
 #import <Fabric/Fabric.h>
@@ -31,6 +29,9 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
     self.window.backgroundColor = [UIColor whiteColor];
 
     application.applicationIconBadgeNumber = 0;
+
+    self.dataManager = [DataManager sharedInstance];
+    self.requestManager = [RequestManager sharedInstance];
 
     [self setupThirdPartyLibraries];
     [self setupPushNotifications];
@@ -64,7 +65,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSString *token = [[DataManager sharedInstance] tokenStringFromData:deviceToken];
     
-    [[RequestManager sharedInstance] sendDeviceToken:token completionHandler:^(NSError *error) {
+    [self.requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
         if (error) {
             NSLog(@"Sending token to server failed with error: %@", error);
             
@@ -74,7 +75,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [[DataManager sharedInstance] performBackgroundFetchWithCompletionHandler:completionHandler];
+    [self.dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
 }
 
 @end

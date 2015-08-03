@@ -10,16 +10,6 @@
 ![portrait](Screenshots/demo.png)
 ![landscape](Screenshots/demo_landscape.png)
 
-# Features include:
-
-- Notifications when new comics are released
-- Search for your favorite comics by text or number
-- Maximum GMOs
-- Increased meta
-- Optimized electron-per-pixel count
-- Quantum entanglement
-- The most skeptical algorithms
-- Now with ***even more*** Pizza
 
 ## Architecture
 
@@ -43,18 +33,26 @@
 - [x] Code coverage > 50%
 - [x] Code coverage > 75%
 - [ ] Code coverage == 100%
-- [ ] Favoriting?
+- [x] Favoriting
 - [ ] Social sharing
+- [x] 'Next' and 'prev' movement between comics
+- [x] View a random comic
 - [ ] ***About*** section featuring contributors
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
-- v1.2 ***(Submitted to Apple)***
- 	- Visual indication thatt comics are read vs. unread
+- v2.0 ***(In development)***
+   - Added the ability to favorite a comic, which is indicated on the comic list with a pretty red heart. Along with this, you're able to toggle a filter on the comic list to see only favorites
+   - Roll-the-dice to view a random comic
+   - Navigate forward and backward through comics directly from the comic view controller
+   - Fixed a potential issue with comics not loading on the first launch
+
+- v1.2 ***(Available for download in the App Store)***
+ 	- Visual indication that comics are read vs. unread
  	- Improved comic view layout so some comics won't be cut off by the alt button
  	- *Hopefully* corrected issue related to disappearing push notifications
 
-- v1.1 ***(Available for download in the App Store)***
+- v1.1
 	- Improved scrolling performance
 	- Search *beta*
 	- Silent push notifications w/ vibration & app badge

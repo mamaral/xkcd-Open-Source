@@ -12,15 +12,29 @@
 #import "Comic.h"
 #import "AltView.h"
 
+@class ComicViewController;
+
+@protocol ComicViewControllerDelegate <NSObject>
+
+@required
+- (Comic *)comicViewController:(ComicViewController *)comicViewController comicBeforeCurrentComic:(Comic *)currentComic;
+- (Comic *)comicViewController:(ComicViewController *)comicViewController comicAfterCurrentComic:(Comic *)currentComic;
+
+@end
+
 @interface ComicViewController : UIViewController <UIScrollViewDelegate>
 
+@property (nonatomic) id<ComicViewControllerDelegate> delegate;
+
 @property (nonatomic, strong) Comic *comic;
+
+@property (nonatomic) BOOL allowComicNavigation;
+
 @property (nonatomic, strong) UIScrollView *containerView;
 @property (nonatomic, strong) UIImageView *comicImageView;
-
-@property (nonatomic, strong) UIButton *showAltButton;
 @property (nonatomic, strong) AltView *altView;
-
-- (instancetype)initWithComic:(Comic *)comic;
+@property (nonatomic, strong) UIButton *favoriteButton;
+@property (nonatomic, strong) UIButton *prevButton;
+@property (nonatomic, strong) UIButton *nextButton;
 
 @end

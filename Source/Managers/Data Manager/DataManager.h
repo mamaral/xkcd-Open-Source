@@ -7,7 +7,6 @@
 //
 
 #import <Realm.h>
-#import "AppDelegate.h"
 #import "Comic.h"
 
 static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
@@ -26,6 +25,7 @@ static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 
 - (void)saveComics:(NSArray *)comics;
 - (void)markComicViewed:(Comic *)comic;
+- (void)markComic:(Comic *)comic favorited:(BOOL)favorited;
 
 
 #pragma mark - Latest comic info
@@ -38,6 +38,7 @@ static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 
 - (RLMResults *)allSavedComics;
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString;
+- (RLMResults *)allFavorites;
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler;
 
 
@@ -49,5 +50,11 @@ static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 #pragma mark - Converting token data
 
 - (NSString *)tokenStringFromData:(NSData *)data;
+
+
+#pragma mark - Randomization
+
+- (NSInteger)randomNumberBetweenMin:(NSUInteger)min andMax:(NSUInteger)max;
+- (Comic *)randomComic;
 
 @end

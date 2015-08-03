@@ -7,14 +7,17 @@
 //
 
 #import "ThemeManager.h"
+#import "DataManager.h"
 
 @implementation ThemeManager
 
 + (void)setupTheme {
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName : [[self class] xkcdFontWithSize:kDefaultXKCDTitleFontSize]}];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor], NSFontAttributeName : [[self class] xkcdFontWithSize:kDefaultXKCDTitleFontSize]}];
     [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
 
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSFontAttributeName: [[self class] xkcdFontWithSize:kDefaultSearchBarFontSize]} forState:UIControlStateNormal];
+
+    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor], NSFontAttributeName : [[self class] xkcdFontWithSize:kDefaultXKCDTitleFontSize]} forState:UIControlStateNormal];
 
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSFontAttributeName: [[self class] xkcdFontWithSize:kDefaultSearchBarFontSize]}];
 }
@@ -35,8 +38,30 @@
     return [UIImage imageNamed:kDefaultLoadingImageName];
 }
 
++ (UIImage *)randomImage {
+    NSInteger randomNumber = [[DataManager sharedInstance] randomNumberBetweenMin:1 andMax:6];
+    NSString *randomImageName = [NSString stringWithFormat:@"r%ld", (long)randomNumber];
+    return [UIImage imageNamed:randomImageName] ?: [UIImage imageNamed:kDefaultRandomImageName];
+}
+
 + (UIImage *)backImage {
     return [UIImage imageNamed:kDefaultBackImageName];
+}
+
++ (UIImage *)favoriteImage {
+    return [UIImage imageNamed:kFavoriteImageName];
+}
+
++ (UIImage *)favoriteOffImage {
+    return [UIImage imageNamed:kFavoriteOffImageName];
+}
+
++ (UIImage *)prevComicImage {
+    return [UIImage imageNamed:kPrevImageName];
+}
+
++ (UIImage *)nextComicImage {
+    return [UIImage imageNamed:kNextImageName];
 }
 
 

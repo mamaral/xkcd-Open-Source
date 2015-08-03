@@ -7,10 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DataManager.h"
+#import "RequestManager.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+
+@property (nonatomic, strong) RequestManager *requestManager;
+@property (nonatomic, strong) DataManager *dataManager;
 
 @end
 

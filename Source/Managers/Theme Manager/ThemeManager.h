@@ -11,9 +11,20 @@
 static NSString * const kXKCDFontName = @"xkcd-Regular";
 
 static NSString * const kDefaultLoadingImageName = @"loading";
+static NSString * const kRandomImageName1 = @"r1";
+static NSString * const kRandomImageName2 = @"r2";
+static NSString * const kRandomImageName3 = @"r3";
+static NSString * const kRandomImageName4 = @"r4";
+static NSString * const kRandomImageName5 = @"r5";
+static NSString * const kRandomImageName6 = @"r6";
+static NSString * const kDefaultRandomImageName = @"r1";
 static NSString * const kDefaultBackImageName = @"back";
+static NSString * const kFavoriteImageName = @"favorite";
+static NSString * const kFavoriteOffImageName = @"favorite_off";
+static NSString * const kPrevImageName = @"prev";
+static NSString * const kNextImageName = @"next";
 
-static CGFloat const kDefaultXKCDTitleFontSize = 22.0;
+static CGFloat const kDefaultXKCDTitleFontSize = 20.0;
 static CGFloat const kDefaultSearchBarFontSize = 12.0;
 
 static CGFloat const kDefaultCornerRadius = 7.0;
@@ -31,7 +42,12 @@ static CGFloat const kDefaultParallaxValue = 10.0;
 + (UIColor *)comicViewedColor;
 
 + (UIImage *)loadingImage;
++ (UIImage *)randomImage;
 + (UIImage *)backImage;
++ (UIImage *)favoriteImage;
++ (UIImage *)favoriteOffImage;
++ (UIImage *)prevComicImage;
++ (UIImage *)nextComicImage;
 
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color;
 + (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity;

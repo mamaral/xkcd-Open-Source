@@ -19,10 +19,8 @@
 
 @property (nonatomic) BOOL isVisible;
 
-- (instancetype)initWithComic:(Comic *)comic;
-
 - (void)layoutFacade;
-- (void)show;
-- (void)dismissWithCompletion:(dispatch_block_t)completion;
+- (void)showInView:(UIView *)superview;
+- (void)dismiss;
 
 @end

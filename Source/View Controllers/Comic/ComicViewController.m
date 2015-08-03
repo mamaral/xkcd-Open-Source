@@ -12,10 +12,12 @@
 #import <GTTracker.h>
 #import "ThemeManager.h"
 #import "DataManager.h"
+#import <SDWebImagePrefetcher.h>
 
 static CGFloat const kComicViewControllerPadding = 10.0;
-static CGFloat const kAltButtonSize = 40.0;
-static CGFloat const kAltButtonPadding = 25.0;
+static CGFloat const kBottomButtonPadding = 10.0;
+static CGFloat const kBottomButtonSize = 50.0;
+static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 @interface ComicViewController () {
     BOOL _viewedAlt;
@@ -25,10 +27,10 @@ static CGFloat const kAltButtonPadding = 25.0;
 
 @implementation ComicViewController
 
-- (instancetype)initWithComic:(Comic *)comic {
+- (instancetype)init {
     self = [super init];
 
-    self.comic = comic;
+    [self createViewComponents];
 
     return self;
 }
@@ -36,12 +38,12 @@ static CGFloat const kAltButtonPadding = 25.0;
 
 #pragma mark - View life cycle
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)viewDidLoad {
+    [super viewDidLoad];
 
     self.edgesForExtendedLayout = UIRectEdgeNone;
-
-    [self createViewComponents];
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(toggleAltView)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -63,9 +65,6 @@ static CGFloat const kAltButtonPadding = 25.0;
 }
 
 - (void)createViewComponents {
-    self.title = self.comic.safeTitle;
-    self.view.backgroundColor = [UIColor whiteColor];
-    
     self.containerView = [UIScrollView new];
     self.containerView.backgroundColor = [UIColor whiteColor];
     self.containerView.scrollEnabled = YES;
@@ -77,32 +76,39 @@ static CGFloat const kAltButtonPadding = 25.0;
     self.comicImageView = [UIImageView new];
     self.comicImageView.contentMode = UIViewContentModeScaleAspectFit;
     self.comicImageView.userInteractionEnabled = YES;
-    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:self.comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
     [self.containerView addSubview:self.comicImageView];
 
-    self.showAltButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.showAltButton.titleLabel.font = [ThemeManager xkcdFontWithSize:22];
-    [self.showAltButton setBackgroundColor:[ThemeManager xkcdLightBlue]];
-    [self.showAltButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.showAltButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5] forState:UIControlStateHighlighted];
-    [self.showAltButton setTitle:@"..." forState:UIControlStateNormal];
-    [self.showAltButton addTarget:self action:@selector(showAltView) forControlEvents:UIControlEventTouchDown];
-    [self.showAltButton addTarget:self action:@selector(dismissAltView) forControlEvents:UIControlEventTouchUpInside];
-    [self.showAltButton addTarget:self action:@selector(dismissAltView) forControlEvents:UIControlEventTouchUpOutside];
-    [self.view addSubview:self.showAltButton];
+    self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.favoriteButton.adjustsImageWhenHighlighted = NO;
+    [self.favoriteButton setImage:[ThemeManager favoriteImage] forState:UIControlStateNormal];
+    [self.favoriteButton addTarget:self action:@selector(toggleComicFavorited) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:self.favoriteButton];
 
-    [ThemeManager addBorderToLayer:self.showAltButton.layer radius:kAltButtonSize / 2.0 color:[UIColor whiteColor]];
-    [ThemeManager addShadowToLayer:self.showAltButton.layer radius:10.0 opacity:0.4];
+    self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.prevButton.adjustsImageWhenHighlighted = NO;
+    [self.prevButton setImage:[ThemeManager prevComicImage] forState:UIControlStateNormal];
+    [self.prevButton addTarget:self action:@selector(showPrev) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:self.prevButton];
 
-    self.altView = [[AltView alloc] initWithComic:self.comic];
+    self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.nextButton.adjustsImageWhenHighlighted = NO;
+    [self.nextButton setImage:[ThemeManager nextComicImage] forState:UIControlStateNormal];
+    [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:self.nextButton];
+
+    self.altView = [AltView new];
     self.altView.alpha = 0.0;
 }
 
 - (void)layoutFacade {
     [self.containerView fillSuperview];
     self.containerView.contentSize = self.containerView.frame.size;
-    [self.showAltButton anchorBottomRightWithRightPadding:kAltButtonPadding bottomPadding:kAltButtonPadding width:kAltButtonSize height:kAltButtonSize];
-    [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.showAltButton.yMin - (2 * kComicViewControllerPadding)];
+
+    [self.prevButton anchorBottomLeftWithLeftPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
+    [self.favoriteButton anchorBottomCenterWithBottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
+    [self.nextButton anchorBottomRightWithRightPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
+
+    [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.favoriteButton.yMin - (2 * kComicViewControllerPadding)];
 
     if (self.altView.isVisible) {
         [self.altView layoutFacade];
@@ -110,19 +116,53 @@ static CGFloat const kAltButtonPadding = 25.0;
 }
 
 
-#pragma mark - Alt
+#pragma mark - Setters
 
-- (void)showAltView {
-    _viewedAlt = YES;
+- (void)setComic:(Comic *)comic {
+    _comic = comic;
 
-    [self.view addSubview:self.altView];
-    [self.altView show];
+    if (!self.comic.viewed) {
+        [[DataManager sharedInstance] markComicViewed:comic];
+    }
+
+    self.title = comic.safeTitle;
+    self.containerView.zoomScale = 1.0;
+
+    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
+    [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
+
+    self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
+    self.nextButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicAfterCurrentComic:comic] == nil;
+
+    [self prefetchImagesForComicsBeforeAndAfter];
+
+    self.altView.comic = comic;
 }
 
-- (void)dismissAltView {
-    [self.altView dismissWithCompletion:^{
-        [self.altView removeFromSuperview];
-    }];
+
+#pragma mark - Alt
+
+- (void)toggleAltView {
+    if (!self.altView.isVisible) {
+        _viewedAlt = YES;
+
+        [self.altView showInView:self.view];
+    }
+
+    else {
+        [self.altView dismiss];
+    }
+}
+
+
+#pragma mark - Favorite
+
+- (void)toggleComicFavorited {
+    BOOL isNowFavorited = !self.comic.favorite;
+
+    [[DataManager sharedInstance] markComic:self.comic favorited:isNowFavorited];
+
+    [self.favoriteButton setAlpha:isNowFavorited ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
 }
 
 
@@ -130,6 +170,30 @@ static CGFloat const kAltButtonPadding = 25.0;
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.comicImageView;
+}
+
+
+#pragma mark - Navigation between comics
+
+- (void)showPrev {
+    self.comic = [self.delegate comicViewController:self comicBeforeCurrentComic:self.comic];
+}
+
+- (void)showNext {  
+    self.comic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];
+}
+
+- (void)prefetchImagesForComicsBeforeAndAfter {
+    Comic *prevComic = [self.delegate comicViewController:self comicBeforeCurrentComic:self.comic];
+    Comic *nextComic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];
+
+    if (prevComic.imageURLString) {
+        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:@[[NSURL URLWithString:prevComic.imageURLString]]];
+    }
+
+    if (nextComic.imageURLString) {
+        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:@[[NSURL URLWithString:nextComic.imageURLString]]];
+    }
 }
 
 @end
