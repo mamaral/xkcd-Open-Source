@@ -13,6 +13,9 @@
 		2714CCBD1B05667400ADF009 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2714CCBC1B05667400ADF009 /* Images.xcassets */; };
 		2715C2EE1B090AFD00F50645 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2715C2EC1B090AFD00F50645 /* Fabric.framework */; };
 		2715C2EF1B090AFD00F50645 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2715C2ED1B090AFD00F50645 /* Crashlytics.framework */; };
+		2769EE9E1B7AC0BE004C0C44 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EE9B1B7AC0BE004C0C44 /* FBSDKCoreKit.framework */; };
+		2769EE9F1B7AC0BE004C0C44 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EE9C1B7AC0BE004C0C44 /* FBSDKLoginKit.framework */; };
+		2769EEA01B7AC0BE004C0C44 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EE9D1B7AC0BE004C0C44 /* FBSDKShareKit.framework */; };
 		277316F11B0567B300ED7978 /* RequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F01B0567B300ED7978 /* RequestManager.m */; };
 		277316F71B056A6000ED7978 /* Comic.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F61B056A6000ED7978 /* Comic.m */; };
 		277316FA1B056EAC00ED7978 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F91B056EAC00ED7978 /* DataManager.m */; };
@@ -57,6 +60,9 @@
 		2714CCBC1B05667400ADF009 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2715C2EC1B090AFD00F50645 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		2715C2ED1B090AFD00F50645 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		2769EE9B1B7AC0BE004C0C44 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../../Downloads/FacebookSDKs-iOS-20150810/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
+		2769EE9C1B7AC0BE004C0C44 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../../Downloads/FacebookSDKs-iOS-20150810/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
+		2769EE9D1B7AC0BE004C0C44 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "../../../Downloads/FacebookSDKs-iOS-20150810/FBSDKShareKit.framework"; sourceTree = "<group>"; };
 		277316EF1B0567B300ED7978 /* RequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestManager.h; sourceTree = "<group>"; };
 		277316F01B0567B300ED7978 /* RequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestManager.m; sourceTree = "<group>"; };
 		277316F51B056A6000ED7978 /* Comic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comic.h; sourceTree = "<group>"; };
@@ -98,6 +104,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				70F7092809A3BE7A7BB3041B /* libPods.a in Frameworks */,
+				2769EE9E1B7AC0BE004C0C44 /* FBSDKCoreKit.framework in Frameworks */,
+				2769EEA01B7AC0BE004C0C44 /* FBSDKShareKit.framework in Frameworks */,
+				2769EE9F1B7AC0BE004C0C44 /* FBSDKLoginKit.framework in Frameworks */,
 				2715C2EF1B090AFD00F50645 /* Crashlytics.framework in Frameworks */,
 				2715C2EE1B090AFD00F50645 /* Fabric.framework in Frameworks */,
 			);
@@ -383,6 +392,9 @@
 		AFFE359F79832C3469DCC437 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2769EE9B1B7AC0BE004C0C44 /* FBSDKCoreKit.framework */,
+				2769EE9C1B7AC0BE004C0C44 /* FBSDKLoginKit.framework */,
+				2769EE9D1B7AC0BE004C0C44 /* FBSDKShareKit.framework */,
 				673CC68C4D10E2143071F67E /* libPods.a */,
 			);
 			name = Frameworks;
@@ -705,6 +717,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"/Users/mike/Downloads/FacebookSDKs-iOS-20150810",
 				);
 				INFOPLIST_FILE = "Source/Misc/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -723,6 +736,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"/Users/mike/Downloads/FacebookSDKs-iOS-20150810",
 				);
 				INFOPLIST_FILE = "Source/Misc/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
