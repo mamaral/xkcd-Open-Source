@@ -48,7 +48,7 @@
 #pragma mark - Sharing
 
 - (NSURL *)generateShareURL {
-    return [NSURL URLWithString:[NSString stringWithFormat:@"http://xkcd.com/%ld", (long)self.num]];
+    return [NSURL URLWithString:self.num > 0 ? [NSString stringWithFormat:@"%@/%ld", kShareURLBase, (long)self.num] : kShareURLBase];
 }
 
 

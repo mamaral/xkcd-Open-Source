@@ -110,9 +110,14 @@
 
 - (void)testGenerateURLString {
     Comic *comic = [Comic new];
-    comic.num = 666;
 
     NSURL *shareURL = [comic generateShareURL];
+    XCTAssertNotNil(shareURL);
+    XCTAssert([shareURL.absoluteString isEqualToString:kShareURLBase]);
+
+    comic.num = 666;
+
+    shareURL = [comic generateShareURL];
     XCTAssertNotNil(shareURL);
     XCTAssert([shareURL.absoluteString isEqualToString:@"http://xkcd.com/666"]);
 }
