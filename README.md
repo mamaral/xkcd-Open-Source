@@ -40,7 +40,7 @@
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
-- v2.1 ***(In development)***
+- v2.1 ***(Submitted to Apple for Review)***
    - Share comics to Facebook and Twitter
 
 - v2.0 ***(Available for download in the App Store)***
