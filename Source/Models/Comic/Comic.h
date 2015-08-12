@@ -21,6 +21,8 @@ static NSString * const kMonthKey = @"month";
 static NSString * const kYearKey = @"year";
 static NSString * const kAspectRatioKey = @"img_aspect_ratio";
 
+static NSString * const kShareURLBase = @"http://xkcd.com";
+
 static NSInteger kDefaultComicNum = 0;
 static CGFloat const kDefaultAspectRatio = 1.0;
 
@@ -45,6 +47,11 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 #pragma mark - Initialization
 
 + (instancetype)comicFromDictionary:(NSDictionary *)dictionary;
+
+
+#pragma mark - Sharing
+
+- (NSURL *)generateShareURL;
 
 
 #pragma mark - Test utilities

@@ -31,22 +31,26 @@
 - [x] Favoriting
 - [x] 'Next' and 'prev' movement between comics
 - [x] View a random comic
+- [x] Social sharing
 - [x] Code coverage > 25%
 - [x] Code coverage > 50%
 - [x] Code coverage > 75%
 - [ ] Code coverage == 100%
-- [ ] Social sharing
 - [ ] ***About*** section featuring contributors
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
-- v2.0 ***(Submitted to Apple for Review)***
+- v2.1 ***(In development)***
+   - Sharing comic to Facebook
+   - Sharing comic to Twitter
+
+- v2.0 ***(Available for download in the App Store)***
    - Added the ability to favorite a comic, which is indicated on the comic list with a pretty red heart. Along with this, you're able to toggle a filter on the comic list to see only favorites
    - Roll-the-dice to view a random comic
    - Navigate forward and backward through comics directly from the comic view controller
    - Fixed a potential issue with comics not loading on the first launch
 
-- v1.2 ***(Available for download in the App Store)***
+- v1.2
  	- Visual indication that comics are read vs. unread
  	- Improved comic view layout so some comics won't be cut off by the alt button
  	- *Hopefully* corrected issue related to disappearing push notifications
@@ -72,6 +76,8 @@
 Download the app and use it - give us feedback! Leave a star on the repo, and a review on the app. If you find any bugs, have any feature requests, or want to say mean and nasty things to me, [open an issue](https://github.com/mamaral/xkcd-Open-Source/issues/new), and if you can patch the bug or add a feature and submit a pull request, even better - just make sure to follow the same code formatting/style and ***BE SURE TO ADD TESTS*** if applicable.
 
 
-## License
+## License / Attribution
 
 The source is made available under the MIT license. See LICENSE.txt for details. For information regarding xkcd licensing, [click here.](http://xkcd.com/license.html)
+
+Social sharing icons from [Zlatko Najdenovski](https://www.iconfinder.com/zlaten) via a [Creative Commons Attribution 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).

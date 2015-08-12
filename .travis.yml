@@ -1,4 +1,5 @@
 language: objective-c
+osx_image: beta-xcode6.3
 before_install: gem install cocoapods xcpretty obcd slather -N
 xcode_sdk: iphonesimulator
 xcode_workspace: xkcd Open Source.xcworkspace

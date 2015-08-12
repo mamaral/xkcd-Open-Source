@@ -44,6 +44,14 @@
     return @"comicID";
 }
 
+
+#pragma mark - Sharing
+
+- (NSURL *)generateShareURL {
+    return [NSURL URLWithString:self.num > 0 ? [NSString stringWithFormat:@"%@/%ld", kShareURLBase, (long)self.num] : kShareURLBase];
+}
+
+
 #pragma mark - Test utilities
 
 + (NSDictionary *)comicDictForTestsWithID:(NSInteger)comicID {

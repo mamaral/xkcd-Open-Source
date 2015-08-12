@@ -9,6 +9,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 #import "Comic.h"
 #import "AltView.h"
 
@@ -22,7 +23,7 @@
 
 @end
 
-@interface ComicViewController : UIViewController <UIScrollViewDelegate>
+@interface ComicViewController : UIViewController <UIScrollViewDelegate, FBSDKSharingDelegate>
 
 @property (nonatomic) id<ComicViewControllerDelegate> delegate;
 
@@ -36,5 +37,7 @@
 @property (nonatomic, strong) UIButton *favoriteButton;
 @property (nonatomic, strong) UIButton *prevButton;
 @property (nonatomic, strong) UIButton *nextButton;
+@property (nonatomic, strong) UIButton *facebookShareButton;
+@property (nonatomic, strong) UIButton *twitterShareButton;
 
 @end

@@ -13,8 +13,10 @@
 #import "ThemeManager.h"
 #import "DataManager.h"
 #import <SDWebImagePrefetcher.h>
+#import <TwitterKit/TwitterKit.h>
 
 static CGFloat const kComicViewControllerPadding = 10.0;
+static CGFloat const kBottomButtonSpacing = 25.0;
 static CGFloat const kBottomButtonPadding = 10.0;
 static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
@@ -96,6 +98,16 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.nextButton];
 
+    self.facebookShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.facebookShareButton setImage:[ThemeManager facebookImage] forState:UIControlStateNormal];
+    [self.facebookShareButton addTarget:self action:@selector(handleFacebookShare) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.facebookShareButton];
+
+    self.twitterShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.twitterShareButton setImage:[ThemeManager twitterImage] forState:UIControlStateNormal];
+    [self.twitterShareButton addTarget:self action:@selector(handleTwitterShare) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.twitterShareButton];
+
     self.altView = [AltView new];
     self.altView.alpha = 0.0;
 }
@@ -106,6 +118,8 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     [self.prevButton anchorBottomLeftWithLeftPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
     [self.favoriteButton anchorBottomCenterWithBottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
+    [self.facebookShareButton alignToTheLeftOf:self.favoriteButton matchingCenterWithRightPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.twitterShareButton alignToTheRightOf:self.favoriteButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
     [self.nextButton anchorBottomRightWithRightPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
 
     [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.favoriteButton.yMin - (2 * kComicViewControllerPadding)];
@@ -194,6 +208,49 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     if (nextComic.imageURLString) {
         [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:@[[NSURL URLWithString:nextComic.imageURLString]]];
     }
+}
+
+
+#pragma mark - Facebook Sharing
+
+- (void)handleFacebookShare {
+    FBSDKShareLinkContent *shareLinkContent = [FBSDKShareLinkContent new];
+    shareLinkContent.contentTitle = self.comic.safeTitle;
+    shareLinkContent.contentURL = [self.comic generateShareURL];
+
+    [FBSDKShareDialog showFromViewController:self withContent:shareLinkContent delegate:self];
+}
+
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Facebook" label:@"Cancel"];
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Facebook" label:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Facebook" label:@"Success"];
+}
+
+
+#pragma mark - Twitter sharing
+
+- (void)handleTwitterShare {
+    [[Twitter sharedInstance] logInWithCompletion:^(TWTRSession *session, NSError *error) {
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:@"Uh oh..." message:[NSString stringWithFormat:@"Twitter said something went wrong. Don't blame me..."] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+            return;
+        }
+
+        TWTRComposer *composer = [TWTRComposer new];
+        [composer setText:self.comic.safeTitle];
+        [composer setImage:self.comicImageView.image];
+        [composer setURL:[self.comic generateShareURL]];
+        [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Twitter" label:(result == TWTRComposerResultCancelled) ? @"Cancel" : @"Success"];
+        }];
+    }];
 }
 
 @end

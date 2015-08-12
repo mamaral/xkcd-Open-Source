@@ -64,6 +64,14 @@
     return [UIImage imageNamed:kNextImageName];
 }
 
++ (UIImage *)facebookImage {
+    return [UIImage imageNamed:kFacebookImageName];
+}
+
++ (UIImage *)twitterImage {
+    return [UIImage imageNamed:kTwitterImageName];
+}
+
 
 #pragma mark - CALayer schtuff
 
