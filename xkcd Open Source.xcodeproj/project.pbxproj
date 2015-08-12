@@ -16,6 +16,9 @@
 		2769EE9E1B7AC0BE004C0C44 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EE9B1B7AC0BE004C0C44 /* FBSDKCoreKit.framework */; };
 		2769EE9F1B7AC0BE004C0C44 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EE9C1B7AC0BE004C0C44 /* FBSDKLoginKit.framework */; };
 		2769EEA01B7AC0BE004C0C44 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EE9D1B7AC0BE004C0C44 /* FBSDKShareKit.framework */; };
+		2769EEA41B7ACFC5004C0C44 /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EEA11B7ACFC5004C0C44 /* TwitterKit.framework */; };
+		2769EEA51B7ACFC5004C0C44 /* TwitterKitResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2769EEA21B7ACFC5004C0C44 /* TwitterKitResources.bundle */; };
+		2769EEA61B7ACFC5004C0C44 /* TwitterCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EEA31B7ACFC5004C0C44 /* TwitterCore.framework */; };
 		277316F11B0567B300ED7978 /* RequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F01B0567B300ED7978 /* RequestManager.m */; };
 		277316F71B056A6000ED7978 /* Comic.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F61B056A6000ED7978 /* Comic.m */; };
 		277316FA1B056EAC00ED7978 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F91B056EAC00ED7978 /* DataManager.m */; };
@@ -63,6 +66,9 @@
 		2769EE9B1B7AC0BE004C0C44 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../../Downloads/FacebookSDKs-iOS-20150810/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		2769EE9C1B7AC0BE004C0C44 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../../Downloads/FacebookSDKs-iOS-20150810/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		2769EE9D1B7AC0BE004C0C44 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "../../../Downloads/FacebookSDKs-iOS-20150810/FBSDKShareKit.framework"; sourceTree = "<group>"; };
+		2769EEA11B7ACFC5004C0C44 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = SOURCE_ROOT; };
+		2769EEA21B7ACFC5004C0C44 /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle; sourceTree = SOURCE_ROOT; };
+		2769EEA31B7ACFC5004C0C44 /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterCore.framework; sourceTree = SOURCE_ROOT; };
 		277316EF1B0567B300ED7978 /* RequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestManager.h; sourceTree = "<group>"; };
 		277316F01B0567B300ED7978 /* RequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestManager.m; sourceTree = "<group>"; };
 		277316F51B056A6000ED7978 /* Comic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comic.h; sourceTree = "<group>"; };
@@ -108,7 +114,9 @@
 				2769EEA01B7AC0BE004C0C44 /* FBSDKShareKit.framework in Frameworks */,
 				2769EE9F1B7AC0BE004C0C44 /* FBSDKLoginKit.framework in Frameworks */,
 				2715C2EF1B090AFD00F50645 /* Crashlytics.framework in Frameworks */,
+				2769EEA61B7ACFC5004C0C44 /* TwitterCore.framework in Frameworks */,
 				2715C2EE1B090AFD00F50645 /* Fabric.framework in Frameworks */,
+				2769EEA41B7ACFC5004C0C44 /* TwitterKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,6 +381,9 @@
 		6149381D401141D78EB3E374 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2769EEA11B7ACFC5004C0C44 /* TwitterKit.framework */,
+				2769EEA21B7ACFC5004C0C44 /* TwitterKitResources.bundle */,
+				2769EEA31B7ACFC5004C0C44 /* TwitterCore.framework */,
 				2715C2EC1B090AFD00F50645 /* Fabric.framework */,
 				2715C2ED1B090AFD00F50645 /* Crashlytics.framework */,
 				09A2B0C2ACB019A4B019EC89 /* libPods.a */,
@@ -494,6 +505,7 @@
 				2773170A1B06CE1300ED7978 /* time-animated.gif in Resources */,
 				2773170D1B06D1AA00ED7978 /* xkcd.otf in Resources */,
 				27F653681B154C5C00F3377D /* silent.m4a in Resources */,
+				2769EEA51B7ACFC5004C0C44 /* TwitterKitResources.bundle in Resources */,
 				2714CCBD1B05667400ADF009 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

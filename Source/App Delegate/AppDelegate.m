@@ -12,6 +12,7 @@
 #import <GTTracker.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#import <TwitterKit/TwitterKit.h>
 
 static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
@@ -49,7 +50,7 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
 - (void)setupThirdPartyLibraries {
     [ThemeManager setupTheme];
-    [Fabric with:@[CrashlyticsKit]];
+    [Fabric with:@[CrashlyticsKit, TwitterKit]];
     [[GTTracker sharedInstance] initializeAnalyticsWithTrackingID:kAnalyticsTrackingID logLevel:kGAILogLevelError];
 }
 
