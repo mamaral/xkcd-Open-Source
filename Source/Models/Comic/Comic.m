@@ -44,6 +44,14 @@
     return @"comicID";
 }
 
+
+#pragma mark - Sharing
+
+- (NSURL *)generateShareURL {
+    return [NSURL URLWithString:[NSString stringWithFormat:@"http://xkcd.com/%ld", (long)self.num]];
+}
+
+
 #pragma mark - Test utilities
 
 + (NSDictionary *)comicDictForTestsWithID:(NSInteger)comicID {

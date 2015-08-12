@@ -108,4 +108,13 @@
     XCTAssert([comic.formattedDateString isEqualToString:@"November 10, 1988"]);
 }
 
+- (void)testGenerateURLString {
+    Comic *comic = [Comic new];
+    comic.num = 666;
+
+    NSURL *shareURL = [comic generateShareURL];
+    XCTAssertNotNil(shareURL);
+    XCTAssert([shareURL.absoluteString isEqualToString:@"http://xkcd.com/666"]);
+}
+
 @end

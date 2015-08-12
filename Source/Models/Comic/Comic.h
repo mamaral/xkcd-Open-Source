@@ -47,6 +47,11 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 + (instancetype)comicFromDictionary:(NSDictionary *)dictionary;
 
 
+#pragma mark - Sharing
+
+- (NSURL *)generateShareURL;
+
+
 #pragma mark - Test utilities
 
 + (NSDictionary *)comicDictForTestsWithID:(NSInteger)comicID;
