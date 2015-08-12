@@ -13,6 +13,7 @@
 #import "ThemeManager.h"
 #import "DataManager.h"
 #import <SDWebImagePrefetcher.h>
+#import <TwitterKit/TwitterKit.h>
 
 static CGFloat const kComicViewControllerPadding = 10.0;
 static CGFloat const kBottomButtonSpacing = 25.0;
@@ -104,7 +105,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     self.twitterShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.twitterShareButton setImage:[ThemeManager twitterImage] forState:UIControlStateNormal];
-    [self.facebookShareButton addTarget:self action:@selector(handleTwitterShare) forControlEvents:UIControlEventTouchUpInside];
+    [self.twitterShareButton addTarget:self action:@selector(handleTwitterShare) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.twitterShareButton];
 
     self.altView = [AltView new];
@@ -236,7 +237,20 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 #pragma mark - Twitter sharing
 
 - (void)handleTwitterShare {
+    [[Twitter sharedInstance] logInWithCompletion:^(TWTRSession *session, NSError *error) {
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:@"Uh oh..." message:[NSString stringWithFormat:@"Twitter said something went wrong. Don't blame me..."] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+            return;
+        }
 
+        TWTRComposer *composer = [TWTRComposer new];
+        [composer setText:self.comic.safeTitle];
+        [composer setImage:self.comicImageView.image];
+        [composer setURL:[self.comic generateShareURL]];
+        [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Twitter" label:(result == TWTRComposerResultCancelled) ? @"Cancel" : @"Success"];
+        }];
+    }];
 }
 
 @end
