@@ -177,6 +177,8 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 }
 
 - (void)showRandomComic {
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Randomification"];
+
     [self cancelAllNavBarActions];
 
     [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
