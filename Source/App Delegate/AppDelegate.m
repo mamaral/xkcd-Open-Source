@@ -28,7 +28,9 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    application.applicationIconBadgeNumber = 0;
+    if (application.applicationIconBadgeNumber > 0) {
+        application.applicationIconBadgeNumber = 0;
+    }
 
     self.dataManager = [DataManager sharedInstance];
     self.requestManager = [RequestManager sharedInstance];

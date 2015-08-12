@@ -115,7 +115,9 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     // Clear the app badge here, as we can be reasonably sure at this point anything new
     // will have been seen, and we won't run into annoying issues related to the app
     // life-cycle that we've experienced before.
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    if ([UIApplication sharedApplication].applicationIconBadgeNumber > 0) {
+        [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    }
 }
 
 - (void)viewWillLayoutSubviews {
