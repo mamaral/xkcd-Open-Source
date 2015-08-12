@@ -9,6 +9,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 #import "Comic.h"
 #import "AltView.h"
 
@@ -22,7 +23,7 @@
 
 @end
 
-@interface ComicViewController : UIViewController <UIScrollViewDelegate>
+@interface ComicViewController : UIViewController <UIScrollViewDelegate, FBSDKSharingDelegate>
 
 @property (nonatomic) id<ComicViewControllerDelegate> delegate;
 

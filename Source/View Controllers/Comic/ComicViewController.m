@@ -196,4 +196,27 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     }
 }
 
+
+#pragma mark - Facebook Sharing
+
+- (void)handleFacebookShare {
+    FBSDKShareLinkContent *shareLinkContent = [FBSDKShareLinkContent new];
+    shareLinkContent.contentTitle = self.comic.safeTitle;
+    shareLinkContent.contentURL = [self.comic generateShareURL];
+
+    [FBSDKShareDialog showFromViewController:self withContent:shareLinkContent delegate:self];
+}
+
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Facebook" label:@"Cancel"];
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Facebook" label:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Facebook" label:@"Success"];
+}
+
 @end
