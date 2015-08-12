@@ -41,8 +41,7 @@
 
 ## Version History
 - v2.1 ***(In development)***
-   - Sharing comic to Facebook
-   - Sharing comic to Twitter
+   - Share comics to Facebook and Twitter
 
 - v2.0 ***(Available for download in the App Store)***
    - Added the ability to favorite a comic, which is indicated on the comic list with a pretty red heart. Along with this, you're able to toggle a filter on the comic list to see only favorites
