@@ -1,4 +1,7 @@
 <?php
+// include auto-loader
+require __DIR__ . '/vendor/autoload.php';
+
 // load configuration
 require('config.inc.php');
 
@@ -53,41 +56,57 @@ $insertStmt->execute([ ':num' => $latestComic->num, 'json' => json_encode($lates
 
 // SWEET! ok. let's push
 
-// create APNS payload
-$payload = [
-	'aps' => [
-		'alert' => 'New comic: ' . $latestComic->title,
-		'sound' => 'silent.m4a',
-		'badge' => 1,
-		'content-available' => 1
-	]
-];
+// create an instance of the feedback class
+$feedback = new ApnsPHP_Feedback(ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION, APS_CERT_PATH);
+$feedback->connect();
 
-// encode as JSON, and fix it, since PHP likes to escape quotes, and Apple chokes on it
-$payload = str_replace("\/", "/", json_encode($payload));
+// get device tokens from feedback service
+$response = $feedback->receive();
 
-// get the payload length
-$payloadLen = strlen($payload);
+// disconnect from feedback service
+$feedback->disconnect();
 
-// set up the stream context for the TLS connection
-$context = @stream_context_create();
-@stream_context_set_option($context, 'ssl', 'local_cert', APS_CERT_PATH);
+// loop through the response
+foreach ($response as $item) {
+	// convert and quote the "before" stamp
+	$stamp = $db->quote(date('Y-m-d H:i:s', $item['timestamp']));
 
-// set up socket
-$socket = @stream_socket_client('tls://' . APS_SERVER . ':2195', $errorCode, $errorMsg, 60, STREAM_CLIENT_CONNECT, $context);
-if (!$socket) exit('APS socket failed to connect: ' . $errorMsg . ' [' . $errorCode . ']');
+	// delete it from the database if the token hasn't been updated since the timestamp of the feedback entry
+	$db->exec('delete from devices where token=' . $db->quote($item['deviceToken']) . ' and ((created_at < ' . $stamp . ' and updated_at is null) or (updated_at < ' . $stamp . '))');
+}
 
-// query for all of our device tokens
+// create an instance of the pusher
+$pusher = new ApnsPHP_Push(ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION, APS_CERT_PATH);
+$pusher->connect();
+
+// query for the tokens of all test devices
 $devicesStmt = $db->query('select token from devices');
 
 // loop through them
 while ($deviceToken = $devicesStmt->fetchColumn()) {
-	// push to the device
-	fwrite($socket, chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', $payloadLen) . $payload);
+	// create a new message
+	$message = new ApnsPHP_Message($deviceToken);
+	$message->setText('New comic: ' . $latestComic->title);
+	$message->setSound('silent.m4a');
+	$message->setBadge(1);
+	$message->setContentAvailable(true);
+
+	// add it to the queue
+	$pusher->add($message);
 }
 
-// close the socket
-fclose($socket);
+// send all the messages
+$pusher->send();
+
+// and disconnect
+$pusher->disconnect();
+
+// were there any errors?
+$errors = $pusher->getErrors();
+if (!empty($errors)) {
+	echo "Push errors:\n";
+	var_dump($errors);
+}
 
 // DONE!
 

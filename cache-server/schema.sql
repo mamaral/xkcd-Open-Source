@@ -36,6 +36,7 @@ CREATE TABLE `comics` (
 
 CREATE TABLE `devices` (
   `token` char(64) NOT NULL DEFAULT '',
+  `is_test_device` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`token`)
