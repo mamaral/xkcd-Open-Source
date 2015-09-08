@@ -87,6 +87,27 @@
     XCTAssertNotNil(randomComic);
 }
 
+- (void)testComicsMatchingSearch {
+    Comic *comic1 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:0]];
+    Comic *comic2 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:1]];
+
+    [_dataManager saveComics:@[comic1, comic2]];
+
+    RLMResults *searchResults = [_dataManager comicsMatchingSearchString:comic1.title];
+
+    XCTAssertEqual(searchResults.count, 1);
+    XCTAssertEqualObjects(searchResults.firstObject, comic1);
+
+    searchResults = [_dataManager comicsMatchingSearchString:comic2.alt];
+
+    XCTAssertEqual(searchResults.count, 1);
+    XCTAssertEqualObjects(searchResults.firstObject, comic2);
+
+    searchResults = [_dataManager comicsMatchingSearchString:@"thisshouldnotreturnresults"];
+
+    XCTAssertEqual(searchResults.count, 0);
+}
+
 - (void)testSaveComics {
     NSDictionary *comicDict1 = [Comic comicDictForTestsWithID:0];
     NSDictionary *comicDict2 = [Comic comicDictForTestsWithID:1];
