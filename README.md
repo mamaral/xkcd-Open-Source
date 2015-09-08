@@ -35,8 +35,9 @@
 - [x] Code coverage > 25%
 - [x] Code coverage > 50%
 - [x] Code coverage > 75%
-- [ ] Code coverage == 100%
-- [ ] ***About*** section featuring contributors
+- [x] Code coverage > 95%
+- [ ] ***About*** section featuring major contributors
+- [ ] Ask users ***one-time only*** to leave a rating in the app store, to get some more honest feedback
 - [ ] Getting Randall Munroe to acknowledge my existence
 
 ## Version History
