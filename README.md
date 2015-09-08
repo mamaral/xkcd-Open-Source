@@ -37,14 +37,14 @@
 - [x] Code coverage > 75%
 - [x] Code coverage > 95%
 - [ ] ***About*** section featuring major contributors
-- [ ] Ask users ***one-time only*** to leave a rating in the app store, to get some more honest feedback
-- [ ] Getting Randall Munroe to acknowledge my existence
+- [ ] Ask users ***one-time only*** to leave a review/rating in the app store, to get some more honest feedback
+- [ ] Get Randall Munroe to acknowledge my existence
 
 ## Version History
-- v2.1 ***(Submitted to Apple for Review)***
+- v2.1 ***(Available for download in the App Store)***
    - Share comics to Facebook and Twitter
 
-- v2.0 ***(Available for download in the App Store)***
+- v2.0
    - Added the ability to favorite a comic, which is indicated on the comic list with a pretty red heart. Along with this, you're able to toggle a filter on the comic list to see only favorites
    - Roll-the-dice to view a random comic
    - Navigate forward and backward through comics directly from the comic view controller
