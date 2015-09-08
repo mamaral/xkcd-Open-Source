@@ -108,6 +108,33 @@
     XCTAssertEqual(searchResults.count, 0);
 }
 
+- (void)testAllFavorites {
+    Comic *comic1 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:0]];
+    Comic *comic2 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:1]];
+
+    [_dataManager saveComics:@[comic1, comic2]];
+
+    RLMResults *allFavorites = [_dataManager allFavorites];
+
+    XCTAssertEqual(allFavorites.count, 0);
+
+    [_dataManager markComic:comic1 favorited:YES];
+    allFavorites = [_dataManager allFavorites];
+
+    XCTAssertEqual(allFavorites.count, 1);
+
+    [_dataManager markComic:comic2 favorited:YES];
+    allFavorites = [_dataManager allFavorites];
+
+    XCTAssertEqual(allFavorites.count, 2);
+
+    [_dataManager markComic:comic1 favorited:NO];
+    [_dataManager markComic:comic2 favorited:NO];
+    allFavorites = [_dataManager allFavorites];
+
+    XCTAssertEqual(allFavorites.count, 0);
+}
+
 - (void)testSaveComics {
     NSDictionary *comicDict1 = [Comic comicDictForTestsWithID:0];
     NSDictionary *comicDict2 = [Comic comicDictForTestsWithID:1];
