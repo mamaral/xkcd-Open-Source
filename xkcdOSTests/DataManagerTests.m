@@ -77,6 +77,11 @@
 }
 
 - (void)testRandomComic {
+    Comic *comic1 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:0]];
+    Comic *comic2 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:1]];
+
+    [_dataManager saveComics:@[comic1, comic2]];
+
     Comic *randomComic = [_dataManager randomComic];
 
     XCTAssertNotNil(randomComic);
@@ -286,8 +291,7 @@
 
 - (void)testTokenStringFromNilData {
     NSString *tokenString = [_dataManager tokenStringFromData:nil];
-
-    XCTAssertNil(tokenString);
+    XCTAssert([tokenString isEqualToString:@""]);
 }
 
 @end
