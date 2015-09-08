@@ -52,6 +52,30 @@
     XCTAssertNotNil(_dataManager.realm);
 }
 
+- (void)testMarkComicViewed {
+    Comic *comic = [Comic new];
+
+    XCTAssertFalse(comic.viewed);
+
+    [_dataManager markComicViewed:comic];
+
+    XCTAssertTrue(comic.viewed);
+}
+
+- (void)testMarkComicFavorited {
+    Comic *comic = [Comic new];
+
+    XCTAssertFalse(comic.favorite);
+
+    [_dataManager markComic:comic favorited:YES];
+
+    XCTAssertTrue(comic.favorite);
+
+    [_dataManager markComic:comic favorited:NO];
+
+    XCTAssertFalse(comic.favorite);
+}
+
 - (void)testSaveComics {
     NSDictionary *comicDict1 = [Comic comicDictForTestsWithID:0];
     NSDictionary *comicDict2 = [Comic comicDictForTestsWithID:1];

@@ -63,15 +63,15 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 }
 
 - (void)markComicViewed:(Comic *)comic {
-    [self.realm transactionWithBlock:^{
-        comic.viewed = YES;
-    }];
+    [self.realm beginWriteTransaction];
+    comic.viewed = YES;
+    [self.realm commitWriteTransaction];
 }
 
 - (void)markComic:(Comic *)comic favorited:(BOOL)favorited {
-    [self.realm transactionWithBlock:^{
-        comic.favorite = favorited;
-    }];
+    [self.realm beginWriteTransaction];
+    comic.favorite = favorited;
+    [self.realm commitWriteTransaction];
 }
 
 
