@@ -52,6 +52,89 @@
     XCTAssertNotNil(_dataManager.realm);
 }
 
+- (void)testMarkComicViewed {
+    Comic *comic = [Comic new];
+
+    XCTAssertFalse(comic.viewed);
+
+    [_dataManager markComicViewed:comic];
+
+    XCTAssertTrue(comic.viewed);
+}
+
+- (void)testMarkComicFavorited {
+    Comic *comic = [Comic new];
+
+    XCTAssertFalse(comic.favorite);
+
+    [_dataManager markComic:comic favorited:YES];
+
+    XCTAssertTrue(comic.favorite);
+
+    [_dataManager markComic:comic favorited:NO];
+
+    XCTAssertFalse(comic.favorite);
+}
+
+- (void)testRandomComic {
+    Comic *comic1 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:0]];
+    Comic *comic2 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:1]];
+
+    [_dataManager saveComics:@[comic1, comic2]];
+
+    Comic *randomComic = [_dataManager randomComic];
+
+    XCTAssertNotNil(randomComic);
+}
+
+- (void)testComicsMatchingSearch {
+    Comic *comic1 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:0]];
+    Comic *comic2 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:1]];
+
+    [_dataManager saveComics:@[comic1, comic2]];
+
+    RLMResults *searchResults = [_dataManager comicsMatchingSearchString:comic1.title];
+
+    XCTAssertEqual(searchResults.count, 1);
+    XCTAssertEqualObjects(searchResults.firstObject, comic1);
+
+    searchResults = [_dataManager comicsMatchingSearchString:comic2.alt];
+
+    XCTAssertEqual(searchResults.count, 1);
+    XCTAssertEqualObjects(searchResults.firstObject, comic2);
+
+    searchResults = [_dataManager comicsMatchingSearchString:@"thisshouldnotreturnresults"];
+
+    XCTAssertEqual(searchResults.count, 0);
+}
+
+- (void)testAllFavorites {
+    Comic *comic1 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:0]];
+    Comic *comic2 = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:1]];
+
+    [_dataManager saveComics:@[comic1, comic2]];
+
+    RLMResults *allFavorites = [_dataManager allFavorites];
+
+    XCTAssertEqual(allFavorites.count, 0);
+
+    [_dataManager markComic:comic1 favorited:YES];
+    allFavorites = [_dataManager allFavorites];
+
+    XCTAssertEqual(allFavorites.count, 1);
+
+    [_dataManager markComic:comic2 favorited:YES];
+    allFavorites = [_dataManager allFavorites];
+
+    XCTAssertEqual(allFavorites.count, 2);
+
+    [_dataManager markComic:comic1 favorited:NO];
+    [_dataManager markComic:comic2 favorited:NO];
+    allFavorites = [_dataManager allFavorites];
+
+    XCTAssertEqual(allFavorites.count, 0);
+}
+
 - (void)testSaveComics {
     NSDictionary *comicDict1 = [Comic comicDictForTestsWithID:0];
     NSDictionary *comicDict2 = [Comic comicDictForTestsWithID:1];
@@ -179,7 +262,7 @@
 }
 
 - (void)testDownloadLatestComics {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     NSInteger latest = 2;
     NSDictionary *comic1 = [Comic comicDictForTestsWithID:1];
@@ -207,7 +290,7 @@
 }
 
 - (void)testPerformBackgroundFetchNewData {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     NSInteger latest = 2;
     NSDictionary *comic1 = [Comic comicDictForTestsWithID:1];
@@ -227,7 +310,7 @@
 }
 
 - (void)testPerformBackgroundFetchNoNewData {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:@[] delay:0.0];
 
@@ -241,7 +324,7 @@
 }
 
 - (void)testPerformBackgroundFetchFailed {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     [[StubManager sharedInstance] stubResponseWithStatusCode:500 object:nil delay:0.0];
 
@@ -252,6 +335,16 @@
     }];
 
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testTokenStringFromData {
+    NSString *tokenString = [_dataManager tokenStringFromData:[NSData data]];
+    XCTAssertNotNil(tokenString);
+}
+
+- (void)testTokenStringFromNilData {
+    NSString *tokenString = [_dataManager tokenStringFromData:nil];
+    XCTAssert([tokenString isEqualToString:@""]);
 }
 
 @end

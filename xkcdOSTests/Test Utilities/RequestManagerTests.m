@@ -47,7 +47,7 @@
 }
 
 - (void)testDownloadComicsSinceWithComics {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     NSDictionary *comic1 = [Comic comicDictForTestsWithID:1];
     NSDictionary *comic2 = [Comic comicDictForTestsWithID:2];
@@ -70,7 +70,7 @@
 }
 
 - (void)testDownloadComicsSinceWithNoComics {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:@[] delay:0.0];
 
@@ -86,7 +86,7 @@
 }
 
 - (void)testDownloadComicsSinceWithError {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
 
@@ -101,7 +101,7 @@
 }
 
 - (void)testSendDeviceToken {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:nil delay:0.0];
 
@@ -116,7 +116,7 @@
 }
 
 - (void)testSendNilToken {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
 
@@ -126,6 +126,21 @@
         XCTAssert([error.domain isEqualToString:kRequestManagerErrorDomain]);
         XCTAssertEqual(error.code, kRequestManagerErrorCode);
         XCTAssert([error.userInfo[kRequestManagerUserInfoKey] isEqualToString:kRequestManagerNilTokenErrorMessage]);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testSendTokenWithError {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
+
+    NSString *token = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
+        XCTAssertNotNil(error);
 
         [expectation fulfill];
     }];

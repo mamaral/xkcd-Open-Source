@@ -55,6 +55,22 @@
     XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager backImage]), UIImagePNGRepresentation([UIImage imageNamed:kDefaultBackImageName]));
 }
 
+- (void)testPreviousComicImage {
+    XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager prevComicImage]), UIImagePNGRepresentation([UIImage imageNamed:kPrevImageName]));
+}
+
+- (void)testNextComicImage {
+    XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager nextComicImage]), UIImagePNGRepresentation([UIImage imageNamed:kNextImageName]));
+}
+
+- (void)testFacebookImage {
+    XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager facebookImage]), UIImagePNGRepresentation([UIImage imageNamed:kFacebookImageName]));
+}
+
+- (void)testTwitterImage {
+    XCTAssertEqualObjects(UIImagePNGRepresentation([ThemeManager twitterImage]), UIImagePNGRepresentation([UIImage imageNamed:kTwitterImageName]));
+}
+
 - (void)testAddBorderToLayer {
     UIView *testView = [UIView new];
     CGFloat radius = 10;
