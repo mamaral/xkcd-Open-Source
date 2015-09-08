@@ -76,6 +76,12 @@
     XCTAssertFalse(comic.favorite);
 }
 
+- (void)testRandomComic {
+    Comic *randomComic = [_dataManager randomComic];
+
+    XCTAssertNotNil(randomComic);
+}
+
 - (void)testSaveComics {
     NSDictionary *comicDict1 = [Comic comicDictForTestsWithID:0];
     NSDictionary *comicDict2 = [Comic comicDictForTestsWithID:1];
