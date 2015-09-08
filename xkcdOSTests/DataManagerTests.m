@@ -179,7 +179,7 @@
 }
 
 - (void)testDownloadLatestComics {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     NSInteger latest = 2;
     NSDictionary *comic1 = [Comic comicDictForTestsWithID:1];
@@ -207,7 +207,7 @@
 }
 
 - (void)testPerformBackgroundFetchNewData {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     NSInteger latest = 2;
     NSDictionary *comic1 = [Comic comicDictForTestsWithID:1];
@@ -227,7 +227,7 @@
 }
 
 - (void)testPerformBackgroundFetchNoNewData {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:@[] delay:0.0];
 
@@ -241,7 +241,7 @@
 }
 
 - (void)testPerformBackgroundFetchFailed {
-    XCTestExpectation *expectation = [self expectationWithDescription:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     [[StubManager sharedInstance] stubResponseWithStatusCode:500 object:nil delay:0.0];
 
