@@ -133,6 +133,21 @@
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
 }
 
+- (void)testSendTokenWithError {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
+
+    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
+
+    NSString *token = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
+        XCTAssertNotNil(error);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
 - (void)testErrorWithMessage {
     NSString *errorMessage = @"My error message.";
     XCTAssertNotNil([_requestManager errorWithMessage:errorMessage]);
