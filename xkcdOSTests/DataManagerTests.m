@@ -284,4 +284,10 @@
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
 }
 
+- (void)testTokenStringFromNilData {
+    NSString *tokenString = [_dataManager tokenStringFromData:nil];
+
+    XCTAssertNil(tokenString);
+}
+
 @end
