@@ -15,6 +15,18 @@
 #import <TwitterKit/TwitterKit.h>
 
 static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
+static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
+
+static NSString * const kReviewAlertActionEvent = @"Asked To Leave Review";
+static NSString * const kLeaveAReviewButtonTitle = @"Leave A Review";
+static NSString * const kRemindMeLaterButtonTitle = @"Remind Me Later";
+static NSString * const kDontAskAgainButtonTitle = @"Don't Bug Me Again!";
+
+static NSString * const kReviewAlertTitle = @"Tell us what you think!";
+static NSString * const kReviewAlertMessage = @"We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
+
+static NSTimeInterval const kReviewAlertDelay = 5.0;
+
 
 @interface AppDelegate ()
 
@@ -41,6 +53,8 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
     [self.window makeKeyAndVisible];
+
+    [self askNicelyForAReviewIfNecessary];
 
     return YES;
 }
@@ -79,6 +93,43 @@ static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     [self.dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
+}
+
+
+#pragma mark - Annoying review stuff
+
+- (void)askNicelyForAReviewIfNecessary {
+    // If we've already asked for a review in the past, don't ask again.
+    if ([[DataManager sharedInstance] hasAskedForReview]) {
+        return;
+    }
+
+    // After a short delay, ask the nice people to leave a review.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, kReviewAlertDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        UIAlertAction *goToReview = [UIAlertAction actionWithTitle:kLeaveAReviewButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:kReviewAlertActionEvent action:kLeaveAReviewButtonTitle];
+
+            NSURL *appStoreURL = [NSURL URLWithString:kAppStoreURLString];
+            [[UIApplication sharedApplication] openURL:appStoreURL];
+        }];
+
+        UIAlertAction *remindMeLater = [UIAlertAction actionWithTitle:kRemindMeLaterButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:kReviewAlertActionEvent action:kRemindMeLaterButtonTitle];
+        }];
+
+        UIAlertAction *dontAskAgain = [UIAlertAction actionWithTitle:kDontAskAgainButtonTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:kReviewAlertActionEvent action:kDontAskAgainButtonTitle];
+
+            [[DataManager sharedInstance] setHasAskedForReview:YES];
+        }];
+
+        UIAlertController *reviewAlertController = [UIAlertController alertControllerWithTitle:kReviewAlertTitle message:kReviewAlertMessage preferredStyle:UIAlertControllerStyleActionSheet];
+        [reviewAlertController addAction:goToReview];
+        [reviewAlertController addAction:remindMeLater];
+        [reviewAlertController addAction:dontAskAgain];
+
+        [self.window.rootViewController presentViewController:reviewAlertController animated:YES completion:nil];
+    });
 }
 
 @end
