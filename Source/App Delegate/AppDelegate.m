@@ -112,7 +112,7 @@ static NSTimeInterval const kReviewAlertDelay = 10.0;
             NSURL *appStoreURL = [NSURL URLWithString:kAppStoreURLString];
             [[UIApplication sharedApplication] openURL:appStoreURL];
 
-            [[DataManager sharedInstance] setHasAskedForReview:YES];
+            [self.dataManager setHasAskedForReview:YES];
         }];
 
         UIAlertAction *remindMeLater = [UIAlertAction actionWithTitle:kRemindMeLaterButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -122,7 +122,7 @@ static NSTimeInterval const kReviewAlertDelay = 10.0;
         UIAlertAction *dontAskAgain = [UIAlertAction actionWithTitle:kDontAskAgainButtonTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:kReviewAlertActionEvent action:kDontAskAgainButtonTitle];
 
-            [[DataManager sharedInstance] setHasAskedForReview:YES];
+            [self.dataManager setHasAskedForReview:YES];
         }];
 
         UIAlertController *reviewAlertController = [UIAlertController alertControllerWithTitle:kReviewAlertTitle message:kReviewAlertMessage preferredStyle:UIAlertControllerStyleActionSheet];
