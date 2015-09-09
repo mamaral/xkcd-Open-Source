@@ -111,6 +111,8 @@ static NSTimeInterval const kReviewAlertDelay = 10.0;
 
             NSURL *appStoreURL = [NSURL URLWithString:kAppStoreURLString];
             [[UIApplication sharedApplication] openURL:appStoreURL];
+
+            [[DataManager sharedInstance] setHasAskedForReview:YES];
         }];
 
         UIAlertAction *remindMeLater = [UIAlertAction actionWithTitle:kRemindMeLaterButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
