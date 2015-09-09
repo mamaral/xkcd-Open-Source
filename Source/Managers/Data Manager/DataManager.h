@@ -10,6 +10,7 @@
 #import "Comic.h"
 
 static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
+static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
 
 @interface DataManager : NSObject
 
@@ -56,5 +57,11 @@ static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 
 - (NSInteger)randomNumberBetweenMin:(NSUInteger)min andMax:(NSUInteger)max;
 - (Comic *)randomComic;
+
+
+#pragma mark - Reviews
+
+- (BOOL)hasAskedForReview;
+- (void)setHasAskedForReview:(BOOL)hasAsked;
 
 @end

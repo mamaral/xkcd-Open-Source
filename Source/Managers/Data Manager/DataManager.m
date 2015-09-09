@@ -212,4 +212,15 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     return allComics[randomIndex];
 }
 
+
+#pragma mark - Reviews
+
+- (BOOL)hasAskedForReview {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kHasAskedForReviewKey];
+}
+
+- (void)setHasAskedForReview:(BOOL)hasAsked {
+    [[NSUserDefaults standardUserDefaults] setBool:hasAsked forKey:kHasAskedForReviewKey];
+}
+
 @end
