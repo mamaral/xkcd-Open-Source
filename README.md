@@ -41,31 +41,31 @@
 - [ ] Get Randall Munroe to acknowledge my existence
 
 ## Version History
-- v2.1.1 ***(Submitted to Apple for review)***
+- **v2.1.1** ***(Submitted to Apple for review)***
    - iOS 9 networking bug fix (https://github.com/mamaral/xkcd-Open-Source/issues/29)
 
-- v2.1 (Available for download in the App Store)
+- **v2.1** (Available for download in the App Store)
    - Share comics to Facebook and Twitter
 
-- v2.0
+- **v2.0**
    - Added the ability to favorite a comic, which is indicated on the comic list with a pretty red heart. Along with this, you're able to toggle a filter on the comic list to see only favorites
    - Roll-the-dice to view a random comic
    - Navigate forward and backward through comics directly from the comic view controller
    - Fixed a potential issue with comics not loading on the first launch
 
-- v1.2
+- **v1.2**
  	- Visual indication that comics are read vs. unread
  	- Improved comic view layout so some comics won't be cut off by the alt button
  	- *Hopefully* corrected issue related to disappearing push notifications
 
-- v1.1
+- **v1.1**
 	- Improved scrolling performance
 	- Search *beta*
 	- Silent push notifications w/ vibration & app badge
 	- Bug fixes
 
-- v1.0
-	- Initial Release
+- **v1.0**
+	- Initial Release - you can read comics and stuff...
 
 
 ## Contributors
