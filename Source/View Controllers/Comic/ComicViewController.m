@@ -108,6 +108,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     self.facebookShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.facebookShareButton setImage:[ThemeManager facebookImage] forState:UIControlStateNormal];
+    
     [self.facebookShareButton addTarget:self action:@selector(handleFacebookShare) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.facebookShareButton];
 
@@ -124,13 +125,18 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.containerView fillSuperview];
     self.containerView.contentSize = self.containerView.frame.size;
     
-    [self.prevButton anchorBottomLeftWithLeftPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.favoriteButton alignToTheRightOf:self.facebookShareButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.randomComicButton alignToTheRightOf:self.favoriteButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.facebookShareButton alignToTheRightOf:self.prevButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.twitterShareButton alignToTheRightOf:self.randomComicButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.nextButton anchorBottomRightWithRightPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
-
+    float width = [[UIScreen mainScreen] bounds].size.width;
+    int buttonCount = 6;
+    float spacing = (width - (kBottomButtonSize * buttonCount)) / (buttonCount);
+    float padding = spacing / 2;
+    
+    [self.prevButton anchorBottomLeftWithLeftPadding:padding bottomPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.favoriteButton alignToTheRightOf:self.facebookShareButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.randomComicButton alignToTheRightOf:self.favoriteButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.facebookShareButton alignToTheRightOf:self.prevButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.twitterShareButton alignToTheRightOf:self.randomComicButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.nextButton anchorBottomRightWithRightPadding:padding bottomPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    
     [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.favoriteButton.yMin - (2 * kComicViewControllerPadding)];
 
     if (self.altView.isVisible) {
