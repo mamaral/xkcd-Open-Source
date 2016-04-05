@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Realm.h>
+#import <Realm/Realm.h>
 #import "ComicListFlowLayout.h"
 #import "ComicViewController.h"
 

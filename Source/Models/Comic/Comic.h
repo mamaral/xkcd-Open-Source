@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Mike Amaral. All rights reserved.
 //
 
-#import "RLMObject.h"
+#import "Realm/Realm.h"
 
 #import <UIKit/UIKit.h>
 

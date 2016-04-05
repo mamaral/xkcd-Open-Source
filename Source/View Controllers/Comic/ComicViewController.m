@@ -16,7 +16,7 @@
 #import <TwitterKit/TwitterKit.h>
 
 static CGFloat const kComicViewControllerPadding = 10.0;
-static CGFloat const kBottomButtonSpacing = 25.0;
+static CGFloat const kBottomButtonSpacing = 15.0;
 static CGFloat const kBottomButtonPadding = 10.0;
 static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
@@ -85,6 +85,14 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.favoriteButton setImage:[ThemeManager favoriteImage] forState:UIControlStateNormal];
     [self.favoriteButton addTarget:self action:@selector(toggleComicFavorited) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.favoriteButton];
+    
+    self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.randomComicButton.adjustsImageWhenHighlighted = NO;
+    self.randomComicButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    self.randomComicButton.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
+    [self.randomComicButton addTarget:self action:@selector(showRandomComic) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:self.randomComicButton];
 
     self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.prevButton.adjustsImageWhenHighlighted = NO;
@@ -115,11 +123,12 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 - (void)layoutFacade {
     [self.containerView fillSuperview];
     self.containerView.contentSize = self.containerView.frame.size;
-
+    
     [self.prevButton anchorBottomLeftWithLeftPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.favoriteButton anchorBottomCenterWithBottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.facebookShareButton alignToTheLeftOf:self.favoriteButton matchingCenterWithRightPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.twitterShareButton alignToTheRightOf:self.favoriteButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.favoriteButton alignToTheRightOf:self.facebookShareButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.randomComicButton alignToTheRightOf:self.favoriteButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.facebookShareButton alignToTheRightOf:self.prevButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.twitterShareButton alignToTheRightOf:self.randomComicButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
     [self.nextButton anchorBottomRightWithRightPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
 
     [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.favoriteButton.yMin - (2 * kComicViewControllerPadding)];
@@ -186,7 +195,6 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     return self.comicImageView;
 }
 
-
 #pragma mark - Navigation between comics
 
 - (void)showPrev {
@@ -197,6 +205,9 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.comic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];
 }
 
+- (void)showRandomComic {
+    self.comic = [self.delegate comicViewController:self randomComic:self.comic];
+}
 - (void)prefetchImagesForComicsBeforeAndAfter {
     Comic *prevComic = [self.delegate comicViewController:self comicBeforeCurrentComic:self.comic];
     Comic *nextComic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];
