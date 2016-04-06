@@ -13,4 +13,4 @@ xcuserdata/
 Podfile.lock
 Pods/*
 build/
-*.gnco
+*.gcno
