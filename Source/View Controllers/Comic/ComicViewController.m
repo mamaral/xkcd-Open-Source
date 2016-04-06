@@ -99,6 +99,14 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.prevButton setImage:[ThemeManager prevComicImage] forState:UIControlStateNormal];
     [self.prevButton addTarget:self action:@selector(showPrev) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.prevButton];
+    
+    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
+    self.prevSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.view addGestureRecognizer:self.prevSwipe];
+    
+    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
+    self.nextSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.view addGestureRecognizer:self.nextSwipe];
 
     self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.nextButton.adjustsImageWhenHighlighted = NO;
@@ -162,6 +170,9 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
     self.nextButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicAfterCurrentComic:comic] == nil;
+    
+    self.prevSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicBeforeCurrentComic:comic] != nil;
+    self.nextSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicAfterCurrentComic:comic] != nil;
 
     [self prefetchImagesForComicsBeforeAndAfter];
 
