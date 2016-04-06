@@ -467,6 +467,7 @@
 				TargetAttributes = {
 					2714CCB11B05667400ADF009 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = 8W2HVNQTMG;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -758,6 +759,8 @@
 			baseConfigurationReference = F23446BA06D19E2DB13831EC /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -767,6 +770,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource;
 				PRODUCT_NAME = "xkcd Open Source";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -775,7 +779,8 @@
 			baseConfigurationReference = 4484B4BA0184CB6D6523840B /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -785,7 +790,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource;
 				PRODUCT_NAME = "xkcd Open Source";
-				PROVISIONING_PROFILE = "d31a2265-7d81-4e2d-8f85-9962d74868b2";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
