@@ -13,5 +13,4 @@ xcuserdata/
 Podfile.lock
 Pods/*
 build/
-*.DS_Store
 *.gnco
