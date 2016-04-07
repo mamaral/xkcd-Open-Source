@@ -41,5 +41,7 @@
 @property (nonatomic, strong) UIButton *nextButton;
 @property (nonatomic, strong) UIButton *facebookShareButton;
 @property (nonatomic, strong) UIButton *twitterShareButton;
+@property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
+@property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
 
 @end
