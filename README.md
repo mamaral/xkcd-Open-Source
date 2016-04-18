@@ -41,10 +41,10 @@
 - [ ] Get Randall Munroe to acknowledge my existence
 
 ## Version History
-- **v2.1.1** ***(Submitted to Apple for review)***
+- **v2.1.1** (Available for download in the App Store)
    - iOS 9 networking bug fix (https://github.com/mamaral/xkcd-Open-Source/issues/29)
 
-- **v2.1** (Available for download in the App Store)
+- **v2.1**
    - Share comics to Facebook and Twitter
 
 - **v2.0**
