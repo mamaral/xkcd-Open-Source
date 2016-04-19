@@ -7,8 +7,10 @@
 project.xcworkspace/
 xcuserdata/
 *.xccheckout
+*.DS_Store
 
 #Pods
 Podfile.lock
 Pods/*
 build/
+*.gcno

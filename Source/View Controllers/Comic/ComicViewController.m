@@ -16,7 +16,7 @@
 #import <TwitterKit/TwitterKit.h>
 
 static CGFloat const kComicViewControllerPadding = 10.0;
-static CGFloat const kBottomButtonSpacing = 25.0;
+static CGFloat const kBottomButtonSpacing = 15.0;
 static CGFloat const kBottomButtonPadding = 10.0;
 static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
@@ -85,12 +85,28 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.favoriteButton setImage:[ThemeManager favoriteImage] forState:UIControlStateNormal];
     [self.favoriteButton addTarget:self action:@selector(toggleComicFavorited) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.favoriteButton];
+    
+    self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.randomComicButton.adjustsImageWhenHighlighted = NO;
+    self.randomComicButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    self.randomComicButton.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
+    [self.randomComicButton addTarget:self action:@selector(showRandomComic) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:self.randomComicButton];
 
     self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.prevButton.adjustsImageWhenHighlighted = NO;
     [self.prevButton setImage:[ThemeManager prevComicImage] forState:UIControlStateNormal];
     [self.prevButton addTarget:self action:@selector(showPrev) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.prevButton];
+    
+    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
+    self.prevSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.view addGestureRecognizer:self.prevSwipe];
+    
+    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
+    self.nextSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.view addGestureRecognizer:self.nextSwipe];
 
     self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.nextButton.adjustsImageWhenHighlighted = NO;
@@ -100,6 +116,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     self.facebookShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.facebookShareButton setImage:[ThemeManager facebookImage] forState:UIControlStateNormal];
+    
     [self.facebookShareButton addTarget:self action:@selector(handleFacebookShare) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.facebookShareButton];
 
@@ -115,13 +132,19 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 - (void)layoutFacade {
     [self.containerView fillSuperview];
     self.containerView.contentSize = self.containerView.frame.size;
-
-    [self.prevButton anchorBottomLeftWithLeftPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.favoriteButton anchorBottomCenterWithBottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.facebookShareButton alignToTheLeftOf:self.favoriteButton matchingCenterWithRightPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.twitterShareButton alignToTheRightOf:self.favoriteButton matchingCenterWithLeftPadding:kBottomButtonSpacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.nextButton anchorBottomRightWithRightPadding:kBottomButtonPadding bottomPadding:kBottomButtonPadding width:kBottomButtonSize height:kBottomButtonSize];
-
+    
+    float width = [[UIScreen mainScreen] bounds].size.width;
+    int buttonCount = 6;
+    float spacing = (width - (kBottomButtonSize * buttonCount)) / (buttonCount);
+    float padding = spacing / 2;
+    
+    [self.prevButton anchorBottomLeftWithLeftPadding:padding bottomPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.favoriteButton alignToTheRightOf:self.facebookShareButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.randomComicButton alignToTheRightOf:self.favoriteButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.facebookShareButton alignToTheRightOf:self.prevButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.twitterShareButton alignToTheRightOf:self.randomComicButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.nextButton anchorBottomRightWithRightPadding:padding bottomPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    
     [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.favoriteButton.yMin - (2 * kComicViewControllerPadding)];
 
     if (self.altView.isVisible) {
@@ -147,6 +170,9 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
     self.nextButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicAfterCurrentComic:comic] == nil;
+    
+    self.prevSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicBeforeCurrentComic:comic] != nil;
+    self.nextSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicAfterCurrentComic:comic] != nil;
 
     [self prefetchImagesForComicsBeforeAndAfter];
 
@@ -186,7 +212,6 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     return self.comicImageView;
 }
 
-
 #pragma mark - Navigation between comics
 
 - (void)showPrev {
@@ -197,6 +222,9 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.comic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];
 }
 
+- (void)showRandomComic {
+    self.comic = [self.delegate comicViewController:self randomComic:self.comic];
+}
 - (void)prefetchImagesForComicsBeforeAndAfter {
     Comic *prevComic = [self.delegate comicViewController:self comicBeforeCurrentComic:self.comic];
     Comic *nextComic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];

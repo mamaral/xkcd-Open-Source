@@ -286,7 +286,7 @@
         [expectation fulfill];
     }];
 
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
 - (void)testPerformBackgroundFetchNewData {
@@ -306,7 +306,7 @@
         [expectation fulfill];
     }];
 
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
 - (void)testPerformBackgroundFetchNoNewData {
@@ -320,7 +320,7 @@
         [expectation fulfill];
     }];
 
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
 - (void)testPerformBackgroundFetchFailed {
@@ -334,7 +334,7 @@
         [expectation fulfill];
     }];
 
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
 - (void)testTokenStringFromData {

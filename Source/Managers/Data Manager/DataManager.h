@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Mike Amaral. All rights reserved.
 //
 
-#import <Realm.h>
+#import <Realm/Realm.h>
 #import "Comic.h"
 
 static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";

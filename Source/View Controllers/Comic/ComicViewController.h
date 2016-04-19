@@ -20,6 +20,7 @@
 @required
 - (Comic *)comicViewController:(ComicViewController *)comicViewController comicBeforeCurrentComic:(Comic *)currentComic;
 - (Comic *)comicViewController:(ComicViewController *)comicViewController comicAfterCurrentComic:(Comic *)currentComic;
+- (Comic *)comicViewController:(ComicViewController *)comicViewController randomComic:(Comic *) currentComic;
 
 @end
 
@@ -35,9 +36,12 @@
 @property (nonatomic, strong) UIImageView *comicImageView;
 @property (nonatomic, strong) AltView *altView;
 @property (nonatomic, strong) UIButton *favoriteButton;
+@property (nonatomic, strong) UIButton *randomComicButton;
 @property (nonatomic, strong) UIButton *prevButton;
 @property (nonatomic, strong) UIButton *nextButton;
 @property (nonatomic, strong) UIButton *facebookShareButton;
 @property (nonatomic, strong) UIButton *twitterShareButton;
+@property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
+@property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
 
 @end

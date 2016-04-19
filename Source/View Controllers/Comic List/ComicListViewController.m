@@ -255,6 +255,10 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     return (indexOfCurrentComic != NSNotFound && indexOfCurrentComic + 1 <= self.comics.count - 1) ? self.comics[indexOfCurrentComic + 1] : nil;
 }
 
+- (Comic *)comicViewController:(ComicViewController *)comicViewController randomComic:(Comic *)currentComic {
+    return [[DataManager sharedInstance] randomComic];
+}
+
 
 #pragma mark - Searching and Filtering
 
