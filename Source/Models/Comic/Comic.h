@@ -20,6 +20,7 @@ static NSString * const kDayKey = @"day";
 static NSString * const kMonthKey = @"month";
 static NSString * const kYearKey = @"year";
 static NSString * const kAspectRatioKey = @"img_aspect_ratio";
+static NSString * const kIsInteractiveKey = @"isInteractive";
 
 static NSString * const kShareURLBase = @"http://xkcd.com";
 
@@ -35,6 +36,7 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 @property NSString *alt;
 @property NSString *transcript;
 @property NSString *imageURLString;
+@property NSString *comicURLString;
 @property NSString *day;
 @property NSString *month;
 @property NSString *year;
@@ -42,6 +44,7 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 @property CGFloat aspectRatio;
 @property BOOL viewed;
 @property BOOL favorite;
+@property BOOL isInteractive;
 
 
 #pragma mark - Initialization
@@ -49,9 +52,9 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 + (instancetype)comicFromDictionary:(NSDictionary *)dictionary;
 
 
-#pragma mark - Sharing
+#pragma mark - Comic URL Generation
 
-- (NSURL *)generateShareURL;
++ (NSString *)generateComicURLStringFromNumber:(NSInteger)number;
 
 
 #pragma mark - Test utilities

@@ -244,7 +244,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 - (void)handleFacebookShare {
     FBSDKShareLinkContent *shareLinkContent = [FBSDKShareLinkContent new];
     shareLinkContent.contentTitle = self.comic.safeTitle;
-    shareLinkContent.contentURL = [self.comic generateShareURL];
+    shareLinkContent.contentURL = [NSURL URLWithString:self.comic.comicURLString ?: @""];
 
     [FBSDKShareDialog showFromViewController:self withContent:shareLinkContent delegate:self];
 }
@@ -274,7 +274,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
         TWTRComposer *composer = [TWTRComposer new];
         [composer setText:self.comic.safeTitle];
         [composer setImage:self.comicImageView.image];
-        [composer setURL:[self.comic generateShareURL]];
+        [composer setURL:[NSURL URLWithString:self.comic.comicURLString ?: @""]];
         [composer showFromViewController:self completion:^(TWTRComposerResult result) {
             [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Twitter" label:(result == TWTRComposerResultCancelled) ? @"Cancel" : @"Success"];
         }];
