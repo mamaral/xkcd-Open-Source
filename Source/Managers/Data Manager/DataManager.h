@@ -16,6 +16,8 @@ static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
 
 @property (nonatomic, strong) RLMRealm *realm;
 
+@property (nonatomic, strong) NSArray *knownInteractiveComicNumbers;
+
 
 #pragma mark - Singleton
 
