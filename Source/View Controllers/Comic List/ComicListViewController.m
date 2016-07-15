@@ -210,7 +210,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Comic *comic = self.comics[indexPath.item];
 
-    if (comic.isInteractive) {
+    if (comic.isInteractive || [[DataManager sharedInstance].knownInteractiveComicNumbers containsObject:@(comic.num)]) {
         ComicWebViewController *comicWebVC = [ComicWebViewController new];
         comicWebVC.comic = comic;
         [self.navigationController pushViewController:comicWebVC animated:YES];
