@@ -14,6 +14,7 @@
 #import "LoadingView.h"
 #import "Comic.h"
 #import "ComicCell.h"
+#import "ComicWebViewController.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
@@ -209,7 +210,13 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Comic *comic = self.comics[indexPath.item];
 
-    [self showComic:comic atIndexPath:indexPath];
+    if (comic.isInteractive) {
+        ComicWebViewController *comicWebVC = [ComicWebViewController new];
+        comicWebVC.comic = comic;
+        [self.navigationController pushViewController:comicWebVC animated:YES];
+    } else {
+        [self showComic:comic atIndexPath:indexPath];
+    }
 }
 
 

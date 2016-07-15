@@ -28,6 +28,7 @@
 		2773170D1B06D1AA00ED7978 /* xkcd.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2773170C1B06D1AA00ED7978 /* xkcd.otf */; };
 		277317101B06DF9300ED7978 /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2773170F1B06DF9300ED7978 /* ThemeManager.m */; };
 		277317161B06E3E600ED7978 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 277317151B06E3E600ED7978 /* LoadingView.m */; };
+		2774C40B1CC70CA2003B215A /* ComicWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2774C40A1CC70CA2003B215A /* ComicWebViewController.m */; };
 		27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */; };
 		27AE51DA1B10DF8F0090292A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27AE51D91B10DF8F0090292A /* LaunchScreen.xib */; };
 		27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984A91B0D641700684AA1 /* ComicTests.m */; };
@@ -85,6 +86,8 @@
 		2773170F1B06DF9300ED7978 /* ThemeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThemeManager.m; sourceTree = "<group>"; };
 		277317141B06E3E600ED7978 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		277317151B06E3E600ED7978 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
+		2774C4091CC70CA2003B215A /* ComicWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicWebViewController.h; sourceTree = "<group>"; };
+		2774C40A1CC70CA2003B215A /* ComicWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicWebViewController.m; sourceTree = "<group>"; };
 		27AE1AD21B08CFE6002D5280 /* ComicListFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicListFlowLayout.h; sourceTree = "<group>"; };
 		27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicListFlowLayout.m; sourceTree = "<group>"; };
 		27AE51D91B10DF8F0090292A /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -202,6 +205,7 @@
 			children = (
 				27EE4A5C1B07BD96001454A3 /* Comic List */,
 				27EE4A5D1B07BD9C001454A3 /* Comic */,
+				2774C4081CC6FEB5003B215A /* Comic Web View Controller */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -293,6 +297,15 @@
 				277317151B06E3E600ED7978 /* LoadingView.m */,
 			);
 			path = "Loading View";
+			sourceTree = "<group>";
+		};
+		2774C4081CC6FEB5003B215A /* Comic Web View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				2774C4091CC70CA2003B215A /* ComicWebViewController.h */,
+				2774C40A1CC70CA2003B215A /* ComicWebViewController.m */,
+			);
+			name = "Comic Web View Controller";
 			sourceTree = "<group>";
 		};
 		27AE1AD01B08CF0B002D5280 /* Comic */ = {
@@ -641,6 +654,7 @@
 				2714CCBB1B05667400ADF009 /* AppDelegate.m in Sources */,
 				27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */,
 				277317071B05955300ED7978 /* ComicCell.m in Sources */,
+				2774C40B1CC70CA2003B215A /* ComicWebViewController.m in Sources */,
 				2714CCB81B05667400ADF009 /* main.m in Sources */,
 				277317161B06E3E600ED7978 /* LoadingView.m in Sources */,
 				277317101B06DF9300ED7978 /* ThemeManager.m in Sources */,
