@@ -21,9 +21,21 @@ static CGFloat const kBottomButtonPadding = 10.0;
 static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
-@interface ComicViewController () {
-    BOOL _viewedAlt;
-}
+@interface ComicViewController ()
+
+@property (nonatomic) BOOL viewedAlt;
+
+@property (nonatomic, strong) UIScrollView *containerView;
+@property (nonatomic, strong) UIImageView *comicImageView;
+@property (nonatomic, strong) AltView *altView;
+@property (nonatomic, strong) UIButton *favoriteButton;
+@property (nonatomic, strong) UIButton *randomComicButton;
+@property (nonatomic, strong) UIButton *prevButton;
+@property (nonatomic, strong) UIButton *nextButton;
+@property (nonatomic, strong) UIButton *facebookShareButton;
+@property (nonatomic, strong) UIButton *twitterShareButton;
+@property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
+@property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
 
 @end
 
@@ -63,7 +75,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
-    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Viewed Alt" action:_viewedAlt ? @"Yes" : @"NO"];
+    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Viewed Alt" action:self.viewedAlt ? @"Yes" : @"NO"];
 }
 
 - (void)createViewComponents {
@@ -184,7 +196,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 - (void)toggleAltView {
     if (!self.altView.isVisible) {
-        _viewedAlt = YES;
+        self.viewedAlt = YES;
 
         [self.altView showInView:self.view];
     }
