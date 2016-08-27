@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		270508EB1D72330B00D34A6A /* XKCDDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */; };
 		270B574B1B07F28700651787 /* AltView.m in Sources */ = {isa = PBXBuildFile; fileRef = 270B574A1B07F28700651787 /* AltView.m */; };
 		2714CCB81B05667400ADF009 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2714CCB71B05667400ADF009 /* main.m */; };
 		2714CCBB1B05667400ADF009 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2714CCBA1B05667400ADF009 /* AppDelegate.m */; };
@@ -54,6 +55,8 @@
 
 /* Begin PBXFileReference section */
 		09A2B0C2ACB019A4B019EC89 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		270508E91D72330B00D34A6A /* XKCDDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKCDDeviceManager.h; sourceTree = "<group>"; };
+		270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XKCDDeviceManager.m; sourceTree = "<group>"; };
 		270B57491B07F28700651787 /* AltView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AltView.h; sourceTree = "<group>"; };
 		270B574A1B07F28700651787 /* AltView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AltView.m; sourceTree = "<group>"; };
 		2714CCB21B05667400ADF009 /* xkcd Open Source.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "xkcd Open Source.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,6 +137,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		270508E81D7232F800D34A6A /* Device Manager */ = {
+			isa = PBXGroup;
+			children = (
+				270508E91D72330B00D34A6A /* XKCDDeviceManager.h */,
+				270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */,
+			);
+			name = "Device Manager";
+			sourceTree = "<group>";
+		};
 		270B57481B07F27700651787 /* Alt View */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,6 +234,7 @@
 		277316EE1B05679500ED7978 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				270508E81D7232F800D34A6A /* Device Manager */,
 				277317111B06DF9700ED7978 /* Theme Manager */,
 				277316F31B0568DA00ED7978 /* Data Manager */,
 				277316F21B0568D400ED7978 /* Request Manager */,
@@ -655,6 +668,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				270B574B1B07F28700651787 /* AltView.m in Sources */,
+				270508EB1D72330B00D34A6A /* XKCDDeviceManager.m in Sources */,
 				277316F11B0567B300ED7978 /* RequestManager.m in Sources */,
 				277317041B0592D600ED7978 /* ComicListViewController.m in Sources */,
 				277316FA1B056EAC00ED7978 /* DataManager.m in Sources */,

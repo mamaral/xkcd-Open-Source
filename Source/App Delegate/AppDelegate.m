@@ -13,6 +13,7 @@
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <TwitterKit/TwitterKit.h>
+#import "XKCDDeviceManager.h"
 
 static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
@@ -32,6 +33,10 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 @end
 
 @implementation AppDelegate
+
++ (instancetype)sharedAppDelegate {
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
 
 
 #pragma mark - App life cycle
@@ -120,7 +125,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
             [self.dataManager setHasAskedForReview:YES];
         }];
 
-        UIAlertController *reviewAlertController = [UIAlertController alertControllerWithTitle:kReviewAlertTitle message:kReviewAlertMessage preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertController *reviewAlertController = [UIAlertController alertControllerWithTitle:kReviewAlertTitle message:kReviewAlertMessage preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
         [reviewAlertController addAction:goToReview];
         [reviewAlertController addAction:dontAskAgain];
 

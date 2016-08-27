@@ -17,5 +17,7 @@
 @property (nonatomic, strong) RequestManager *requestManager;
 @property (nonatomic, strong) DataManager *dataManager;
 
++ (instancetype)sharedAppDelegate;
+
 @end
 
