@@ -69,6 +69,54 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(handleShareButton)];
+
+    self.containerView.backgroundColor = [UIColor whiteColor];
+    self.containerView.scrollEnabled = YES;
+    self.containerView.minimumZoomScale = 1.0;
+    self.containerView.maximumZoomScale = 10.0;
+    self.containerView.delegate = self;
+    [self.view addSubview:self.containerView];
+
+    self.comicImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.comicImageView.userInteractionEnabled = YES;
+    [self.containerView addSubview:self.comicImageView];
+
+    self.favoriteButton.adjustsImageWhenHighlighted = NO;
+    [self.favoriteButton setImage:[ThemeManager favoriteImage] forState:UIControlStateNormal];
+    [self.favoriteButton addTarget:self action:@selector(toggleComicFavorited) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:self.favoriteButton];
+
+    self.randomComicButton.adjustsImageWhenHighlighted = NO;
+    self.randomComicButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    self.randomComicButton.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
+    [self.randomComicButton addTarget:self action:@selector(showRandomComic) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:self.randomComicButton];
+
+    self.prevButton.adjustsImageWhenHighlighted = NO;
+    [self.prevButton setImage:[ThemeManager prevComicImage] forState:UIControlStateNormal];
+    [self.prevButton addTarget:self action:@selector(showPrev) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:self.prevButton];
+
+    self.prevSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.view addGestureRecognizer:self.prevSwipe];
+
+    self.nextSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.view addGestureRecognizer:self.nextSwipe];
+
+    self.nextButton.adjustsImageWhenHighlighted = NO;
+    [self.nextButton setImage:[ThemeManager nextComicImage] forState:UIControlStateNormal];
+    [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:self.nextButton];
+
+    [self.altTextButton setTitle:@"Alt" forState:UIControlStateNormal];
+    [self.altTextButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.altTextButton setTitleColor:[[UIColor blackColor] colorWithAlphaComponent:0.7] forState:UIControlStateHighlighted];
+    [self.altTextButton.titleLabel setFont:[ThemeManager xkcdFontWithSize:20.0]];
+    [self.altTextButton addTarget:self action:@selector(toggleAltView) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.altTextButton];
+
+    self.altView.alpha = 0.0;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -87,66 +135,6 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [super viewWillDisappear:animated];
 
     [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Viewed Alt" action:self.viewedAlt ? @"Yes" : @"NO"];
-}
-
-- (void)createViewComponents {
-    self.containerView = [UIScrollView new];
-    self.containerView.backgroundColor = [UIColor whiteColor];
-    self.containerView.scrollEnabled = YES;
-    self.containerView.minimumZoomScale = 1.0;
-    self.containerView.maximumZoomScale = 10.0;
-    self.containerView.delegate = self;
-    [self.view addSubview:self.containerView];
-
-    self.comicImageView = [UIImageView new];
-    self.comicImageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.comicImageView.userInteractionEnabled = YES;
-    [self.containerView addSubview:self.comicImageView];
-
-    self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.favoriteButton.adjustsImageWhenHighlighted = NO;
-    [self.favoriteButton setImage:[ThemeManager favoriteImage] forState:UIControlStateNormal];
-    [self.favoriteButton addTarget:self action:@selector(toggleComicFavorited) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:self.favoriteButton];
-    
-    self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.randomComicButton.adjustsImageWhenHighlighted = NO;
-    self.randomComicButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-    self.randomComicButton.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
-    [self.randomComicButton addTarget:self action:@selector(showRandomComic) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:self.randomComicButton];
-
-    self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.prevButton.adjustsImageWhenHighlighted = NO;
-    [self.prevButton setImage:[ThemeManager prevComicImage] forState:UIControlStateNormal];
-    [self.prevButton addTarget:self action:@selector(showPrev) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:self.prevButton];
-    
-    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
-    self.prevSwipe.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.view addGestureRecognizer:self.prevSwipe];
-    
-    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
-    self.nextSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self.view addGestureRecognizer:self.nextSwipe];
-
-    self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.nextButton.adjustsImageWhenHighlighted = NO;
-    [self.nextButton setImage:[ThemeManager nextComicImage] forState:UIControlStateNormal];
-    [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:self.nextButton];
-
-    self.altTextButton = [UIButton new];
-    [self.altTextButton setTitle:@"Alt" forState:UIControlStateNormal];
-    [self.altTextButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.altTextButton setTitleColor:[[UIColor blackColor] colorWithAlphaComponent:0.7] forState:UIControlStateHighlighted];
-    [self.altTextButton.titleLabel setFont:[ThemeManager xkcdFontWithSize:20.0]];
-    [self.altTextButton addTarget:self action:@selector(toggleAltView) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.altTextButton];
-
-    self.altView = [AltView new];
-    self.altView.alpha = 0.0;
 }
 
 - (void)layoutFacade {
