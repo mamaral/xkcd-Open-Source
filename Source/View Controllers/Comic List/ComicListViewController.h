@@ -10,8 +10,9 @@
 #import <Realm/Realm.h>
 #import "ComicListFlowLayout.h"
 #import "ComicViewController.h"
+#import "ComicCell.h"
 
-@interface ComicListViewController : UICollectionViewController <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate>
+@interface ComicListViewController : UICollectionViewController <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate>
 
 @property (nonatomic, strong) RLMResults *comics;
 

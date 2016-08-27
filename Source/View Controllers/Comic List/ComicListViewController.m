@@ -14,6 +14,8 @@
 #import "LoadingView.h"
 #import "Comic.h"
 #import "ComicCell.h"
+#import "ComicWebViewController.h"
+#import "AltView.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
@@ -22,6 +24,8 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 static CGFloat const kRandomComicButtonSize = 60.0;
 
 @interface ComicListViewController ()
+
+@property (nonatomic, strong) AltView *altView;
 
 @end
 
@@ -46,6 +50,9 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
+
+    self.altView = [AltView new];
+    self.altView.alpha = 0.0;
 
     self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
     self.navigationItem.leftBarButtonItem = self.searchButton;
@@ -200,6 +207,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ComicCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kComicCellReuseIdentifier forIndexPath:indexPath];
     cell.comic = self.comics[indexPath.item];
+    cell.delegate = self;
     return cell;
 }
 
@@ -209,7 +217,13 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Comic *comic = self.comics[indexPath.item];
 
-    [self showComic:comic atIndexPath:indexPath];
+    if (comic.isInteractive || [[DataManager sharedInstance].knownInteractiveComicNumbers containsObject:@(comic.num)]) {
+        ComicWebViewController *comicWebVC = [ComicWebViewController new];
+        comicWebVC.comic = comic;
+        [self.navigationController pushViewController:comicWebVC animated:YES];
+    } else {
+        [self showComic:comic atIndexPath:indexPath];
+    }
 }
 
 
@@ -336,6 +350,19 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     }
 
     [self.collectionView reloadData];
+}
+
+
+#pragma mark - Comic cell delegate
+
+- (void)comicCell:(ComicCell *)cell didSelectComicAltWithComic:(Comic *)comic {
+    if (!self.altView.isVisible) {
+        self.altView.comic = comic;
+        [self.altView showInView:self.view];
+    } else {
+        self.altView.comic = nil;
+        [self.altView dismiss];
+    }
 }
 
 

@@ -10,7 +10,7 @@
 #import "RequestManager.h"
 #import <GTTracker.h>
 
-static NSInteger const kCurrentSchemaVersion = 2;
+static NSInteger const kCurrentSchemaVersion = 3;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 @implementation DataManager {
@@ -38,6 +38,8 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
     _defaults = [NSUserDefaults standardUserDefaults];
 
+    self.knownInteractiveComicNumbers = @[@1193, @1331, @1446, @1525, @1608, @1663];
+
     [self initializeRealm];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteringForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
@@ -47,12 +49,24 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 }
 
 - (void)initializeRealm {
-    // Currently no need for migrations, so we can leave the migrations block empty.
-    /*
-    [RLMRealm setSchemaVersion:kCurrentSchemaVersion forRealmAtPath:[RLMRealm defaultRealmPath] withMigrationBlock:^(RLMMigration *migration, uint64_t oldSchemaVersion) {}];
-     */
     RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     config.schemaVersion = kCurrentSchemaVersion;
+
+    config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
+        if (oldSchemaVersion < kCurrentSchemaVersion) {
+            [migration enumerateObjects:Comic.className block:^(RLMObject *oldObject, RLMObject *newObject) {
+
+                // Ensure we flag known interactive comics as such.
+                NSNumber *comicNumber = oldObject[@"num"];
+                newObject[@"isInteractive"] = @([self.knownInteractiveComicNumbers containsObject:comicNumber]);
+
+                // Generate the URL string for the comic.
+                newObject[@"comicURLString"] = [Comic generateComicURLStringFromNumber:[comicNumber integerValue]];
+            }];
+        }
+    };
+
+    // Tell Realm to use this new configuration object for the default Realm.
     [RLMRealmConfiguration setDefaultConfiguration:config];
 
     self.realm = [RLMRealm defaultRealm];
@@ -215,6 +229,17 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     RLMResults *allComics = [self allSavedComics];
     NSInteger randomIndex = [self randomNumberBetweenMin:0 andMax:allComics.count - 1];
     return allComics[randomIndex];
+}
+
+
+#pragma mark - Reviews
+
+- (BOOL)hasAskedForReview {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kHasAskedForReviewKey];
+}
+
+- (void)setHasAskedForReview:(BOOL)hasAsked {
+    [[NSUserDefaults standardUserDefaults] setBool:hasAsked forKey:kHasAskedForReviewKey];
 }
 
 @end

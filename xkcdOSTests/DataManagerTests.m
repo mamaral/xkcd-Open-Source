@@ -347,4 +347,16 @@
     XCTAssert([tokenString isEqualToString:@""]);
 }
 
+- (void)testHasAskedForReview {
+    XCTAssertFalse([_dataManager hasAskedForReview]);
+
+    [_dataManager setHasAskedForReview:YES];
+
+    XCTAssertTrue([_dataManager hasAskedForReview]);
+
+    [_dataManager setHasAskedForReview:NO];
+
+    XCTAssertFalse([_dataManager hasAskedForReview]);
+}
+
 @end

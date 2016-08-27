@@ -28,6 +28,7 @@
 		2773170D1B06D1AA00ED7978 /* xkcd.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2773170C1B06D1AA00ED7978 /* xkcd.otf */; };
 		277317101B06DF9300ED7978 /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2773170F1B06DF9300ED7978 /* ThemeManager.m */; };
 		277317161B06E3E600ED7978 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 277317151B06E3E600ED7978 /* LoadingView.m */; };
+		2774C40B1CC70CA2003B215A /* ComicWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2774C40A1CC70CA2003B215A /* ComicWebViewController.m */; };
 		27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */; };
 		27AE51DA1B10DF8F0090292A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27AE51D91B10DF8F0090292A /* LaunchScreen.xib */; };
 		27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984A91B0D641700684AA1 /* ComicTests.m */; };
@@ -85,6 +86,8 @@
 		2773170F1B06DF9300ED7978 /* ThemeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThemeManager.m; sourceTree = "<group>"; };
 		277317141B06E3E600ED7978 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		277317151B06E3E600ED7978 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
+		2774C4091CC70CA2003B215A /* ComicWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicWebViewController.h; sourceTree = "<group>"; };
+		2774C40A1CC70CA2003B215A /* ComicWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicWebViewController.m; sourceTree = "<group>"; };
 		27AE1AD21B08CFE6002D5280 /* ComicListFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicListFlowLayout.h; sourceTree = "<group>"; };
 		27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicListFlowLayout.m; sourceTree = "<group>"; };
 		27AE51D91B10DF8F0090292A /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -202,6 +205,7 @@
 			children = (
 				27EE4A5C1B07BD96001454A3 /* Comic List */,
 				27EE4A5D1B07BD9C001454A3 /* Comic */,
+				2774C4081CC6FEB5003B215A /* Comic Web View Controller */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -279,6 +283,7 @@
 		277317121B06E3D300ED7978 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				27B4BB121D71FF850085A814 /* New Group */,
 				270B57481B07F27700651787 /* Alt View */,
 				27EE4A5B1B07BD8D001454A3 /* Comic Cell */,
 				277317131B06E3D900ED7978 /* Loading View */,
@@ -293,6 +298,15 @@
 				277317151B06E3E600ED7978 /* LoadingView.m */,
 			);
 			path = "Loading View";
+			sourceTree = "<group>";
+		};
+		2774C4081CC6FEB5003B215A /* Comic Web View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				2774C4091CC70CA2003B215A /* ComicWebViewController.h */,
+				2774C40A1CC70CA2003B215A /* ComicWebViewController.m */,
+			);
+			name = "Comic Web View Controller";
 			sourceTree = "<group>";
 		};
 		27AE1AD01B08CF0B002D5280 /* Comic */ = {
@@ -311,6 +325,13 @@
 				27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */,
 			);
 			path = Layout;
+			sourceTree = "<group>";
+		};
+		27B4BB121D71FF850085A814 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
 			sourceTree = "<group>";
 		};
 		27B9849F1B0D602D00684AA1 /* xkcdOSTests */ = {
@@ -424,7 +445,7 @@
 				2714CCB01B05667400ADF009 /* Resources */,
 				6E8E0CFA9453FECC5201C547 /* Copy Pods Resources */,
 				2740A8E91B08F5A400B805ED /* ShellScript */,
-				D89C7390D3C14208F0358FBA /* Embed Pods Frameworks */,
+				E9E77912D17CD5D3DCFA26C2 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -444,7 +465,7 @@
 				27B9849B1B0D602D00684AA1 /* Frameworks */,
 				27B9849C1B0D602D00684AA1 /* Resources */,
 				8C477AF8F43AA2DC692A5F7D /* Copy Pods Resources */,
-				8C5084F0C73E5BFC2329ABE0 /* Embed Pods Frameworks */,
+				D28FBD9855E3B06C29DAAC59 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -462,7 +483,7 @@
 		2714CCAA1B05667400ADF009 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Mike Amaral";
 				TargetAttributes = {
 					2714CCB11B05667400ADF009 = {
@@ -581,21 +602,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8C5084F0C73E5BFC2329ABE0 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		8F6C569EF3898F885C7DE28C /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -611,7 +617,22 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		D89C7390D3C14208F0358FBA /* Embed Pods Frameworks */ = {
+		D28FBD9855E3B06C29DAAC59 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E9E77912D17CD5D3DCFA26C2 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -641,6 +662,7 @@
 				2714CCBB1B05667400ADF009 /* AppDelegate.m in Sources */,
 				27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */,
 				277317071B05955300ED7978 /* ComicCell.m in Sources */,
+				2774C40B1CC70CA2003B215A /* ComicWebViewController.m in Sources */,
 				2714CCB81B05667400ADF009 /* main.m in Sources */,
 				277317161B06E3E600ED7978 /* LoadingView.m in Sources */,
 				277317101B06DF9300ED7978 /* ThemeManager.m in Sources */,
@@ -696,6 +718,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -740,6 +763,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -759,8 +783,7 @@
 			baseConfigurationReference = F23446BA06D19E2DB13831EC /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -779,8 +802,8 @@
 			baseConfigurationReference = 4484B4BA0184CB6D6523840B /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

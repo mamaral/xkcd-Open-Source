@@ -10,10 +10,13 @@
 #import "Comic.h"
 
 static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
+static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
 
 @interface DataManager : NSObject
 
 @property (nonatomic, strong) RLMRealm *realm;
+
+@property (nonatomic, strong) NSArray *knownInteractiveComicNumbers;
 
 
 #pragma mark - Singleton
@@ -56,5 +59,11 @@ static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 
 - (NSInteger)randomNumberBetweenMin:(NSUInteger)min andMax:(NSUInteger)max;
 - (Comic *)randomComic;
+
+
+#pragma mark - Reviews
+
+- (BOOL)hasAskedForReview;
+- (void)setHasAskedForReview:(BOOL)hasAsked;
 
 @end

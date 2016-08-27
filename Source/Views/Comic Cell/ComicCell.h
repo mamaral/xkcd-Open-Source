@@ -9,17 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "Comic.h"
 
+@class ComicCell;
+
+@protocol ComicCellDelegate <NSObject>
+
+@required
+- (void)comicCell:(ComicCell *)cell didSelectComicAltWithComic:(Comic *)comic;
+
+@end
+
 static NSString * const kComicCellReuseIdentifier = @"ComicCell";
 
 @interface ComicCell : UICollectionViewCell
 
-@property (nonatomic, strong) Comic *comic;
+@property (nonatomic, weak) id<ComicCellDelegate> delegate;
 
-@property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UIView *maskView;
-@property (nonatomic, strong) UILabel *numberLabel;
-@property (nonatomic, strong) UIView *highlightedMask;
-@property (nonatomic, strong) UIImageView *favoritedIcon;
+@property (nonatomic, strong) Comic *comic;
 
 @end

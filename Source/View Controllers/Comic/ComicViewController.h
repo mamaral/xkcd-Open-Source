@@ -9,9 +9,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <FBSDKShareKit/FBSDKShareKit.h>
 #import "Comic.h"
-#import "AltView.h"
 
 @class ComicViewController;
 
@@ -24,24 +22,12 @@
 
 @end
 
-@interface ComicViewController : UIViewController <UIScrollViewDelegate, FBSDKSharingDelegate>
+@interface ComicViewController : UIViewController <UIScrollViewDelegate>
 
 @property (nonatomic) id<ComicViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) Comic *comic;
 
 @property (nonatomic) BOOL allowComicNavigation;
-
-@property (nonatomic, strong) UIScrollView *containerView;
-@property (nonatomic, strong) UIImageView *comicImageView;
-@property (nonatomic, strong) AltView *altView;
-@property (nonatomic, strong) UIButton *favoriteButton;
-@property (nonatomic, strong) UIButton *randomComicButton;
-@property (nonatomic, strong) UIButton *prevButton;
-@property (nonatomic, strong) UIButton *nextButton;
-@property (nonatomic, strong) UIButton *facebookShareButton;
-@property (nonatomic, strong) UIButton *twitterShareButton;
-@property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
-@property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
 
 @end
