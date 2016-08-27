@@ -16,8 +16,6 @@
 #import <TwitterKit/TwitterKit.h>
 
 static CGFloat const kComicViewControllerPadding = 10.0;
-static CGFloat const kBottomButtonSpacing = 15.0;
-static CGFloat const kBottomButtonPadding = 10.0;
 static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
@@ -32,8 +30,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 @property (nonatomic, strong) UIButton *randomComicButton;
 @property (nonatomic, strong) UIButton *prevButton;
 @property (nonatomic, strong) UIButton *nextButton;
-@property (nonatomic, strong) UIButton *facebookShareButton;
-@property (nonatomic, strong) UIButton *twitterShareButton;
+@property (nonatomic, strong) UIButton *altTextButton;
 @property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
 @property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
 
@@ -44,7 +41,21 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 - (instancetype)init {
     self = [super init];
 
-    [self createViewComponents];
+    if (self == nil) {
+        return nil;
+    }
+
+    self.containerView = [UIScrollView new];
+    self.comicImageView = [UIImageView new];
+    self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
+    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
+    self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.altTextButton = [UIButton new];
+
+    self.altView = [AltView new];
 
     return self;
 }
@@ -57,7 +68,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.view.backgroundColor = [UIColor whiteColor];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(toggleAltView)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(handleShareButton)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -126,16 +137,13 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.nextButton];
 
-    self.facebookShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.facebookShareButton setImage:[ThemeManager facebookImage] forState:UIControlStateNormal];
-    
-    [self.facebookShareButton addTarget:self action:@selector(handleFacebookShare) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.facebookShareButton];
-
-    self.twitterShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.twitterShareButton setImage:[ThemeManager twitterImage] forState:UIControlStateNormal];
-    [self.twitterShareButton addTarget:self action:@selector(handleTwitterShare) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.twitterShareButton];
+    self.altTextButton = [UIButton new];
+    [self.altTextButton setTitle:@"Alt" forState:UIControlStateNormal];
+    [self.altTextButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.altTextButton setTitleColor:[[UIColor blackColor] colorWithAlphaComponent:0.7] forState:UIControlStateHighlighted];
+    [self.altTextButton.titleLabel setFont:[ThemeManager xkcdFontWithSize:20.0]];
+    [self.altTextButton addTarget:self action:@selector(toggleAltView) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.altTextButton];
 
     self.altView = [AltView new];
     self.altView.alpha = 0.0;
@@ -144,18 +152,14 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 - (void)layoutFacade {
     [self.containerView fillSuperview];
     self.containerView.contentSize = self.containerView.frame.size;
-    
-    float width = [[UIScreen mainScreen] bounds].size.width;
-    int buttonCount = 6;
-    float spacing = (width - (kBottomButtonSize * buttonCount)) / (buttonCount);
-    float padding = spacing / 2;
-    
-    [self.prevButton anchorBottomLeftWithLeftPadding:padding bottomPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.favoriteButton alignToTheRightOf:self.facebookShareButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.randomComicButton alignToTheRightOf:self.favoriteButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.facebookShareButton alignToTheRightOf:self.prevButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.twitterShareButton alignToTheRightOf:self.randomComicButton matchingCenterWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.nextButton anchorBottomRightWithRightPadding:padding bottomPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+
+    [self.prevButton anchorBottomLeftWithLeftPadding:kComicViewControllerPadding bottomPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
+    [self.nextButton anchorBottomRightWithRightPadding:kComicViewControllerPadding bottomPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
+
+    [self.randomComicButton anchorBottomCenterWithBottomPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
+    [self.favoriteButton alignToTheLeftOf:self.randomComicButton
+            matchingCenterWithRightPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
+    [self.altTextButton alignToTheRightOf:self.randomComicButton matchingCenterWithLeftPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
     
     [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.favoriteButton.yMin - (2 * kComicViewControllerPadding)];
 
@@ -199,9 +203,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
         self.viewedAlt = YES;
 
         [self.altView showInView:self.view];
-    }
-
-    else {
+    } else {
         [self.altView dismiss];
     }
 }
@@ -251,46 +253,11 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 }
 
 
-#pragma mark - Facebook Sharing
+#pragma mark - Sharing
 
-- (void)handleFacebookShare {
-    FBSDKShareLinkContent *shareLinkContent = [FBSDKShareLinkContent new];
-    shareLinkContent.contentTitle = self.comic.safeTitle;
-    shareLinkContent.contentURL = [NSURL URLWithString:self.comic.comicURLString ?: @""];
-
-    [FBSDKShareDialog showFromViewController:self withContent:shareLinkContent delegate:self];
-}
-
-- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
-    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Facebook" label:@"Cancel"];
-}
-
-- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
-    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Facebook" label:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
-}
-
-- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
-    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Facebook" label:@"Success"];
-}
-
-
-#pragma mark - Twitter sharing
-
-- (void)handleTwitterShare {
-    [[Twitter sharedInstance] logInWithCompletion:^(TWTRSession *session, NSError *error) {
-        if (error) {
-            [[[UIAlertView alloc] initWithTitle:@"Uh oh..." message:[NSString stringWithFormat:@"Twitter said something went wrong. Don't blame me..."] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-            return;
-        }
-
-        TWTRComposer *composer = [TWTRComposer new];
-        [composer setText:self.comic.safeTitle];
-        [composer setImage:self.comicImageView.image];
-        [composer setURL:[NSURL URLWithString:self.comic.comicURLString ?: @""]];
-        [composer showFromViewController:self completion:^(TWTRComposerResult result) {
-            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Social Share" action:@"Twitter" label:(result == TWTRComposerResultCancelled) ? @"Cancel" : @"Success"];
-        }];
-    }];
+- (void)handleShareButton {
+    UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:self.comic.comicURLString ?: @""]] applicationActivities:nil];
+    [self presentViewController:shareSheet animated:YES completion:nil];
 }
 
 @end

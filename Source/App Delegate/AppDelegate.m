@@ -24,7 +24,7 @@ static NSString * const kDontAskAgainButtonTitle = @"No... Leave me alone!";
 static NSString * const kReviewAlertTitle = @"Tell us what you think!";
 static NSString * const kReviewAlertMessage = @"We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
 
-static NSTimeInterval const kReviewAlertDelay = 10.0;
+static NSTimeInterval const kReviewAlertDelay = 30.0;
 
 
 @interface AppDelegate ()
