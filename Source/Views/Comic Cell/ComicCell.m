@@ -67,11 +67,11 @@ static CGFloat const kFavoriteIconSize = 55.0;
     [self.containerView addSubview:self.maskView];
 
     [self.comicNumberButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    self.numberLabel.textAlignment = NSTextAlignmentCenter;
-//    self.numberLabel.textColor = [UIColor whiteColor];
     self.comicNumberButton.titleLabel.font = [ThemeManager xkcdFontWithSize:11];
     self.comicNumberButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     self.comicNumberButton.clipsToBounds = YES;
+    self.comicNumberButton.showsTouchWhenHighlighted = YES;
+    [self.comicNumberButton addTarget:self action:@selector(handleComicNumberSelected) forControlEvents:UIControlEventTouchUpInside];
     [self.containerView addSubview:self.comicNumberButton];
 
     [ThemeManager addBorderToLayer:self.comicNumberButton.layer radius:kComicCellNumberLabelWidth / 2.0 color:[UIColor whiteColor]];
@@ -113,6 +113,13 @@ static CGFloat const kFavoriteIconSize = 55.0;
     [UIView animateWithDuration:0.4 animations:^{
         self.highlightedMask.alpha = newAlpha;
     }];
+}
+
+
+#pragma mark - Comic number button handling
+
+- (void)handleComicNumberSelected {
+    [self.delegate comicCell:self didSelectComicAltWithComic:self.comic];
 }
 
 @end

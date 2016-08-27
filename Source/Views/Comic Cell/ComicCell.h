@@ -9,9 +9,20 @@
 #import <UIKit/UIKit.h>
 #import "Comic.h"
 
+@class ComicCell;
+
+@protocol ComicCellDelegate <NSObject>
+
+@required
+- (void)comicCell:(ComicCell *)cell didSelectComicAltWithComic:(Comic *)comic;
+
+@end
+
 static NSString * const kComicCellReuseIdentifier = @"ComicCell";
 
 @interface ComicCell : UICollectionViewCell
+
+@property (nonatomic, weak) id<ComicCellDelegate> delegate;
 
 @property (nonatomic, strong) Comic *comic;
 

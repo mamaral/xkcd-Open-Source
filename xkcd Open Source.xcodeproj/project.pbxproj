@@ -283,6 +283,7 @@
 		277317121B06E3D300ED7978 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				27B4BB121D71FF850085A814 /* New Group */,
 				270B57481B07F27700651787 /* Alt View */,
 				27EE4A5B1B07BD8D001454A3 /* Comic Cell */,
 				277317131B06E3D900ED7978 /* Loading View */,
@@ -324,6 +325,13 @@
 				27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */,
 			);
 			path = Layout;
+			sourceTree = "<group>";
+		};
+		27B4BB121D71FF850085A814 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
 			sourceTree = "<group>";
 		};
 		27B9849F1B0D602D00684AA1 /* xkcdOSTests */ = {

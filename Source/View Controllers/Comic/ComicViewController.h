@@ -10,7 +10,6 @@
 
 #import <UIKit/UIKit.h>
 #import "Comic.h"
-#import "AltView.h"
 
 @class ComicViewController;
 

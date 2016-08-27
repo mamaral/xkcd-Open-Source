@@ -14,6 +14,7 @@
 #import "DataManager.h"
 #import <SDWebImagePrefetcher.h>
 #import <TwitterKit/TwitterKit.h>
+#import "AltView.h"
 
 static CGFloat const kComicViewControllerPadding = 10.0;
 static CGFloat const kBottomButtonSize = 50.0;
@@ -54,7 +55,6 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
     self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.altTextButton = [UIButton new];
-
     self.altView = [AltView new];
 
     return self;
