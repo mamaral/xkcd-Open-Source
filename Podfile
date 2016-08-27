@@ -13,6 +13,6 @@ target 'xkcd Open Source' do
  myPods
 end
 
-target 'xckdOSTests' do
+target 'xkcdOSTests' do
  myPods
 end
