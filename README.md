@@ -44,6 +44,10 @@
 - **v2.2** (App Store Submission Pending!)
    - Fixes an issue with some of the known interactive comics, using a web view controller instead of the native comic view controller as a stop-gap until we work out some other solution.
    - Ask users to leave a review, only once ever, to get some more feedback.
+   - Swipe navigation between comics.
+   - Share sheet.
+   - Moved alt button to bottom for easier use on larger devices.
+   - Random comics can be viewed from the comic list, making it easier to randomly browse.
 
 - **v2.1.1** (Available for download in the App Store)
    - iOS 9 networking bug fix (https://github.com/mamaral/xkcd-Open-Source/issues/29)
