@@ -245,6 +245,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 - (void)handleShareButton {
     UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:self.comic.comicURLString ?: @""]] applicationActivities:nil];
+    shareSheet.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
     [self presentViewController:shareSheet animated:YES completion:nil];
 }
 
