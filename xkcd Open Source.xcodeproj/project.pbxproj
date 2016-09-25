@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		270508EB1D72330B00D34A6A /* XKCDDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */; };
 		270B574B1B07F28700651787 /* AltView.m in Sources */ = {isa = PBXBuildFile; fileRef = 270B574A1B07F28700651787 /* AltView.m */; };
+		270C3E831D9777BF003CF197 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270C3E821D9777BF003CF197 /* NotificationCenter.framework */; };
+		270C3E871D9777BF003CF197 /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 270C3E861D9777BF003CF197 /* TodayViewController.m */; };
+		270C3E8A1D9777BF003CF197 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 270C3E881D9777BF003CF197 /* MainInterface.storyboard */; };
+		270C3E8E1D9777BF003CF197 /* xkcdToday.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 270C3E811D9777BF003CF197 /* xkcdToday.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2714CCB81B05667400ADF009 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2714CCB71B05667400ADF009 /* main.m */; };
 		2714CCBB1B05667400ADF009 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2714CCBA1B05667400ADF009 /* AppDelegate.m */; };
 		2714CCBD1B05667400ADF009 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2714CCBC1B05667400ADF009 /* Images.xcassets */; };
@@ -44,6 +48,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		270C3E8C1D9777BF003CF197 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2714CCAA1B05667400ADF009 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 270C3E801D9777BF003CF197;
+			remoteInfo = xkcdToday;
+		};
 		27B984A41B0D602D00684AA1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2714CCAA1B05667400ADF009 /* Project object */;
@@ -53,12 +64,32 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		270C3E921D9777BF003CF197 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				270C3E8E1D9777BF003CF197 /* xkcdToday.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		09A2B0C2ACB019A4B019EC89 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		270508E91D72330B00D34A6A /* XKCDDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKCDDeviceManager.h; sourceTree = "<group>"; };
 		270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XKCDDeviceManager.m; sourceTree = "<group>"; };
 		270B57491B07F28700651787 /* AltView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AltView.h; sourceTree = "<group>"; };
 		270B574A1B07F28700651787 /* AltView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AltView.m; sourceTree = "<group>"; };
+		270C3E811D9777BF003CF197 /* xkcdToday.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = xkcdToday.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		270C3E821D9777BF003CF197 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		270C3E851D9777BF003CF197 /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
+		270C3E861D9777BF003CF197 /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
+		270C3E891D9777BF003CF197 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		270C3E8B1D9777BF003CF197 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2714CCB21B05667400ADF009 /* xkcd Open Source.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "xkcd Open Source.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2714CCB61B05667400ADF009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2714CCB71B05667400ADF009 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -111,6 +142,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		270C3E7E1D9777BF003CF197 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				270C3E831D9777BF003CF197 /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2714CCAF1B05667400ADF009 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -155,12 +194,24 @@
 			path = "Alt View";
 			sourceTree = "<group>";
 		};
+		270C3E841D9777BF003CF197 /* xkcdToday */ = {
+			isa = PBXGroup;
+			children = (
+				270C3E851D9777BF003CF197 /* TodayViewController.h */,
+				270C3E861D9777BF003CF197 /* TodayViewController.m */,
+				270C3E881D9777BF003CF197 /* MainInterface.storyboard */,
+				270C3E8B1D9777BF003CF197 /* Info.plist */,
+			);
+			path = xkcdToday;
+			sourceTree = "<group>";
+		};
 		2714CCA91B05667400ADF009 = {
 			isa = PBXGroup;
 			children = (
 				2714CCB41B05667400ADF009 /* Source */,
 				27B9849F1B0D602D00684AA1 /* xkcdOSTests */,
 				92D197D67863ECFFF37B8726 /* Pods */,
+				270C3E841D9777BF003CF197 /* xkcdToday */,
 				AFFE359F79832C3469DCC437 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -170,6 +221,7 @@
 			children = (
 				2714CCB21B05667400ADF009 /* xkcd Open Source.app */,
 				27B9849E1B0D602D00684AA1 /* xkcdOSTests.xctest */,
+				270C3E811D9777BF003CF197 /* xkcdToday.appex */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -441,6 +493,7 @@
 				2769EEA81B7ADA73004C0C44 /* FBSDKLoginKit.framework */,
 				2769EEA91B7ADA73004C0C44 /* FBSDKShareKit.framework */,
 				673CC68C4D10E2143071F67E /* libPods.a */,
+				270C3E821D9777BF003CF197 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -448,6 +501,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		270C3E801D9777BF003CF197 /* xkcdToday */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 270C3E911D9777BF003CF197 /* Build configuration list for PBXNativeTarget "xkcdToday" */;
+			buildPhases = (
+				270C3E7D1D9777BF003CF197 /* Sources */,
+				270C3E7E1D9777BF003CF197 /* Frameworks */,
+				270C3E7F1D9777BF003CF197 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xkcdToday;
+			productName = xkcdToday;
+			productReference = 270C3E811D9777BF003CF197 /* xkcdToday.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		2714CCB11B05667400ADF009 /* xkcd Open Source */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2714CCCF1B05667400ADF009 /* Build configuration list for PBXNativeTarget "xkcd Open Source" */;
@@ -459,10 +529,12 @@
 				6E8E0CFA9453FECC5201C547 /* Copy Pods Resources */,
 				2740A8E91B08F5A400B805ED /* ShellScript */,
 				E9E77912D17CD5D3DCFA26C2 /* Embed Pods Frameworks */,
+				270C3E921D9777BF003CF197 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				270C3E8D1D9777BF003CF197 /* PBXTargetDependency */,
 			);
 			name = "xkcd Open Source";
 			productName = xkcDump;
@@ -499,6 +571,10 @@
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Mike Amaral";
 				TargetAttributes = {
+					270C3E801D9777BF003CF197 = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+					};
 					2714CCB11B05667400ADF009 = {
 						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = 8W2HVNQTMG;
@@ -529,11 +605,20 @@
 			targets = (
 				2714CCB11B05667400ADF009 /* xkcd Open Source */,
 				27B9849D1B0D602D00684AA1 /* xkcdOSTests */,
+				270C3E801D9777BF003CF197 /* xkcdToday */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		270C3E7F1D9777BF003CF197 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				270C3E8A1D9777BF003CF197 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2714CCB01B05667400ADF009 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -663,6 +748,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		270C3E7D1D9777BF003CF197 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				270C3E871D9777BF003CF197 /* TodayViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2714CCAE1B05667400ADF009 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -699,6 +792,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		270C3E8D1D9777BF003CF197 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 270C3E801D9777BF003CF197 /* xkcdToday */;
+			targetProxy = 270C3E8C1D9777BF003CF197 /* PBXContainerItemProxy */;
+		};
 		27B984A51B0D602D00684AA1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2714CCB11B05667400ADF009 /* xkcd Open Source */;
@@ -706,7 +804,53 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		270C3E881D9777BF003CF197 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				270C3E891D9777BF003CF197 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		270C3E8F1D9777BF003CF197 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = xkcdToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource.xkcdToday;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		270C3E901D9777BF003CF197 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				INFOPLIST_FILE = xkcdToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource.xkcdToday;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		2714CCCD1B05667400ADF009 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -871,6 +1015,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		270C3E911D9777BF003CF197 /* Build configuration list for PBXNativeTarget "xkcdToday" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				270C3E8F1D9777BF003CF197 /* Debug */,
+				270C3E901D9777BF003CF197 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		2714CCAD1B05667400ADF009 /* Build configuration list for PBXProject "xkcd Open Source" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
