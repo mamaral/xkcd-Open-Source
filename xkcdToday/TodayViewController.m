@@ -9,8 +9,12 @@
 #import "TodayViewController.h"
 #import <NotificationCenter/NotificationCenter.h>
 #import "DataManager.h"
+#import <UIImageView+WebCache.h>
+#import "ThemeManager.h"
 
 @interface TodayViewController () <NCWidgetProviding>
+
+@property (strong, nonatomic) IBOutlet UIImageView *comicImageView;
 
 @end
 
@@ -30,7 +34,9 @@
         } else if (numberOfNewComics == 0) {
             completionHandler(NCUpdateResultNoData);
         } else {
-            Comic *latestComic = [[DataManager sharedInstance] latestComicDownloaded];
+            Comic *latestComic = [[DataManager sharedInstance] allSavedComics][2];
+            [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:latestComic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
+
             completionHandler(NCUpdateResultNewData);
         }
     }];
