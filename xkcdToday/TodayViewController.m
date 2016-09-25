@@ -8,6 +8,7 @@
 
 #import "TodayViewController.h"
 #import <NotificationCenter/NotificationCenter.h>
+#import "DataManager.h"
 
 @interface TodayViewController () <NCWidgetProviding>
 
@@ -23,12 +24,16 @@
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     // Perform any setup necessary in order to update the view.
-    
-    // If an error is encountered, use NCUpdateResultFailed
-    // If there's no update required, use NCUpdateResultNoData
-    // If there's an update, use NCUpdateResultNewData
-
-    completionHandler(NCUpdateResultNewData);
+    [[DataManager sharedInstance] downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
+        if (error) {
+            completionHandler(NCUpdateResultFailed);
+        } else if (numberOfNewComics == 0) {
+            completionHandler(NCUpdateResultNoData);
+        } else {
+            Comic *latestComic = [[DataManager sharedInstance] latestComicDownloaded];
+            completionHandler(NCUpdateResultNewData);
+        }
+    }];
 }
 
 @end
