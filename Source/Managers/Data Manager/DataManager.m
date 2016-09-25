@@ -13,9 +13,13 @@
 static NSInteger const kCurrentSchemaVersion = 3;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
-@implementation DataManager {
-    NSUserDefaults *_defaults;
-}
+@interface DataManager ()
+
+@property (nonatomic, strong) NSUserDefaults *defaults;
+
+@end
+
+@implementation DataManager
 
 
 #pragma mark - Singleton
@@ -36,7 +40,7 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 - (instancetype)init {
     self = [super init];
 
-    _defaults = [NSUserDefaults standardUserDefaults];
+    self.defaults = [NSUserDefaults standardUserDefaults];
 
     self.knownInteractiveComicNumbers = @[@1193, @1331, @1446, @1525, @1608, @1663];
 
@@ -97,11 +101,11 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 #pragma mark - Latest comic info
 
 - (NSInteger)latestComicDownloaded {
-    return [_defaults integerForKey:kLatestComicDownloadedKey];
+    return [self.defaults integerForKey:kLatestComicDownloadedKey];
 }
 
 - (void)setLatestComicDownloaded:(NSInteger)latest {
-    [_defaults setInteger:latest forKey:kLatestComicDownloadedKey];
+    [self.defaults setInteger:latest forKey:kLatestComicDownloadedKey];
 }
 
 
@@ -170,7 +174,9 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
         }
 
         // Save them in our realm.
-        [self saveComics:comics];
+        if (comics.count > 0) {
+            [self saveComics:comics];
+        }
 
         // Update our latest comic.
         [self setLatestComicDownloaded:latestDownloaded];
