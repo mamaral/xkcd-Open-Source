@@ -20,12 +20,6 @@
 
 @implementation TodayViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-
-
-}
-
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     // Perform any setup necessary in order to update the view.
     [[DataManager sharedInstance] downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
