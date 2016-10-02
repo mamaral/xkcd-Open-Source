@@ -46,13 +46,14 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
         return nil;
     }
 
+    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
+    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
+
     self.containerView = [UIScrollView new];
     self.comicImageView = [UIImageView new];
     self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
-    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
     self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.altTextButton = [UIButton new];
     self.altView = [AltView new];
@@ -189,6 +190,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 - (void)toggleAltView {
     if (!self.altView.isVisible) {
         self.viewedAlt = YES;
+        self.containerView.zoomScale = 1.0;
 
         [self.altView showInView:self.view];
     } else {
