@@ -41,6 +41,9 @@
 - [ ] Get Randall Munroe to acknowledge my existence
 
 ## Version History
+- **v2.3**
+   - Fixes a comic view controller zooming issue caused by zooming in on a comic, viewing the alt text, then moving to the next/prev comic, resulting in the comic being zoomed out too far.
+   - Added a Today Widget showing the most recent comic.
 - **v2.2** (Available for download in the App Store)
    - Fixes an issue with some of the known interactive comics, using a web view controller instead of the native comic view controller as a stop-gap until we work out some other solution.
    - Ask users to leave a review, only once ever, to get some more feedback.
