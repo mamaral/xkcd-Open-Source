@@ -11,7 +11,6 @@
 		270B574B1B07F28700651787 /* AltView.m in Sources */ = {isa = PBXBuildFile; fileRef = 270B574A1B07F28700651787 /* AltView.m */; };
 		270C3E831D9777BF003CF197 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270C3E821D9777BF003CF197 /* NotificationCenter.framework */; };
 		270C3E871D9777BF003CF197 /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 270C3E861D9777BF003CF197 /* TodayViewController.m */; };
-		270C3E8A1D9777BF003CF197 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 270C3E881D9777BF003CF197 /* MainInterface.storyboard */; };
 		270C3E8E1D9777BF003CF197 /* xkcdToday.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 270C3E811D9777BF003CF197 /* xkcdToday.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2714CCB81B05667400ADF009 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2714CCB71B05667400ADF009 /* main.m */; };
 		2714CCBB1B05667400ADF009 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2714CCBA1B05667400ADF009 /* AppDelegate.m */; };
@@ -94,7 +93,6 @@
 		270C3E821D9777BF003CF197 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		270C3E851D9777BF003CF197 /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
 		270C3E861D9777BF003CF197 /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
-		270C3E891D9777BF003CF197 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		270C3E8B1D9777BF003CF197 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2714CCB21B05667400ADF009 /* xkcd Open Source.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "xkcd Open Source.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2714CCB61B05667400ADF009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -211,7 +209,6 @@
 			children = (
 				270C3E851D9777BF003CF197 /* TodayViewController.h */,
 				270C3E861D9777BF003CF197 /* TodayViewController.m */,
-				270C3E881D9777BF003CF197 /* MainInterface.storyboard */,
 				270C3E8B1D9777BF003CF197 /* Info.plist */,
 			);
 			path = xkcdToday;
@@ -635,7 +632,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				270C3E8A1D9777BF003CF197 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -858,17 +854,6 @@
 			targetProxy = 27B984A41B0D602D00684AA1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		270C3E881D9777BF003CF197 /* MainInterface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				270C3E891D9777BF003CF197 /* Base */,
-			);
-			name = MainInterface.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		270C3E8F1D9777BF003CF197 /* Debug */ = {
