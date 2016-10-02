@@ -74,11 +74,9 @@ static CGFloat const kMaxContentHeight = 300.0;
 
 #pragma mark - Widget delegate
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_10_0
 - (void)widgetActiveDisplayModeDidChange:(NCWidgetDisplayMode)activeDisplayMode withMaximumSize:(CGSize)maxSize{
     self.preferredContentSize = activeDisplayMode == NCWidgetDisplayModeCompact ? maxSize : CGSizeMake(0, kMaxContentHeight);
 }
-#endif
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     // Fetch the comics and show the most recent.
