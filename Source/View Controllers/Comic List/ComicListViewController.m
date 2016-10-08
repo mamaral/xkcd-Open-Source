@@ -316,7 +316,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 
     self.noResultsLabel.text = kNoSearchResultsMessage;
 
-    [self handleSearchOrFilterComplete];
+    [self handleSearchOrFilterCompleteWithScroll:YES];
 }
 
 - (void)filterFavorites {
@@ -324,14 +324,16 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 
     self.noResultsLabel.text = kNoFavoritesMessage;
 
-    [self handleSearchOrFilterComplete];
+    [self handleSearchOrFilterCompleteWithScroll:NO];
 }
 
-- (void)handleSearchOrFilterComplete {
+- (void)handleSearchOrFilterCompleteWithScroll:(BOOL)scroll {
     if (self.comics.count > 0) {
         self.noResultsLabel.hidden = YES;
 
-        [self.collectionView setContentOffset:CGPointZero animated:YES];
+        if (scroll) {
+            [self.collectionView setContentOffset:CGPointZero animated:YES];
+        }
     } else {
         self.noResultsLabel.hidden = NO;
     }
