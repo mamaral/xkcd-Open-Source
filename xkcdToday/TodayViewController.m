@@ -12,6 +12,7 @@
 #import <UIView+Facade.h>
 #import "DataManager.h"
 #import "ThemeManager.h"
+#import "XKCDDeviceManager.h"
 
 static CGFloat const kComicNumberLabelPadding = 7.0;
 static CGFloat const kMaxContentHeight = 300.0;
@@ -74,8 +75,11 @@ static CGFloat const kMaxContentHeight = 300.0;
 
 #pragma mark - Widget delegate
 
-- (void)widgetActiveDisplayModeDidChange:(NCWidgetDisplayMode)activeDisplayMode withMaximumSize:(CGSize)maxSize{
-    self.preferredContentSize = activeDisplayMode == NCWidgetDisplayModeCompact ? maxSize : CGSizeMake(0, kMaxContentHeight);
+- (void)widgetActiveDisplayModeDidChange:(NCWidgetDisplayMode)activeDisplayMode withMaximumSize:(CGSize)maxSize {
+    CGFloat screenWidth = [XKCDDeviceManager screenWidth];
+    CGFloat actualHeight = screenWidth * (1.0 / self.comic.aspectRatio);
+    CGFloat comicHeight = actualHeight <= kMaxContentHeight ? actualHeight : kMaxContentHeight;
+    self.preferredContentSize = activeDisplayMode == NCWidgetDisplayModeCompact ? maxSize : CGSizeMake(0, comicHeight);
 }
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
