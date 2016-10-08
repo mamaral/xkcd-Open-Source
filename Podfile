@@ -13,6 +13,10 @@ target 'xkcd Open Source' do
  myPods
 end
 
+target 'xkcdToday' do
+ myPods
+end
+
 target 'xkcdOSTests' do
  myPods
 end

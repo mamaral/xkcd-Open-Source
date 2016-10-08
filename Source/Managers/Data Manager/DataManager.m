@@ -13,9 +13,13 @@
 static NSInteger const kCurrentSchemaVersion = 3;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
-@implementation DataManager {
-    NSUserDefaults *_defaults;
-}
+@interface DataManager ()
+
+@property (nonatomic, strong) NSUserDefaults *defaults;
+
+@end
+
+@implementation DataManager
 
 
 #pragma mark - Singleton
@@ -36,7 +40,7 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 - (instancetype)init {
     self = [super init];
 
-    _defaults = [NSUserDefaults standardUserDefaults];
+    self.defaults = [NSUserDefaults standardUserDefaults];
 
     self.knownInteractiveComicNumbers = @[@1193, @1331, @1446, @1525, @1608, @1663];
 
@@ -97,11 +101,11 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 #pragma mark - Latest comic info
 
 - (NSInteger)latestComicDownloaded {
-    return [_defaults integerForKey:kLatestComicDownloadedKey];
+    return [self.defaults integerForKey:kLatestComicDownloadedKey];
 }
 
 - (void)setLatestComicDownloaded:(NSInteger)latest {
-    [_defaults setInteger:latest forKey:kLatestComicDownloadedKey];
+    [self.defaults setInteger:latest forKey:kLatestComicDownloadedKey];
 }
 
 
@@ -112,17 +116,14 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
     [self downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
 
         // If there was an error and we have none saved, there was an issue loading the first batch of
-        // comics and we should probably retry after a short delay.
+        // comics and we should probably retry after a short delay Otherwise if we have new comics, notify the app that there are more available.
         if (error && [self allSavedComics].count == 0) {
             [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Foreground Fetch Error" action:error.localizedDescription];
 
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [self handleAppEnteringForeground];
             });
-        }
-
-        // Otherwise if we have new comics, notify the app that there are more available.
-        else if (numberOfNewComics > 0) {
+        } else if (numberOfNewComics > 0) {
             [[NSNotificationCenter defaultCenter] postNotificationName:NewComicsAvailableNotification object:nil];
         }
     }];
@@ -170,7 +171,9 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
         }
 
         // Save them in our realm.
-        [self saveComics:comics];
+        if (comics.count > 0) {
+            [self saveComics:comics];
+        }
 
         // Update our latest comic.
         [self setLatestComicDownloaded:latestDownloaded];
@@ -189,15 +192,11 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
         if (error) {
             completionHandler(UIBackgroundFetchResultFailed);
-        }
-
-        else if (newData) {
+        } else if (newData) {
             completionHandler(UIBackgroundFetchResultNewData);
 
             [[NSNotificationCenter defaultCenter] postNotificationName:NewComicsAvailableNotification object:nil];
-        }
-
-        else {
+        } else {
             completionHandler(UIBackgroundFetchResultNoData);
         }
     }];

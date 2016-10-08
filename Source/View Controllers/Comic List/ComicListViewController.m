@@ -103,13 +103,9 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     // If we're filtering favorites, fetch an updated list just in case something was unfavorited.
     if (self.filteringFavorites) {
         [self filterFavorites];
-    }
-
-    else if (!self.searching) {
+    } else if (!self.searching) {
         [self loadComicsFromDB];
-    }
-
-    else {
+    } else {
         [self.collectionView reloadData];
     }
 }
@@ -179,7 +175,6 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     comicVC.delegate = self;
     comicVC.allowComicNavigation = !self.searching && !self.filteringFavorites;
     comicVC.comic = comic;
-
     [self.navigationController pushViewController:comicVC animated:YES];
 }
 
@@ -247,9 +242,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     
     if (isPad) {
         return isLandscape ? 6 : 4;
-    }
-
-    else {
+    } else {
         return isLandscape ? 4 : 2;
     }
 }
@@ -282,9 +275,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
         self.filteringFavorites = NO;
 
         [self enableSearch];
-    }
-
-    else {
+    } else {
         [self cancelAllNavBarActions];
     }
 }
@@ -297,9 +288,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
         self.searching = NO;
 
         [self filterFavorites];
-    }
-
-    else {
+    } else {
         [self cancelAllNavBarActions];
     }
 }
@@ -327,7 +316,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 
     self.noResultsLabel.text = kNoSearchResultsMessage;
 
-    [self handleSearchOrFilterComplete];
+    [self handleSearchOrFilterCompleteWithScroll:YES];
 }
 
 - (void)filterFavorites {
@@ -335,17 +324,17 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 
     self.noResultsLabel.text = kNoFavoritesMessage;
 
-    [self handleSearchOrFilterComplete];
+    [self handleSearchOrFilterCompleteWithScroll:NO];
 }
 
-- (void)handleSearchOrFilterComplete {
+- (void)handleSearchOrFilterCompleteWithScroll:(BOOL)scroll {
     if (self.comics.count > 0) {
         self.noResultsLabel.hidden = YES;
 
-        [self.collectionView setContentOffset:CGPointZero animated:YES];
-    }
-
-    else {
+        if (scroll) {
+            [self.collectionView setContentOffset:CGPointZero animated:YES];
+        }
+    } else {
         self.noResultsLabel.hidden = NO;
     }
 
