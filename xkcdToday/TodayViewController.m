@@ -104,7 +104,7 @@ static CGFloat const kMaxContentHeight = 300.0;
     _comic = comic;
 
     self.comicNumberLabel.text = [NSString stringWithFormat:@"%ld", (long)comic.num];
-    self.comicNumberLabel.backgroundColor = comic.viewed ? [ThemeManager comicViewedColor] : [ThemeManager xkcdLightBlue];
+    self.comicNumberLabel.backgroundColor = [ThemeManager xkcdLightBlue];
 
     [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
 
