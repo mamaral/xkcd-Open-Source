@@ -8,7 +8,6 @@
 
 #import "DataManager.h"
 #import "RequestManager.h"
-#import <GTTracker.h>
 
 static NSInteger const kCurrentSchemaVersion = 3;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
@@ -118,8 +117,6 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
         // If there was an error and we have none saved, there was an issue loading the first batch of
         // comics and we should probably retry after a short delay Otherwise if we have new comics, notify the app that there are more available.
         if (error && [self allSavedComics].count == 0) {
-            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Foreground Fetch Error" action:error.localizedDescription];
-
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [self handleAppEnteringForeground];
             });

@@ -9,13 +9,11 @@
 #import "AppDelegate.h"
 #import "ComicListViewController.h"
 #import "ThemeManager.h"
-#import <GTTracker.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <TwitterKit/TwitterKit.h>
 #import "XKCDDeviceManager.h"
 
-static NSString * const kAnalyticsTrackingID = @"UA-63011163-1";
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
 
 static NSString * const kReviewAlertActionEvent = @"Asked To Leave Review";
@@ -69,7 +67,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 - (void)setupThirdPartyLibraries {
     [ThemeManager setupTheme];
     [Fabric with:@[CrashlyticsKit, TwitterKit]];
-    [[GTTracker sharedInstance] initializeAnalyticsWithTrackingID:kAnalyticsTrackingID logLevel:kGAILogLevelError];
+
 }
 
 
@@ -89,8 +87,6 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
     [self.requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
         if (error) {
             NSLog(@"Sending token to server failed with error: %@", error);
-            
-            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Token Request Failed" action:error.localizedDescription];
         }
     }];
 }
@@ -111,8 +107,6 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
     // After a short delay, ask the nice people to leave a review.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, kReviewAlertDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         UIAlertAction *goToReview = [UIAlertAction actionWithTitle:kLeaveAReviewButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:kReviewAlertActionEvent action:kLeaveAReviewButtonTitle];
-
             NSURL *appStoreURL = [NSURL URLWithString:kAppStoreURLString];
             [[UIApplication sharedApplication] openURL:appStoreURL];
 
@@ -120,8 +114,6 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
         }];
 
         UIAlertAction *dontAskAgain = [UIAlertAction actionWithTitle:kDontAskAgainButtonTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:kReviewAlertActionEvent action:kDontAskAgainButtonTitle];
-
             [self.dataManager setHasAskedForReview:YES];
         }];
 

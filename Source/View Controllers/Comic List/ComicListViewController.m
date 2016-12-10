@@ -7,7 +7,6 @@
 //
 
 #import "ComicListViewController.h"
-#import <GTTracker.h>
 #import <UIView+Facade.h>
 #import "DataManager.h"
 #import "ThemeManager.h"
@@ -113,8 +112,6 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [[GTTracker sharedInstance] sendScreenEventWithTitle:@"Comic List"];
-
     // Clear the app badge here, as we can be reasonably sure at this point anything new
     // will have been seen, and we won't run into annoying issues related to the app
     // life-cycle that we've experienced before.
@@ -179,8 +176,6 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 }
 
 - (void)showRandomComic {
-    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Randomification"];
-
     [self cancelAllNavBarActions];
 
     [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
@@ -311,8 +306,6 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 
 - (void)searchForComicsWithSearchString:(NSString *)searchString {
     self.comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
-
-    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Comic List Search" action:searchString];
 
     self.noResultsLabel.text = kNoSearchResultsMessage;
 

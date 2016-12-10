@@ -9,7 +9,6 @@
 #import "ComicViewController.h"
 #import <UIView+Facade.h>
 #import <UIImageView+WebCache.h>
-#import <GTTracker.h>
 #import "ThemeManager.h"
 #import "DataManager.h"
 #import <SDWebImagePrefetcher.h>
@@ -120,22 +119,10 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.altView.alpha = 0.0;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-
-    [[GTTracker sharedInstance] sendScreenEventWithTitle:@"Comic"];
-}
-
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
 
     [self layoutFacade];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-
-    [[GTTracker sharedInstance] sendAnalyticsEventWithCategory:@"Viewed Alt" action:self.viewedAlt ? @"Yes" : @"NO"];
 }
 
 - (void)layoutFacade {

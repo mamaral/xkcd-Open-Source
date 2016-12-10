@@ -4,7 +4,7 @@ def myPods
  pod "Facade"
  pod "SDWebImage", "~>3.7"
  pod "Facade"
- pod "GTrack"
+
  pod "FLAnimatedImage", "~> 1.0"
  pod "OHHTTPStubs"
 end
