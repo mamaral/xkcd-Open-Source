@@ -108,6 +108,7 @@
 		2769EEA71B7ADA73004C0C44 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		2769EEA81B7ADA73004C0C44 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		2769EEA91B7ADA73004C0C44 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
+		276BB1091DA9B150000FEEC4 /* xkcdToday.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = xkcdToday.entitlements; sourceTree = "<group>"; };
 		277316EF1B0567B300ED7978 /* RequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestManager.h; sourceTree = "<group>"; };
 		277316F01B0567B300ED7978 /* RequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestManager.m; sourceTree = "<group>"; };
 		277316F51B056A6000ED7978 /* Comic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comic.h; sourceTree = "<group>"; };
@@ -207,6 +208,7 @@
 		270C3E841D9777BF003CF197 /* xkcdToday */ = {
 			isa = PBXGroup;
 			children = (
+				276BB1091DA9B150000FEEC4 /* xkcdToday.entitlements */,
 				270C3E851D9777BF003CF197 /* TodayViewController.h */,
 				270C3E861D9777BF003CF197 /* TodayViewController.m */,
 				270C3E8B1D9777BF003CF197 /* Info.plist */,
@@ -590,11 +592,17 @@
 					270C3E801D9777BF003CF197 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = U85V6K37U5;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 0;
+							};
+						};
 					};
 					2714CCB11B05667400ADF009 = {
 						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = U85V6K37U5;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -864,6 +872,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = U85V6K37U5;
 				INFOPLIST_FILE = xkcdToday/Info.plist;
@@ -871,6 +880,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource.xkcdToday;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "349ef9dc-a29e-4000-960e-8cfd6ced67c1";
+				PROVISIONING_PROFILE_SPECIFIER = "XC iOS: com.MikeAmaral.*";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -883,6 +894,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = U85V6K37U5;
@@ -891,6 +903,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource.xkcdToday;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "349ef9dc-a29e-4000-960e-8cfd6ced67c1";
+				PROVISIONING_PROFILE_SPECIFIER = "XC iOS: com.MikeAmaral.*";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -989,6 +1003,7 @@
 			baseConfigurationReference = A2969305AA6551B43D83A5AF /* Pods-xkcd Open Source.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = U85V6K37U5;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1000,7 +1015,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource;
 				PRODUCT_NAME = "xkcd Open Source";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "349ef9dc-a29e-4000-960e-8cfd6ced67c1";
+				PROVISIONING_PROFILE_SPECIFIER = "XC iOS: com.MikeAmaral.*";
 			};
 			name = Debug;
 		};
@@ -1021,7 +1037,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MikeAmaral.xkcdOpenSource;
 				PRODUCT_NAME = "xkcd Open Source";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "b231ce6a-1291-4fdc-a0c1-7c8f0ca6072b";
+				PROVISIONING_PROFILE_SPECIFIER = "xkcd OS Production";
 			};
 			name = Release;
 		};
