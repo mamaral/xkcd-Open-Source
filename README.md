@@ -15,35 +15,19 @@
 - [AFNetworking](https://github.com/AFNetworking/AFNetworking) for networking. *duh*
 - [Realm](https://github.com/realm/realm-cocoa) as a data store.
 - [Façade](https://github.com/mamaral/Facade) for the UI layout.
-- [GTrack](https://github.com/gemr/GTrack) for interfacing with Google Analytics.
 - [SDWebImage](https://github.com/rs/SDWebImage) for image downloading / caching.
 - [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage) for that one GIF.
 - [Fabric](https://get.fabric.io/) for beta distribution, analytics, and crash reporting.
 - [xkcd-font](https://github.com/ipython/xkcd-font) because obviously.
 - Stripped, modified, and customized [Mosaic Layout](https://github.com/betzerra/MosaicLayout) for the comic list.
 
-## Todo List (in no specific order)
-
-- [x] Gathering user feedback (ongoing)
-- [x] Searching
-- [x] Visual indication that comics are read/unread
-- [x] Investigate integrating the ***What If?*** series (probably not happening for now...)
-- [x] Favoriting
-- [x] 'Next' and 'prev' movement between comics
-- [x] View a random comic
-- [x] Social sharing
-- [x] Code coverage > 25%
-- [x] Code coverage > 50%
-- [x] Code coverage > 75%
-- [x] Code coverage > 95%
-- [x] Ask users ***one-time only*** to leave a review/rating in the app store, to get some more honest feedback
-- [ ] ***About*** section featuring major contributors
-- [ ] Get Randall Munroe to acknowledge my existence
 
 ## Version History
-- **v2.3**
+- **v2.3** (Submission to the App Store pending...)
    - Fixes a comic view controller zooming issue caused by zooming in on a comic, viewing the alt text, then moving to the next/prev comic, resulting in the comic being zoomed out too far.
    - Added a Today Widget showing the most recent comic.
+   - Removed GTrack and Google Analytics libraries.
+   
 - **v2.2** (Available for download in the App Store)
    - Fixes an issue with some of the known interactive comics, using a web view controller instead of the native comic view controller as a stop-gap until we work out some other solution.
    - Ask users to leave a review, only once ever, to get some more feedback.
