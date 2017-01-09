@@ -33,17 +33,18 @@ static CGFloat const kAltViewPadding = 10.0;
     [ThemeManager addShadowToLayer:self.containerView.layer radius:15.0 opacity:0.8];
     [ThemeManager addParallaxToView:self.containerView];
 
+    self.dateLabel = [UILabel new];
+    self.dateLabel.font = [ThemeManager xkcdFontWithSize:18];
+    self.dateLabel.textColor = [UIColor whiteColor];
+    self.dateLabel.numberOfLines = 0;
+    [self addSubview:self.dateLabel];
+
     self.altLabel = [UILabel new];
     self.altLabel.font = [ThemeManager xkcdFontWithSize:18];
     self.altLabel.textColor = [UIColor whiteColor];
     self.altLabel.textAlignment = NSTextAlignmentCenter;
     self.altLabel.numberOfLines = 0;
     [self.containerView addSubview:self.altLabel];
-
-    self.dateLabel = [UILabel new];
-    self.dateLabel.font = [ThemeManager xkcdFontWithSize:18];
-    self.dateLabel.textColor = [UIColor whiteColor];
-    [self addSubview:self.dateLabel];
 }
 
 
@@ -54,7 +55,9 @@ static CGFloat const kAltViewPadding = 10.0;
 
     [self fillSuperview];
 
-    [self.dateLabel anchorTopCenterFillingWidthWithLeftAndRightPadding:10 topPadding:10 height:20];
+    [self.dateLabel anchorTopCenterFillingWidthWithLeftAndRightPadding:10 topPadding:10 height:0.0];
+    [self.dateLabel sizeToFit];
+    [self.dateLabel anchorTopCenterFillingWidthWithLeftAndRightPadding:10 topPadding:10 height:self.dateLabel.height];
 
     // Establish the height we want, then size the label to fit - giving us the resulting
     // height / width of the label.
@@ -80,8 +83,8 @@ static CGFloat const kAltViewPadding = 10.0;
 - (void)setComic:(Comic *)comic {
     _comic = comic;
 
+    self.dateLabel.text = [NSString stringWithFormat:@"#%@\n%@", @(self.comic.num), self.comic.formattedDateString];
     self.altLabel.text = self.comic.alt;
-    self.dateLabel.text = self.comic.formattedDateString;
 }
 
 
