@@ -215,6 +215,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 - (void)showRandomComic {
     self.comic = [self.delegate comicViewController:self randomComic:self.comic];
+    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
 }
 - (void)prefetchImagesForComicsBeforeAndAfter {
     Comic *prevComic = [self.delegate comicViewController:self comicBeforeCurrentComic:self.comic];
