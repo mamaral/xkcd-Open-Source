@@ -19,6 +19,7 @@
 static CGFloat const kComicViewControllerPadding = 10.0;
 static CGFloat const kComicViewControllerSmallPadding = 7.0;
 static CGFloat const kBottomButtonSize = 50.0;
+static CGFloat const kBottomButtonPadSize = 70.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 @interface ComicViewController ()
@@ -38,6 +39,8 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 @property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
 @property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
 @property (nonatomic, strong) UIImage *comicImage;
+
+@property (nonatomic) CGFloat buttonSize;
 
 @end
 
@@ -63,6 +66,8 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.altTextButton = [UIButton new];
     self.bookmarkButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.altView = [AltView new];
+
+    self.buttonSize = [XKCDDeviceManager isPad] ? kBottomButtonPadSize : kBottomButtonSize;
 
     return self;
 }
@@ -146,14 +151,14 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.containerView.contentSize = self.containerView.frame.size;
 
     // Layout the comic image view
-    [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.view.height - (2 * kComicViewControllerPadding) - kBottomButtonSize];
+    [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.view.height - (2 * kComicViewControllerPadding) - self.buttonSize];
 
     // Layout the button container and buttons
     CGFloat spacing = [XKCDDeviceManager isSmallDevice] ? kComicViewControllerSmallPadding : kComicViewControllerPadding;
-    [self.buttonContainerView anchorBottomCenterFillingWidthWithLeftAndRightPadding:0.0 bottomPadding:0.0 height:kBottomButtonSize];
-    [self.prevButton anchorCenterLeftWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.nextButton anchorCenterRightWithRightPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
-    [self.buttonContainerView groupHorizontally:@[self.bookmarkButton, self.favoriteButton, self.randomComicButton, self.altTextButton] centeredFillingHeightWithSpacing:spacing width:kBottomButtonSize];
+    [self.buttonContainerView anchorBottomCenterFillingWidthWithLeftAndRightPadding:0.0 bottomPadding:0.0 height:self.buttonSize];
+    [self.prevButton anchorCenterLeftWithLeftPadding:spacing width:kBottomButtonSize height:self.buttonSize];
+    [self.nextButton anchorCenterRightWithRightPadding:spacing width:kBottomButtonSize height:self.buttonSize];
+    [self.buttonContainerView groupHorizontally:@[self.bookmarkButton, self.favoriteButton, self.randomComicButton, self.altTextButton] centeredFillingHeightWithSpacing:spacing width:self.buttonSize];
 
     // Layout the alt view if its on screen
     if (self.altView.isVisible) {
