@@ -11,6 +11,7 @@
 
 static NSInteger const kCurrentSchemaVersion = 3;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
+static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 @interface DataManager ()
 
@@ -105,6 +106,17 @@ static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 
 - (void)setLatestComicDownloaded:(NSInteger)latest {
     [self.defaults setInteger:latest forKey:kLatestComicDownloadedKey];
+}
+
+
+#pragma mark - Bookmarked Comic
+
+- (NSInteger)bookmarkedComic {
+    return [self.defaults integerForKey:kBookmarkedComicKey];
+}
+
+- (void)setBookmarkedComic:(NSInteger)bookmarkedComic {
+    [self.defaults setInteger:bookmarkedComic forKey:kBookmarkedComicKey];
 }
 
 

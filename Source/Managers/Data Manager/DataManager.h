@@ -37,6 +37,12 @@ static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
 - (void)setLatestComicDownloaded:(NSInteger)latest;
 
 
+#pragma mark - Bookmarked Comic
+
+- (NSInteger)bookmarkedComic;
+- (void)setBookmarkedComic:(NSInteger)bookmarkedComic;
+
+
 #pragma mark - Getting comics
 
 - (RLMResults *)allSavedComics;

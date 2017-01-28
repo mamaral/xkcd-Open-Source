@@ -31,6 +31,8 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 @property (nonatomic, strong) UIButton *prevButton;
 @property (nonatomic, strong) UIButton *nextButton;
 @property (nonatomic, strong) UIButton *altTextButton;
+@property (nonatomic, strong) UIButton *bookmarkButton;
+@property (nonatomic, strong) UIView *buttonContainerView;
 @property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
 @property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
 @property (nonatomic, strong) UIImage *comicImage;
@@ -51,11 +53,13 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     self.containerView = [UIScrollView new];
     self.comicImageView = [UIImageView new];
+    self.buttonContainerView = [UIView new];
     self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.altTextButton = [UIButton new];
+    self.bookmarkButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.altView = [AltView new];
 
     return self;
@@ -82,22 +86,30 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.comicImageView.userInteractionEnabled = YES;
     [self.containerView addSubview:self.comicImageView];
 
+    self.buttonContainerView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+    [self.view addSubview:self.buttonContainerView];
+
+    self.bookmarkButton.adjustsImageWhenHighlighted = NO;
+    [self.bookmarkButton setImage:[ThemeManager bookmarkedOffImage] forState:UIControlStateNormal];
+    [self.bookmarkButton addTarget:self action:@selector(toggleBookmark) forControlEvents:UIControlEventTouchDown];
+    [self.buttonContainerView addSubview:self.bookmarkButton];
+
     self.favoriteButton.adjustsImageWhenHighlighted = NO;
     [self.favoriteButton setImage:[ThemeManager favoriteImage] forState:UIControlStateNormal];
     [self.favoriteButton addTarget:self action:@selector(toggleComicFavorited) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:self.favoriteButton];
+    [self.buttonContainerView addSubview:self.favoriteButton];
 
     self.randomComicButton.adjustsImageWhenHighlighted = NO;
     self.randomComicButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
     self.randomComicButton.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
     [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
     [self.randomComicButton addTarget:self action:@selector(showRandomComic) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:self.randomComicButton];
+    [self.buttonContainerView addSubview:self.randomComicButton];
 
     self.prevButton.adjustsImageWhenHighlighted = NO;
     [self.prevButton setImage:[ThemeManager prevComicImage] forState:UIControlStateNormal];
     [self.prevButton addTarget:self action:@selector(showPrev) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:self.prevButton];
+    [self.buttonContainerView addSubview:self.prevButton];
 
     self.prevSwipe.direction = UISwipeGestureRecognizerDirectionRight;
     [self.view addGestureRecognizer:self.prevSwipe];
@@ -108,14 +120,14 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.nextButton.adjustsImageWhenHighlighted = NO;
     [self.nextButton setImage:[ThemeManager nextComicImage] forState:UIControlStateNormal];
     [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:self.nextButton];
+    [self.buttonContainerView addSubview:self.nextButton];
 
     [self.altTextButton setTitle:@"Alt" forState:UIControlStateNormal];
     [self.altTextButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.altTextButton setTitleColor:[[UIColor blackColor] colorWithAlphaComponent:0.7] forState:UIControlStateHighlighted];
     [self.altTextButton.titleLabel setFont:[ThemeManager xkcdFontWithSize:20.0]];
     [self.altTextButton addTarget:self action:@selector(toggleAltView) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.altTextButton];
+    [self.buttonContainerView addSubview:self.altTextButton];
 
     self.altView.alpha = 0.0;
 }
@@ -127,19 +139,20 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 }
 
 - (void)layoutFacade {
+    // Layout the container
     [self.containerView fillSuperview];
     self.containerView.contentSize = self.containerView.frame.size;
 
-    [self.prevButton anchorBottomLeftWithLeftPadding:kComicViewControllerPadding bottomPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.nextButton anchorBottomRightWithRightPadding:kComicViewControllerPadding bottomPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
+    // Layout the comic image view
+    [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.view.height - (2 * kComicViewControllerPadding) - kBottomButtonSize];
 
-    [self.randomComicButton anchorBottomCenterWithBottomPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.favoriteButton alignToTheLeftOf:self.randomComicButton
-            matchingCenterWithRightPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.altTextButton alignToTheRightOf:self.randomComicButton matchingCenterWithLeftPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
-    
-    [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.favoriteButton.yMin - (2 * kComicViewControllerPadding)];
+    // Layout the button container and buttons
+    [self.buttonContainerView anchorBottomCenterFillingWidthWithLeftAndRightPadding:0.0 bottomPadding:0.0 height:kBottomButtonSize];
+    [self.prevButton anchorCenterLeftWithLeftPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
+    [self.nextButton anchorCenterRightWithRightPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
+    [self.buttonContainerView groupHorizontally:@[self.bookmarkButton, self.favoriteButton, self.randomComicButton, self.altTextButton] centeredFillingHeightWithSpacing:kComicViewControllerPadding width:kBottomButtonSize];
 
+    // Layout the alt view if its on screen
     if (self.altView.isVisible) {
         [self.altView layoutFacade];
     }
@@ -163,6 +176,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
             self.comicImage = image;
         }
     }];
+
     [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
 
     self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
@@ -174,6 +188,8 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self prefetchImagesForComicsBeforeAndAfter];
 
     self.altView.comic = comic;
+
+    [self updateBookmarkButtonImage];
 }
 
 
@@ -199,6 +215,26 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [[DataManager sharedInstance] markComic:self.comic favorited:isNowFavorited];
 
     [self.favoriteButton setAlpha:isNowFavorited ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
+}
+
+
+#pragma mark - Bookmark
+
+- (void)toggleBookmark {
+    // If this is currently bookmarked, un-bookmark it, and vice-versa.
+    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComic];
+    NSInteger bookmarkedComicNum = isCurrentlyBookmarked ? 0 : self.comic.num;
+
+    [[DataManager sharedInstance] setBookmarkedComic:bookmarkedComicNum];
+
+    // Update the image on the button.
+    [self updateBookmarkButtonImage];
+}
+
+- (void)updateBookmarkButtonImage {
+    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComic];
+    UIImage *newImage = isCurrentlyBookmarked ? [ThemeManager bookmarkedImage] : [ThemeManager bookmarkedOffImage];
+    [self.bookmarkButton setImage:newImage forState:UIControlStateNormal];
 }
 
 

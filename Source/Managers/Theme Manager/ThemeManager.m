@@ -72,6 +72,14 @@
     return [UIImage imageNamed:kTwitterImageName];
 }
 
++ (UIImage *)bookmarkedImage {
+    return [UIImage imageNamed:kBookmarkImageName];
+}
+
++ (UIImage *)bookmarkedOffImage {
+    return [UIImage imageNamed:kBookmarkOffImageName];
+}
+
 
 #pragma mark - CALayer schtuff
 
