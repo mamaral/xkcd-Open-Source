@@ -14,8 +14,10 @@
 #import <SDWebImagePrefetcher.h>
 #import <TwitterKit/TwitterKit.h>
 #import "AltView.h"
+#import "XKCDDeviceManager.h"
 
 static CGFloat const kComicViewControllerPadding = 10.0;
+static CGFloat const kComicViewControllerSmallPadding = 7.0;
 static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
@@ -147,10 +149,11 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.view.height - (2 * kComicViewControllerPadding) - kBottomButtonSize];
 
     // Layout the button container and buttons
+    CGFloat spacing = [XKCDDeviceManager isSmallDevice] ? kComicViewControllerSmallPadding : kComicViewControllerPadding;
     [self.buttonContainerView anchorBottomCenterFillingWidthWithLeftAndRightPadding:0.0 bottomPadding:0.0 height:kBottomButtonSize];
-    [self.prevButton anchorCenterLeftWithLeftPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.nextButton anchorCenterRightWithRightPadding:kComicViewControllerPadding width:kBottomButtonSize height:kBottomButtonSize];
-    [self.buttonContainerView groupHorizontally:@[self.bookmarkButton, self.favoriteButton, self.randomComicButton, self.altTextButton] centeredFillingHeightWithSpacing:kComicViewControllerPadding width:kBottomButtonSize];
+    [self.prevButton anchorCenterLeftWithLeftPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.nextButton anchorCenterRightWithRightPadding:spacing width:kBottomButtonSize height:kBottomButtonSize];
+    [self.buttonContainerView groupHorizontally:@[self.bookmarkButton, self.favoriteButton, self.randomComicButton, self.altTextButton] centeredFillingHeightWithSpacing:spacing width:kBottomButtonSize];
 
     // Layout the alt view if its on screen
     if (self.altView.isVisible) {
