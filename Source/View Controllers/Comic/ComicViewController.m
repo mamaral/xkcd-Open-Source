@@ -33,6 +33,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 @property (nonatomic, strong) UIButton *altTextButton;
 @property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
 @property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
+@property (nonatomic, strong) UIImage *comicImage;
 
 @end
 
@@ -157,7 +158,11 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.title = comic.safeTitle;
     self.containerView.zoomScale = 1.0;
 
-    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
+    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if (image) {
+            self.comicImage = image;
+        }
+    }];
     [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
 
     self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
@@ -234,7 +239,8 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 #pragma mark - Sharing
 
 - (void)handleShareButton {
-    UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:self.comic.comicURLString ?: @""]] applicationActivities:nil];
+    NSArray *activityItems = self.comicImage ? @[[NSURL URLWithString:self.comic.comicURLString ?: @""], self.comicImage] : @[[NSURL URLWithString:self.comic.comicURLString ?: @""]];
+    UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     shareSheet.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
     [self presentViewController:shareSheet animated:YES completion:nil];
 }
