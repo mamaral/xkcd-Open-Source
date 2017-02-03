@@ -30,4 +30,6 @@
 
 @property (nonatomic) BOOL allowComicNavigation;
 
+@property (nonatomic) BOOL previewMode;
+
 @end

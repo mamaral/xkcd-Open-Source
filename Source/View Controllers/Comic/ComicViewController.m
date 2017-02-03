@@ -200,6 +200,10 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self updateBookmarkButtonImage];
 }
 
+- (void)setPreviewMode:(BOOL)previewMode {
+	_previewMode = previewMode;
+	self.buttonContainerView.hidden = previewMode;
+}
 
 #pragma mark - Alt
 

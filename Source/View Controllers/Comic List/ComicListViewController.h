@@ -12,7 +12,7 @@
 #import "ComicViewController.h"
 #import "ComicCell.h"
 
-@interface ComicListViewController : UICollectionViewController <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate>
+@interface ComicListViewController : UICollectionViewController <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic, strong) RLMResults *comics;
 
