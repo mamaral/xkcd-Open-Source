@@ -11,6 +11,7 @@
 
 static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 static NSString * const ComicFavoritedNotification = @"ComicFavorited";
+static NSString * const ComicReadNotification = @"ComicRead";
 static NSString * const kComicKey = @"comic";
 static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
 
@@ -51,6 +52,7 @@ static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
 - (RLMResults *)allSavedComics;
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString;
 - (RLMResults *)allFavorites;
+- (RLMResults *)allUnread;
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler;
 
 

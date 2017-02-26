@@ -83,18 +83,27 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 #pragma mark - Saving comics
 
 - (void)saveComics:(NSArray *)comics {
+    NSParameterAssert(comics);
+
     [self.realm beginWriteTransaction];
     [self.realm addOrUpdateObjectsFromArray:comics];
     [self.realm commitWriteTransaction];
 }
 
 - (void)markComicViewed:(Comic *)comic {
+    NSParameterAssert(comic);
+
     [self.realm beginWriteTransaction];
     comic.viewed = YES;
     [self.realm commitWriteTransaction];
+
+    // Broadcast this comic was read.
+    [[NSNotificationCenter defaultCenter] postNotificationName:ComicReadNotification object:nil userInfo:@{kComicKey: comic}];
 }
 
 - (void)markComic:(Comic *)comic favorited:(BOOL)favorited {
+    NSParameterAssert(comic);
+
     [self.realm beginWriteTransaction];
     comic.favorite = favorited;
     [self.realm commitWriteTransaction];
@@ -163,6 +172,10 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 - (RLMResults *)allFavorites {
     return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]] sortedResultsUsingProperty:@"num" ascending:NO];
+}
+
+- (RLMResults *)allUnread {
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]] sortedResultsUsingProperty:@"num" ascending:NO];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {

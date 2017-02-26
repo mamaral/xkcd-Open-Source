@@ -8,7 +8,6 @@
 
 #import "ComicListViewController.h"
 #import <UIView+Facade.h>
-#import "DataManager.h"
 #import "ThemeManager.h"
 #import "LoadingView.h"
 #import "Comic.h"
@@ -19,6 +18,7 @@
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kComicListFavoritesTitle = @"Favorites";
+static NSString * const kComicListUnreadTitle = @"Unread";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
 static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 
@@ -87,9 +87,6 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
     self.noResultsLabel.textColor = [UIColor blackColor];
     self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
     [self.collectionView addSubview:self.noResultsLabel];
-
-    // Fetch comics whenever we get notified more are available.
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComicsFromDB) name:NewComicsAvailableNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -131,8 +128,15 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
         [self cancelSearch];
     }
 
-    NSString *favoritesTitle = [self.presenter isFilteringFavorites] ? @"Show All Comics" : @"Show Favorites";
-    UIAlertAction *toggleFavs = [UIAlertAction actionWithTitle:favoritesTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *viewAll = [UIAlertAction actionWithTitle:@"View All Comics" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.presenter handleShowAllComics];
+    }];
+
+    UIAlertAction *viewUnread = [UIAlertAction actionWithTitle:@"View All Unread" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.presenter toggleUnread];
+    }];
+
+    UIAlertAction *toggleFavs = [UIAlertAction actionWithTitle:@"View Favorites" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter toggleFilterFavorites];
     }];
 
@@ -152,20 +156,28 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
-    RLMResults *favorites = [[DataManager sharedInstance] allFavorites];
+    // Allow them to view all if we're filtering in any way.
+    if (self.presenter.isFilteringUnread || self.presenter.isFilteringFavorites) {
+        [alertController addAction:viewAll];
+    }
+    // Allow them to view unread if we're not already.
+    if (!self.presenter.isFilteringUnread) {
+        [alertController addAction:viewUnread];
+    }
 
-    if (favorites.count > 0) {
+    // Allow them to view favorites if we're not already and they have favorites.
+    if (!self.presenter.isFilteringFavorites && [self.presenter hasFavorites]) {
         [alertController addAction:toggleFavs];
     }
 
     [alertController addAction:viewRandom];
 
-    NSInteger bookmarkIndex = [[DataManager sharedInstance] bookmarkedComicNumber];
-
-    if (bookmarkIndex > 0) {
+    // Allow them to view bookmarked comic if they have one.
+    if ([self.presenter bookmarkedComic]) {
         [alertController addAction:viewBookmark];
     }
 
+    // Always allow to clear cache and cancel.
     [alertController addAction:clearCache];
     [alertController addAction:cancel];
 
@@ -173,13 +185,13 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 }
 
 - (void)viewBookmark {
-    Comic *bookmarkedComic = [[DataManager sharedInstance] bookmarkedComic];
-    [self showComic:bookmarkedComic atIndexPath:nil];
+    Comic *bookmarkedComic = [self.presenter bookmarkedComic];
+    [self showComic:bookmarkedComic];
 }
 
 - (void)showClearCacheConfirmation {
     UIAlertAction *clearCache = [UIAlertAction actionWithTitle:@"Clear Cache" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-//        [self clearCache];
+        [self.presenter handleClearCache];
     }];
 
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
@@ -191,34 +203,17 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
     [self.navigationController presentViewController:alertController animated:YES completion:nil];
 }
 
-//- (void)clearCache {
-//    [[DataManager sharedInstance] clearCache];
-//
-//    [self loadComicsFromDB];
-//
-//    [self handleInitialLoadBegan];
-//
-//    [[DataManager sharedInstance] downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-//        if (error && [[DataManager sharedInstance] allSavedComics].count == 0) {
-//
-//        } else if (numberOfNewComics > 0) {
-//            [self loadComicsFromDB];
-//        }
-//    }];
-//}
-
-- (void)showComic:(Comic *)comic atIndexPath:(NSIndexPath *)indexPath {
+- (void)showComic:(Comic *)comic {
     ComicViewController *comicVC = [ComicViewController new];
     comicVC.delegate = self;
-    //comicVC.allowComicNavigation = !self.searching && !self.filteringFavorites;
+    comicVC.allowComicNavigation = !self.presenter.isSearching && !self.presenter.isFilteringFavorites;
     comicVC.comic = comic;
     [self.navigationController pushViewController:comicVC animated:YES];
 }
 
 - (void)showRandomComic {
-    [self cancelAllNavBarActions];
-
-    [self showComic:[[DataManager sharedInstance] randomComic] atIndexPath:nil];
+    Comic *randomComic = [self.presenter randomComic];
+    [self showComic:randomComic];
 }
 
 
@@ -245,12 +240,14 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Comic *comic = self.comics[indexPath.item];
 
-    if (comic.isInteractive || [[DataManager sharedInstance].knownInteractiveComicNumbers containsObject:@(comic.num)]) {
+    // If we should show this comic as interactive, use the web view controller, otherwise
+    // use the normal comic presentation method.
+    if ([self.presenter shouldShowComicAsInteractive:comic]) {
         ComicWebViewController *comicWebVC = [ComicWebViewController new];
         comicWebVC.comic = comic;
         [self.navigationController pushViewController:comicWebVC animated:YES];
     } else {
-        [self showComic:comic atIndexPath:indexPath];
+        [self showComic:comic];
     }
 }
 
@@ -296,7 +293,7 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 }
 
 - (Comic *)comicViewController:(ComicViewController *)comicViewController randomComic:(Comic *)currentComic {
-    return [[DataManager sharedInstance] randomComic];
+    return [self.presenter randomComic];
 }
 
 
@@ -333,47 +330,6 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
     [self.presenter cancelSearch];
 }
 
-- (void)toggleFilterFavorites {
-//    if (!self.filteringFavorites) {
-//        self.filteringFavorites = YES;
-//        self.searching = NO;
-//
-//        [self filterFavorites];
-//    } else {
-//        [self cancelAllNavBarActions];
-//    }
-}
-
-- (void)searchForComicsWithSearchString:(NSString *)searchString {
-    self.comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
-
-    self.noResultsLabel.text = kNoSearchResultsMessage;
-
-    [self handleSearchOrFilterCompleteWithScroll:YES];
-}
-
-- (void)filterFavorites {
-    self.comics = [[DataManager sharedInstance] allFavorites];
-
-    self.noResultsLabel.text = kNoFavoritesMessage;
-
-    [self handleSearchOrFilterCompleteWithScroll:NO];
-}
-
-- (void)handleSearchOrFilterCompleteWithScroll:(BOOL)scroll {
-    if (self.comics.count > 0) {
-        self.noResultsLabel.hidden = YES;
-
-        if (scroll) {
-            [self.collectionView setContentOffset:CGPointZero animated:YES];
-        }
-    } else {
-        self.noResultsLabel.hidden = NO;
-    }
-
-    [self.collectionView reloadData];
-}
-
 
 #pragma mark - Comic cell delegate
 
@@ -385,21 +341,6 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
         self.altView.comic = nil;
         [self.altView dismiss];
     }
-}
-
-
-#pragma mark - Nav bar state
-
-- (void)cancelAllNavBarActions {
-    self.searchBar.text = @"";
-    self.comics = [[DataManager sharedInstance] allSavedComics];
-    self.noResultsLabel.hidden = YES;
-
-    self.navigationItem.leftBarButtonItem = self.searchButton;
-    self.navigationItem.titleView = nil;
-
-    [self.collectionView setContentOffset:CGPointZero animated:YES];
-    [self.collectionView reloadData];
 }
 
 
@@ -437,11 +378,17 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
     // If we're filtering favorites, update our title
     if (self.presenter.isFilteringFavorites) {
         self.title = kComicListFavoritesTitle;
+    } else if (self.presenter.isFilteringUnread) {
+        self.title = kComicListUnreadTitle;
     } else if (self.presenter.isSearching) {
         self.noResultsLabel.hidden = self.comics.count > 0;
     } else {
         self.title = kComicListTitle;
     }
+}
+
+- (void)didEncounterLoadingError {
+
 }
 
 @end
