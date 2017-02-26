@@ -18,6 +18,7 @@
 #import "ComicListFlowLayout.h"
 #import "ComicViewController.h"
 #import "ComicCell.h"
+#import "XKCDDeviceManager.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kComicListFavoritesTitle = @"Favorites";
@@ -195,6 +196,12 @@ static NSString * const kOK = @"OK";
     [alertController addAction:clearCache];
     [alertController addAction:cancel];
 
+    if ([XKCDDeviceManager isPad]) {
+        UIPopoverPresentationController *popoverController = alertController.popoverPresentationController;
+        popoverController.barButtonItem = self.navigationItem.rightBarButtonItem;
+        popoverController.sourceView = self.view;
+    }
+
     [self.navigationController presentViewController:alertController animated:YES completion:nil];
 }
 
@@ -210,7 +217,7 @@ static NSString * const kOK = @"OK";
 
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:kCancel style:UIAlertActionStyleCancel handler:nil];
 
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kAreYouSure message:kClearCacheWarning preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kAreYouSure message:kClearCacheWarning preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
     [alertController addAction:clearCache];
     [alertController addAction:cancel];
 
