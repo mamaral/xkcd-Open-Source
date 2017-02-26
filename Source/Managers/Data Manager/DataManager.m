@@ -9,7 +9,7 @@
 #import "DataManager.h"
 #import "RequestManager.h"
 
-static NSInteger const kCurrentSchemaVersion = 4;
+static NSInteger const kCurrentSchemaVersion = 5;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
@@ -69,6 +69,9 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
                 // Set the default bookmark value.
                 newObject[@"isBookmark"] = @(NO);
+
+                // Set the explain URL string.
+                newObject[@"explainURLString"] = [NSString stringWithFormat:@"%@/%@", kExplainURLBase, comicNumber];
             }];
         }
     };

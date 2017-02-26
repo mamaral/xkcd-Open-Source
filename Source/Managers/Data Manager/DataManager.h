@@ -14,6 +14,7 @@ static NSString * const ComicFavoritedNotification = @"ComicFavorited";
 static NSString * const ComicReadNotification = @"ComicRead";
 static NSString * const kComicKey = @"comic";
 static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
+static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 
 @interface DataManager : NSObject
 

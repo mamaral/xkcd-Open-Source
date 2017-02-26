@@ -29,6 +29,8 @@ static NSString * const kBookmarkImageName = @"bookmark";
 static NSString * const kBookmarkOffImageName = @"bookmark_off";
 static NSString * const kMoreImageName = @"more";
 
+static NSString * const kExplainTitle = @"Explain";
+
 static CGFloat const kDefaultXKCDTitleFontSize = 20.0;
 static CGFloat const kDefaultSearchBarFontSize = 12.0;
 

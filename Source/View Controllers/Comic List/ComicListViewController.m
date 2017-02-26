@@ -38,7 +38,7 @@ static NSString * const kErrorLoadingMessage = @"An error occurred while loading
 static NSString * const kErrorTitle = @"Oops!";
 static NSString * const kOK = @"OK";
 
-@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView>
+@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate>
 
 @property (nonatomic, strong) RLMResults *comics;
 
@@ -85,6 +85,7 @@ static NSString * const kOK = @"OK";
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
 
     self.altView = [AltView new];
+    self.altView.delegate = self;
     self.altView.alpha = 0.0;
 
     self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
@@ -229,6 +230,13 @@ static NSString * const kOK = @"OK";
     [self showComic:randomComic];
 }
 
+- (void)showExplanationForComic:(Comic *)comic {
+    ComicWebViewController *comicWebVC = [ComicWebViewController new];
+    comicWebVC.title = kExplainTitle;
+    comicWebVC.URLString = comic.explainURLString;
+    [self.navigationController pushViewController:comicWebVC animated:YES];
+}
+
 
 #pragma mark - UICollectionViewDataSource
 
@@ -257,7 +265,8 @@ static NSString * const kOK = @"OK";
     // use the normal comic presentation method.
     if ([self.presenter shouldShowComicAsInteractive:comic]) {
         ComicWebViewController *comicWebVC = [ComicWebViewController new];
-        comicWebVC.comic = comic;
+        comicWebVC.title = comic.title;
+        comicWebVC.URLString = comic.comicURLString;
         [self.navigationController pushViewController:comicWebVC animated:YES];
     } else {
         [self showComic:comic];
@@ -416,6 +425,14 @@ static NSString * const kOK = @"OK";
     }];
     [errorAlert addAction:okAction];
     [self.navigationController presentViewController:errorAlert animated:YES completion:nil];
+}
+
+
+#pragma mark - Alt view delegate
+
+- (void)altView:(AltView *)altView didSelectExplainForComic:(Comic *)comic {
+    [altView dismiss];
+    [self showExplanationForComic:comic];
 }
 
 @end
