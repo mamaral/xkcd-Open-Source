@@ -372,7 +372,7 @@ static NSString * const kOK = @"OK";
     [searchBar resignFirstResponder];
 
     // Scroll to the top now that results will be changing.
-    [self.collectionView setContentOffset:CGPointZero animated:YES];
+    [self.collectionView setContentOffset:CGPointMake(0.0, self.collectionView.contentInset.top) animated:YES];
 
     // Tell our presenter to search.
     [self.presenter searchForComicsWithText:searchBar.text];
@@ -407,11 +407,12 @@ static NSString * const kOK = @"OK";
         self.title = kComicListFavoritesTitle;
     } else if (self.presenter.isFilteringUnread) {
         self.title = kComicListUnreadTitle;
-    } else if (self.presenter.isSearching) {
-        self.noResultsLabel.hidden = self.comics.count > 0;
     } else {
         self.title = kComicListTitle;
     }
+
+    // If we're searching and have no results, show the no results label.
+    self.noResultsLabel.hidden = !(self.presenter.isSearching && self.comics.count == 0);
 }
 
 - (void)didEncounterLoadingError {
