@@ -16,7 +16,6 @@
 
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
 
-static NSString * const kReviewAlertActionEvent = @"Asked To Leave Review";
 static NSString * const kLeaveAReviewButtonTitle = @"Leave A Review";
 static NSString * const kDontAskAgainButtonTitle = @"No... Leave me alone!";
 
@@ -24,11 +23,6 @@ static NSString * const kReviewAlertTitle = @"Tell us what you think!";
 static NSString * const kReviewAlertMessage = @"We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
 
 static NSTimeInterval const kReviewAlertDelay = 30.0;
-
-static NSString * const kComicListTabBarTitle = @"Comics";
-static NSString * const kComicListTabBarImageName = @"comic_list";
-static NSString * const kMoreTabBarTitle = @"More";
-static NSString * const kMoreTabBarImageName = @"more";
 
 @interface AppDelegate ()
 

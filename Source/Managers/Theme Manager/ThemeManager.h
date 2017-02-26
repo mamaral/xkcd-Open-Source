@@ -27,6 +27,7 @@ static NSString * const kFacebookImageName = @"facebook";
 static NSString * const kTwitterImageName = @"twitter";
 static NSString * const kBookmarkImageName = @"bookmark";
 static NSString * const kBookmarkOffImageName = @"bookmark_off";
+static NSString * const kMoreImageName = @"more";
 
 static CGFloat const kDefaultXKCDTitleFontSize = 20.0;
 static CGFloat const kDefaultSearchBarFontSize = 12.0;
@@ -56,6 +57,7 @@ static CGFloat const kDefaultParallaxValue = 10.0;
 + (UIImage *)twitterImage;
 + (UIImage *)bookmarkedImage;
 + (UIImage *)bookmarkedOffImage;
++ (UIImage *)moreImage;
 
 + (void)addBorderToLayer:(CALayer *)layer radius:(CGFloat)radius color:(UIColor *)color;
 + (void)addShadowToLayer:(CALayer *)layer radius:(CGFloat)radius opacity:(CGFloat)opacity;

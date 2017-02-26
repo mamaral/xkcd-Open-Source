@@ -90,7 +90,7 @@ static NSString * const kOK = @"OK";
     self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
     self.navigationItem.leftBarButtonItem = self.searchButton;
 
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:kMenuButtonTitle style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[ThemeManager moreImage] style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
     self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -393,7 +393,7 @@ static NSString * const kOK = @"OK";
     self.comics = comicList;
     [self.collectionView reloadData];
 
-    // If we're filtering favorites, update our title
+    // Update UI components based on our state.
     if (self.presenter.isFilteringFavorites) {
         self.title = kComicListFavoritesTitle;
     } else if (self.presenter.isFilteringUnread) {

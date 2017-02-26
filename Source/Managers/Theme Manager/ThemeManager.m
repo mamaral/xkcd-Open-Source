@@ -80,6 +80,10 @@
     return [UIImage imageNamed:kBookmarkOffImageName];
 }
 
++ (UIImage *)moreImage {
+    return [UIImage imageNamed:kMoreImageName];
+}
+
 
 #pragma mark - CALayer schtuff
 
