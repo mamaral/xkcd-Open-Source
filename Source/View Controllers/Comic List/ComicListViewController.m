@@ -111,9 +111,6 @@ static NSString * const kOK = @"OK";
     // If our presenter tells us an initial load is required, disable the navigation buttons
     // and tell it to handle the initial load.
     if ([self.presenter isInitialLoadRequired]) {
-        self.navigationItem.leftBarButtonItem.enabled = NO;
-        self.navigationItem.rightBarButtonItem.enabled = NO;
-        
         [self.presenter handleInitialLoad];
     }
 }
@@ -377,13 +374,18 @@ static NSString * const kOK = @"OK";
 
 - (void)didStartLoadingComics {
     [LoadingView showInView:self.view];
+
+    // Disable nav buttons while loading.
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
 - (void)didFinishLoadingComics {
     [LoadingView handleDoneLoading];
 
-    self.navigationItem.leftBarButtonItem.enabled = NO;
-    self.navigationItem.rightBarButtonItem.enabled = NO;
+    // Re-enable nav buttons now that loading is complete.
+    self.navigationItem.leftBarButtonItem.enabled = YES;
+    self.navigationItem.rightBarButtonItem.enabled = YES;
 }
 
 - (void)comicListDidChange:(RLMResults *)comicList {
@@ -410,8 +412,6 @@ static NSString * const kOK = @"OK";
 
     UIAlertController *errorAlert = [UIAlertController alertControllerWithTitle:kErrorTitle message:kErrorLoadingMessage preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:kOK style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        self.navigationItem.leftBarButtonItem.enabled = NO;
-        self.navigationItem.rightBarButtonItem.enabled = NO;
         [self.presenter handleInitialLoad];
     }];
     [errorAlert addAction:okAction];
