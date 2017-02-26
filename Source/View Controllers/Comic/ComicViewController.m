@@ -97,7 +97,6 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.view addSubview:self.buttonContainerView];
 
     self.bookmarkButton.adjustsImageWhenHighlighted = NO;
-    [self.bookmarkButton setImage:[ThemeManager bookmarkedOffImage] forState:UIControlStateNormal];
     [self.bookmarkButton addTarget:self action:@selector(toggleBookmark) forControlEvents:UIControlEventTouchDown];
     [self.buttonContainerView addSubview:self.bookmarkButton];
 
@@ -230,7 +229,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 - (void)toggleBookmark {
     // If this is currently bookmarked, un-bookmark it, and vice-versa.
-    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComic];
+    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComicNumber];
     NSInteger bookmarkedComicNum = isCurrentlyBookmarked ? 0 : self.comic.num;
 
     [[DataManager sharedInstance] setBookmarkedComic:bookmarkedComicNum];
@@ -240,7 +239,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 }
 
 - (void)updateBookmarkButtonImage {
-    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComic];
+    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComicNumber];
     UIImage *newImage = isCurrentlyBookmarked ? [ThemeManager bookmarkedImage] : [ThemeManager bookmarkedOffImage];
     [self.bookmarkButton setImage:newImage forState:UIControlStateNormal];
 }

@@ -10,6 +10,8 @@
 #import "Comic.h"
 
 static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
+static NSString * const ComicFavoritedNotification = @"ComicFavorited";
+static NSString * const kComicKey = @"comic";
 static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
 
 @interface DataManager : NSObject
@@ -39,7 +41,8 @@ static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
 
 #pragma mark - Bookmarked Comic
 
-- (NSInteger)bookmarkedComic;
+- (Comic *)bookmarkedComic;
+- (NSInteger)bookmarkedComicNumber;
 - (void)setBookmarkedComic:(NSInteger)bookmarkedComic;
 
 
@@ -71,5 +74,10 @@ static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
 
 - (BOOL)hasAskedForReview;
 - (void)setHasAskedForReview:(BOOL)hasAsked;
+
+
+#pragma mark - Clearing Cache
+
+- (void)clearCache;
 
 @end

@@ -25,6 +25,10 @@ static NSString * const kReviewAlertMessage = @"We worked hard to create the bes
 
 static NSTimeInterval const kReviewAlertDelay = 30.0;
 
+static NSString * const kComicListTabBarTitle = @"Comics";
+static NSString * const kComicListTabBarImageName = @"comic_list";
+static NSString * const kMoreTabBarTitle = @"More";
+static NSString * const kMoreTabBarImageName = @"more";
 
 @interface AppDelegate ()
 
@@ -53,12 +57,19 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
     [self setupThirdPartyLibraries];
     [self setupPushNotifications];
 
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];;
     [self.window makeKeyAndVisible];
 
     [self askNicelyForAReviewIfNecessary];
 
     return YES;
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    // Whenever the app becomes active clear the badge.
+    if (application.applicationIconBadgeNumber > 0) {
+        application.applicationIconBadgeNumber = 0;
+    }
 }
 
 
@@ -67,7 +78,6 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 - (void)setupThirdPartyLibraries {
     [ThemeManager setupTheme];
     [Fabric with:@[CrashlyticsKit, TwitterKit]];
-
 }
 
 

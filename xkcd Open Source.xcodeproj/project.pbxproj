@@ -33,6 +33,7 @@
 		277317101B06DF9300ED7978 /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2773170F1B06DF9300ED7978 /* ThemeManager.m */; };
 		277317161B06E3E600ED7978 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 277317151B06E3E600ED7978 /* LoadingView.m */; };
 		2774C40B1CC70CA2003B215A /* ComicWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2774C40A1CC70CA2003B215A /* ComicWebViewController.m */; };
+		279D3B0C1E58C4D600476B13 /* ComicListPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 279D3B0B1E58C4D600476B13 /* ComicListPresenter.m */; };
 		27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */; };
 		27AE51DA1B10DF8F0090292A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27AE51D91B10DF8F0090292A /* LaunchScreen.xib */; };
 		27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984A91B0D641700684AA1 /* ComicTests.m */; };
@@ -102,7 +103,7 @@
 		2714CCBC1B05667400ADF009 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2715C2EC1B090AFD00F50645 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		2715C2ED1B090AFD00F50645 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
-		27570E2F1DFC929B00E91019 /* xkcd Open Source.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "xkcd Open Source.entitlements"; sourceTree = "<group>"; };
+		27570E2F1DFC929B00E91019 /* xkcd Open Source.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "xkcd Open Source.entitlements"; path = "../../../xkcd Open Source.entitlements"; sourceTree = "<group>"; };
 		2769EEA11B7ACFC5004C0C44 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = SOURCE_ROOT; };
 		2769EEA21B7ACFC5004C0C44 /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle; sourceTree = SOURCE_ROOT; };
 		2769EEA31B7ACFC5004C0C44 /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterCore.framework; sourceTree = SOURCE_ROOT; };
@@ -128,6 +129,8 @@
 		277317151B06E3E600ED7978 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		2774C4091CC70CA2003B215A /* ComicWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicWebViewController.h; sourceTree = "<group>"; };
 		2774C40A1CC70CA2003B215A /* ComicWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicWebViewController.m; sourceTree = "<group>"; };
+		279D3B0A1E58C4D600476B13 /* ComicListPresenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicListPresenter.h; sourceTree = "<group>"; };
+		279D3B0B1E58C4D600476B13 /* ComicListPresenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicListPresenter.m; sourceTree = "<group>"; };
 		27AE1AD21B08CFE6002D5280 /* ComicListFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicListFlowLayout.h; sourceTree = "<group>"; };
 		27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicListFlowLayout.m; sourceTree = "<group>"; };
 		27AE51D91B10DF8F0090292A /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -220,7 +223,6 @@
 		2714CCA91B05667400ADF009 = {
 			isa = PBXGroup;
 			children = (
-				27570E2F1DFC929B00E91019 /* xkcd Open Source.entitlements */,
 				2714CCB41B05667400ADF009 /* Source */,
 				27B9849F1B0D602D00684AA1 /* xkcdOSTests */,
 				270C3E841D9777BF003CF197 /* xkcdToday */,
@@ -246,6 +248,7 @@
 				2714CCD71B05669000ADF009 /* App Delegate */,
 				277316F41B056A4600ED7978 /* Models */,
 				277316EE1B05679500ED7978 /* Managers */,
+				279D3B091E58C4B400476B13 /* Presenters */,
 				2714CCD61B05668900ADF009 /* View Controllers */,
 				277317121B06E3D300ED7978 /* Views */,
 				27AE1AD11B08CFC2002D5280 /* Layout */,
@@ -257,6 +260,7 @@
 		2714CCB51B05667400ADF009 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				27570E2F1DFC929B00E91019 /* xkcd Open Source.entitlements */,
 				2714CCB61B05667400ADF009 /* Info.plist */,
 				2714CCB71B05667400ADF009 /* main.m */,
 			);
@@ -385,6 +389,15 @@
 				2774C40A1CC70CA2003B215A /* ComicWebViewController.m */,
 			);
 			name = "Comic Web View Controller";
+			sourceTree = "<group>";
+		};
+		279D3B091E58C4B400476B13 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				279D3B0A1E58C4D600476B13 /* ComicListPresenter.h */,
+				279D3B0B1E58C4D600476B13 /* ComicListPresenter.m */,
+			);
+			name = Presenters;
 			sourceTree = "<group>";
 		};
 		27AE1AD01B08CF0B002D5280 /* Comic */ = {
@@ -837,6 +850,7 @@
 				2714CCB81B05667400ADF009 /* main.m in Sources */,
 				277317161B06E3E600ED7978 /* LoadingView.m in Sources */,
 				277317101B06DF9300ED7978 /* ThemeManager.m in Sources */,
+				279D3B0C1E58C4D600476B13 /* ComicListPresenter.m in Sources */,
 				27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

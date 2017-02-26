@@ -7,6 +7,7 @@
 //
 
 #import "Comic.h"
+#import "DataManager.h"
 
 @implementation Comic
 
@@ -52,6 +53,13 @@
 
 + (NSString *)generateComicURLStringFromNumber:(NSInteger)number {
     return number > 0 ? [NSString stringWithFormat:@"%@/%ld", kShareURLBase, (long)number] : kShareURLBase;
+}
+
+
+#pragma mark - Custom Getters
+
+- (BOOL)isBookmark {
+    return [[DataManager sharedInstance] bookmarkedComicNumber] == self.num;
 }
 
 

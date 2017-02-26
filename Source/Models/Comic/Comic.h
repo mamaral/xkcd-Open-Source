@@ -46,6 +46,8 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 @property BOOL favorite;
 @property BOOL isInteractive;
 
+@property (nonatomic) BOOL isBookmark;
+
 
 #pragma mark - Initialization
 

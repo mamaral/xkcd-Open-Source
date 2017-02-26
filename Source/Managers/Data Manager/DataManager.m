@@ -9,7 +9,7 @@
 #import "DataManager.h"
 #import "RequestManager.h"
 
-static NSInteger const kCurrentSchemaVersion = 3;
+static NSInteger const kCurrentSchemaVersion = 4;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
@@ -66,6 +66,9 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
                 // Generate the URL string for the comic.
                 newObject[@"comicURLString"] = [Comic generateComicURLStringFromNumber:[comicNumber integerValue]];
+
+                // Set the default bookmark value.
+                newObject[@"isBookmark"] = @(NO);
             }];
         }
     };
@@ -95,6 +98,9 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     [self.realm beginWriteTransaction];
     comic.favorite = favorited;
     [self.realm commitWriteTransaction];
+
+    // Broadcast this comic was favorited.
+    [[NSNotificationCenter defaultCenter] postNotificationName:ComicFavoritedNotification object:nil userInfo:@{kComicKey: comic}];
 }
 
 
@@ -111,7 +117,13 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 #pragma mark - Bookmarked Comic
 
-- (NSInteger)bookmarkedComic {
+- (Comic *)bookmarkedComic {
+    NSInteger number = [self bookmarkedComicNumber];
+    NSString *primaryKey = [NSString stringWithFormat:@"%ld", (long)number];
+    return [Comic objectForPrimaryKey:primaryKey];
+}
+
+- (NSInteger)bookmarkedComicNumber {
     return [self.defaults integerForKey:kBookmarkedComicKey];
 }
 
@@ -248,6 +260,17 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 - (void)setHasAskedForReview:(BOOL)hasAsked {
     [[NSUserDefaults standardUserDefaults] setBool:hasAsked forKey:kHasAskedForReviewKey];
+}
+
+
+#pragma mark - Clearing Cache
+
+- (void)clearCache {
+    [self setBookmarkedComic:0];
+    [self setLatestComicDownloaded:0];
+    [self.realm transactionWithBlock:^{
+        [self.realm deleteAllObjects];
+    }];
 }
 
 @end
