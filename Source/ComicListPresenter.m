@@ -60,14 +60,17 @@
     [self.view didStartLoadingComics];
 
     [self.dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-        [self.view didFinishLoadingComics];
-        
-        if (error) {
+        RLMResults *savedComicsAfterLoad = [self.dataManager allSavedComics];
+
+        // If an error occurred and we have no saved comics, tell the view an error occurred.
+        if (error && savedComicsAfterLoad.count == 0) {
             [self.view didEncounterLoadingError];
             return;
         }
 
-        self.comics = [self.dataManager allSavedComics];
+        [self.view didFinishLoadingComics];
+
+        self.comics = savedComicsAfterLoad;
         [self.view comicListDidChange:self.comics];
     }];
 }
@@ -197,20 +200,7 @@
     self.comics = [self.dataManager allSavedComics];
     [self.view comicListDidChange:self.comics];
 
-    [self.view didStartLoadingComics];
-
-    [[DataManager sharedInstance] downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-        [self.view didFinishLoadingComics];
-        
-        RLMResults *savedComicsAfterLoad = [self.dataManager allSavedComics];
-        if (error && savedComicsAfterLoad.count == 0) {
-            [self.view didEncounterLoadingError];
-            return;
-        }
-
-        self.comics = savedComicsAfterLoad;
-        [self.view comicListDidChange:self.comics];
-    }];
+    [self handleInitialLoad];
 }
 
 @end

@@ -15,12 +15,28 @@
 #import "ComicWebViewController.h"
 #import "AltView.h"
 #import "ComicListPresenter.h"
+#import "ComicListFlowLayout.h"
+#import "ComicViewController.h"
+#import "ComicCell.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kComicListFavoritesTitle = @"Favorites";
 static NSString * const kComicListUnreadTitle = @"Unread";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
 static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
+static NSString * const kMenuButtonTitle = @"...";
+static NSString * const kViewAllComics = @"View All Comics";
+static NSString * const kViewAllUnread = @"View All Unread";
+static NSString * const kViewAllFavorites = @"View Favorites";
+static NSString * const kViewRandom = @"View Random Comic";
+static NSString * const kViewBookmark = @"View Bookmarked Comic";
+static NSString * const kClearCache = @"Clear Cache";
+static NSString * const kCancel = @"Cancel";
+static NSString * const kAreYouSure = @"Are you sure?";
+static NSString * const kClearCacheWarning = @"This will set all comics as unread, reset all favorites, and clear your bookmark if you have one set.";
+static NSString * const kErrorLoadingMessage = @"An error occurred while loading this content. Please check your connection and try again.";
+static NSString * const kErrorTitle = @"Oops!";
+static NSString * const kOK = @"OK";
 
 @interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView>
 
@@ -74,7 +90,7 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
     self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
     self.navigationItem.leftBarButtonItem = self.searchButton;
 
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:kMenuButtonTitle style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
     self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -128,31 +144,31 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
         [self cancelSearch];
     }
 
-    UIAlertAction *viewAll = [UIAlertAction actionWithTitle:@"View All Comics" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *viewAll = [UIAlertAction actionWithTitle:kViewAllComics style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter handleShowAllComics];
     }];
 
-    UIAlertAction *viewUnread = [UIAlertAction actionWithTitle:@"View All Unread" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *viewUnread = [UIAlertAction actionWithTitle:kViewAllUnread style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter toggleUnread];
     }];
 
-    UIAlertAction *toggleFavs = [UIAlertAction actionWithTitle:@"View Favorites" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *toggleFavs = [UIAlertAction actionWithTitle:kViewAllFavorites style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter toggleFilterFavorites];
     }];
 
-    UIAlertAction *viewRandom = [UIAlertAction actionWithTitle:@"View Random Comic" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *viewRandom = [UIAlertAction actionWithTitle:kViewRandom style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self showRandomComic];
     }];
 
-    UIAlertAction *viewBookmark = [UIAlertAction actionWithTitle:@"View Bookmarked Comic" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *viewBookmark = [UIAlertAction actionWithTitle:kViewBookmark style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self viewBookmark];
     }];
 
-    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:@"Clear Cache" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:kClearCache style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self showClearCacheConfirmation];
     }];
 
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:kCancel style:UIAlertActionStyleCancel handler:nil];
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
@@ -190,13 +206,13 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 }
 
 - (void)showClearCacheConfirmation {
-    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:@"Clear Cache" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:kClearCache style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter handleClearCache];
     }];
 
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:kCancel style:UIAlertActionStyleCancel handler:nil];
 
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Are you sure?" message:@"This will set all comics as unread, reset all favorites, and clear your bookmark if you have one set." preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kAreYouSure message:kClearCacheWarning preferredStyle:UIAlertControllerStyleActionSheet];
     [alertController addAction:clearCache];
     [alertController addAction:cancel];
 
@@ -308,7 +324,7 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
         UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 40.0)];
 
         UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-        UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelSearch)];
+        UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:kCancel style:UIBarButtonItemStylePlain target:self action:@selector(cancelSearch)];
 
         [toolbar setItems:@[spacer, cancel]];
         self.searchBar.inputAccessoryView = toolbar;
@@ -388,7 +404,18 @@ static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
 }
 
 - (void)didEncounterLoadingError {
+    if ([LoadingView isVisible]) {
+        [LoadingView dismiss];
+    }
 
+    UIAlertController *errorAlert = [UIAlertController alertControllerWithTitle:kErrorTitle message:kErrorLoadingMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:kOK style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.navigationItem.leftBarButtonItem.enabled = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+        [self.presenter handleInitialLoad];
+    }];
+    [errorAlert addAction:okAction];
+    [self.navigationController presentViewController:errorAlert animated:YES completion:nil];
 }
 
 @end

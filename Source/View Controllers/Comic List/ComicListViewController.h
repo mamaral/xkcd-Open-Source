@@ -7,10 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Realm/Realm.h>
-#import "ComicListFlowLayout.h"
-#import "ComicViewController.h"
-#import "ComicCell.h"
 
 @interface ComicListViewController : UICollectionViewController
 
