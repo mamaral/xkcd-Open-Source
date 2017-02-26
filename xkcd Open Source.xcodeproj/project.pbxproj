@@ -625,6 +625,9 @@
 							com.apple.BackgroundModes = {
 								enabled = 0;
 							};
+							com.apple.Push = {
+								enabled = 1;
+							};
 						};
 					};
 					27B9849D1B0D602D00684AA1 = {
@@ -1022,6 +1025,7 @@
 			baseConfigurationReference = A2969305AA6551B43D83A5AF /* Pods-xkcd Open Source.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "xkcd Open Source.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
@@ -1044,6 +1048,7 @@
 			baseConfigurationReference = 519A4E3677845845A222CB4C /* Pods-xkcd Open Source.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "xkcd Open Source.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
