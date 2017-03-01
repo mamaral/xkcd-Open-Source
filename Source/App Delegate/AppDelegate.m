@@ -16,7 +16,6 @@
 
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
 
-static NSString * const kReviewAlertActionEvent = @"Asked To Leave Review";
 static NSString * const kLeaveAReviewButtonTitle = @"Leave A Review";
 static NSString * const kDontAskAgainButtonTitle = @"No... Leave me alone!";
 
@@ -24,7 +23,6 @@ static NSString * const kReviewAlertTitle = @"Tell us what you think!";
 static NSString * const kReviewAlertMessage = @"We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
 
 static NSTimeInterval const kReviewAlertDelay = 30.0;
-
 
 @interface AppDelegate ()
 
@@ -53,12 +51,19 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
     [self setupThirdPartyLibraries];
     [self setupPushNotifications];
 
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];;
     [self.window makeKeyAndVisible];
 
     [self askNicelyForAReviewIfNecessary];
 
     return YES;
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    // Whenever the app becomes active clear the badge.
+    if (application.applicationIconBadgeNumber > 0) {
+        application.applicationIconBadgeNumber = 0;
+    }
 }
 
 
@@ -67,7 +72,6 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 - (void)setupThirdPartyLibraries {
     [ThemeManager setupTheme];
     [Fabric with:@[CrashlyticsKit, TwitterKit]];
-
 }
 
 

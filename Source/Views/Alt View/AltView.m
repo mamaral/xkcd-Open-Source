@@ -12,6 +12,8 @@
 
 static CGFloat const kAltViewPadding = 10.0;
 
+static NSString * const kExplainText = @"Explain";
+
 @implementation AltView
 
 - (instancetype)init {
@@ -45,6 +47,18 @@ static CGFloat const kAltViewPadding = 10.0;
     self.altLabel.textAlignment = NSTextAlignmentCenter;
     self.altLabel.numberOfLines = 0;
     [self.containerView addSubview:self.altLabel];
+
+    self.explainButton = [UIButton new];
+    self.explainButton.titleLabel.font = [ThemeManager xkcdFontWithSize:15];
+    self.explainButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.explainButton.clipsToBounds = YES;
+    self.explainButton.showsTouchWhenHighlighted = YES;
+    self.explainButton.backgroundColor = [ThemeManager xkcdLightBlue];
+    [self.explainButton setTitle:kExplainText forState:UIControlStateNormal];
+    [self.explainButton addTarget:self action:@selector(handleExplain) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.explainButton];
+
+    [ThemeManager addBorderToLayer:self.explainButton.layer radius:3.0 color:[UIColor whiteColor]];
 }
 
 
@@ -75,6 +89,8 @@ static CGFloat const kAltViewPadding = 10.0;
 
         self.altLabel.adjustsFontSizeToFitWidth = YES;
     }
+
+    [self.explainButton anchorTopRightWithRightPadding:10.0 topPadding:10.0 width:100.0 height:40.0];
 }
 
 
@@ -116,6 +132,13 @@ static CGFloat const kAltViewPadding = 10.0;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [self dismiss];
+}
+
+
+#pragma mark - Explain
+
+- (void)handleExplain {
+    [self.delegate altView:self didSelectExplainForComic:self.comic];
 }
 
 @end

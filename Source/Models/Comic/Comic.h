@@ -41,10 +41,13 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 @property NSString *month;
 @property NSString *year;
 @property NSString *formattedDateString;
+@property NSString *explainURLString;
 @property CGFloat aspectRatio;
 @property BOOL viewed;
 @property BOOL favorite;
 @property BOOL isInteractive;
+
+@property (nonatomic) BOOL isBookmark;
 
 
 #pragma mark - Initialization

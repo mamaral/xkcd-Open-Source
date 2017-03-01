@@ -6,13 +6,13 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "twitter_small.png"
+      "filename" : "menu_small.png",
+      "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "twitter.png"
+      "filename" : "menu.png",
+      "scale" : "3x"
     }
   ],
   "info" : {

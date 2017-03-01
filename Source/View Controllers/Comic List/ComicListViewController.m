@@ -8,23 +8,49 @@
 
 #import "ComicListViewController.h"
 #import <UIView+Facade.h>
-#import "DataManager.h"
 #import "ThemeManager.h"
 #import "LoadingView.h"
 #import "Comic.h"
 #import "ComicCell.h"
 #import "ComicWebViewController.h"
 #import "AltView.h"
+#import "ComicListPresenter.h"
+#import "ComicListFlowLayout.h"
+#import "ComicViewController.h"
+#import "ComicCell.h"
+#import "XKCDDeviceManager.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
+static NSString * const kComicListFavoritesTitle = @"Favorites";
+static NSString * const kComicListUnreadTitle = @"Unread";
 static NSString * const kNoSearchResultsMessage = @"No results found...";
 static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
+static NSString * const kMenuButtonTitle = @"...";
+static NSString * const kViewAllComics = @"View All Comics";
+static NSString * const kViewAllUnread = @"View All Unread";
+static NSString * const kViewAllFavorites = @"View Favorites";
+static NSString * const kViewRandom = @"View Random Comic";
+static NSString * const kViewBookmark = @"View Bookmarked Comic";
+static NSString * const kClearCache = @"Clear Cache";
+static NSString * const kCancel = @"Cancel";
+static NSString * const kAreYouSure = @"Are you sure?";
+static NSString * const kClearCacheWarning = @"This will set delete all comics, set all as unread, reset all favorites, and clear your bookmark if you have one set.";
+static NSString * const kErrorLoadingMessage = @"An error occurred while loading this content. Please check your connection and try again.";
+static NSString * const kErrorTitle = @"Oops!";
+static NSString * const kOK = @"OK";
 
-static CGFloat const kRandomComicButtonSize = 60.0;
+@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate>
 
-@interface ComicListViewController ()
+@property (nonatomic, strong) RLMResults *comics;
+
+@property (nonatomic, strong) UIBarButtonItem *searchButton;
+
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) UILabel *noResultsLabel;
 
 @property (nonatomic, strong) AltView *altView;
+
+@property (nonatomic, strong) ComicListPresenter *presenter;
 
 @end
 
@@ -33,7 +59,16 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 - (instancetype)init {
     ComicListFlowLayout *comicListLayout = [ComicListFlowLayout new];
     comicListLayout.delegate = self;
-    return [super initWithCollectionViewLayout:comicListLayout];
+    self = [super initWithCollectionViewLayout:comicListLayout];
+
+    if (!self) {
+        return nil;
+    }
+
+    self.presenter = [[ComicListPresenter alloc] initWithView:self];;
+    self.comics = [self.presenter getSavedComicList];
+    
+    return self;
 }
 
 
@@ -42,7 +77,7 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = kComicListTitle;
+    self.navigationItem.title = kComicListTitle;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationController.navigationBar.backIndicatorImage = [ThemeManager backImage];
     self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [ThemeManager backImage];
@@ -55,13 +90,13 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 	}
 
     self.altView = [AltView new];
+    self.altView.delegate = self;
     self.altView.alpha = 0.0;
 
     self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearch)];
     self.navigationItem.leftBarButtonItem = self.searchButton;
 
-    [self setFilterFavoritesButtonOn:NO];
-
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[ThemeManager moreImage] style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
     self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -74,117 +109,143 @@ static CGFloat const kRandomComicButtonSize = 60.0;
     self.noResultsLabel.textColor = [UIColor blackColor];
     self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
     [self.collectionView addSubview:self.noResultsLabel];
-
-    self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
-    self.randomComicButton.imageEdgeInsets = UIEdgeInsetsMake(1, 1, 1, 1);
-    self.randomComicButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-    self.randomComicButton.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-    [self.randomComicButton addTarget:self action:@selector(showRandomComic) forControlEvents:UIControlEventTouchUpInside];
-    [self.randomComicButton setBackgroundColor:[ThemeManager xkcdLightBlue]];
-    [self.view addSubview:self.randomComicButton];
-
-    [ThemeManager addBorderToLayer:self.randomComicButton.layer radius:kRandomComicButtonSize / 2.0 color:[UIColor whiteColor]];
-    [ThemeManager addShadowToLayer:self.randomComicButton.layer radius:10.0 opacity:0.6];
-
-    // Initially we want to grab what we have stored.
-    [self loadComicsFromDB];
-
-    // Fetch comics whenever we get notified more are available.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComicsFromDB) name:NewComicsAvailableNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    // If we don't have any comics and we're not filtering/searching, it's the first launch - let's show the loading view
-    // and wait for the data manager to tell us new comics are available.
-    if (!self.searching && self.comics.count == 0 && ![LoadingView isVisible] && !self.filteringFavorites) {
-        [self handleInitialLoadBegan];
-    }
-
-    // If we're filtering favorites, fetch an updated list just in case something was unfavorited.
-    if (self.filteringFavorites) {
-        [self filterFavorites];
-    } else if (!self.searching) {
-        [self loadComicsFromDB];
-    } else {
-        [self.collectionView reloadData];
+    // If our presenter tells us an initial load is required, disable the navigation buttons
+    // and tell it to handle the initial load.
+    if ([self.presenter isInitialLoadRequired]) {
+        [self.presenter handleInitialLoad];
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
 
-    // Clear the app badge here, as we can be reasonably sure at this point anything new
-    // will have been seen, and we won't run into annoying issues related to the app
-    // life-cycle that we've experienced before.
-    if ([UIApplication sharedApplication].applicationIconBadgeNumber > 0) {
-        [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    }
-}
+#pragma mark - Layout
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
 
+    // Layout the loading view if it's visible.
     if ([LoadingView isVisible]) {
         [LoadingView handleLayoutChanged];
     }
 
+    // Layout the no-results label if it's visible.
     if (!self.noResultsLabel.isHidden) {
         [self.noResultsLabel anchorTopCenterFillingWidthWithLeftAndRightPadding:15 topPadding:15 height:20];
     }
-
-    [self.randomComicButton anchorBottomRightWithRightPadding:15 bottomPadding:15 width:kRandomComicButtonSize height:kRandomComicButtonSize];
-}
-
-
-#pragma mark - Loading data
-
-- (void)loadComicsFromDB {
-    // Grab the comics we have saved.
-    self.comics = [[DataManager sharedInstance] allSavedComics];
-
-    // If we have comics and the loading view is present, tell it to handle that we're done.
-    if (self.comics.count > 0 && [LoadingView isVisible]) {
-        [self handleInitialLoadEnded];
-    }
-
-    // Reload the collection view.
-    [self.collectionView reloadData];
-}
-
-- (void)handleInitialLoadBegan {
-    self.navigationItem.leftBarButtonItem.enabled = NO;
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-
-    [LoadingView showInView:self.view];
-}
-
-- (void)handleInitialLoadEnded {
-    self.navigationItem.leftBarButtonItem.enabled = YES;
-    self.navigationItem.rightBarButtonItem.enabled = YES;
-
-    [LoadingView handleDoneLoading];
 }
 
 
 #pragma mark - Actions
 
-- (void)showComic:(Comic *)comic atIndexPath:(NSIndexPath *)indexPath {
+- (void)showMenu {
+    // Cancel searching if we were.
+    if (self.presenter.isSearching) {
+        [self cancelSearch];
+    }
+
+    UIAlertAction *viewAll = [UIAlertAction actionWithTitle:kViewAllComics style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.presenter handleShowAllComics];
+    }];
+
+    UIAlertAction *viewUnread = [UIAlertAction actionWithTitle:kViewAllUnread style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.presenter toggleUnread];
+    }];
+
+    UIAlertAction *toggleFavs = [UIAlertAction actionWithTitle:kViewAllFavorites style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.presenter toggleFilterFavorites];
+    }];
+
+    UIAlertAction *viewRandom = [UIAlertAction actionWithTitle:kViewRandom style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self showRandomComic];
+    }];
+
+    UIAlertAction *viewBookmark = [UIAlertAction actionWithTitle:kViewBookmark style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self viewBookmark];
+    }];
+
+    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:kClearCache style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self showClearCacheConfirmation];
+    }];
+
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:kCancel style:UIAlertActionStyleCancel handler:nil];
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+    // Allow them to view all if we're filtering in any way.
+    if (self.presenter.isFilteringUnread || self.presenter.isFilteringFavorites) {
+        [alertController addAction:viewAll];
+    }
+    // Allow them to view unread if we're not already.
+    if (!self.presenter.isFilteringUnread) {
+        [alertController addAction:viewUnread];
+    }
+
+    // Allow them to view favorites if we're not already and they have favorites.
+    if (!self.presenter.isFilteringFavorites && [self.presenter hasFavorites]) {
+        [alertController addAction:toggleFavs];
+    }
+
+    [alertController addAction:viewRandom];
+
+    // Allow them to view bookmarked comic if they have one.
+    if ([self.presenter bookmarkedComic]) {
+        [alertController addAction:viewBookmark];
+    }
+
+    // Always allow to clear cache and cancel.
+    [alertController addAction:clearCache];
+    [alertController addAction:cancel];
+
+    if ([XKCDDeviceManager isPad]) {
+        UIPopoverPresentationController *popoverController = alertController.popoverPresentationController;
+        popoverController.barButtonItem = self.navigationItem.rightBarButtonItem;
+        popoverController.sourceView = self.view;
+    }
+
+    [self.navigationController presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)viewBookmark {
+    Comic *bookmarkedComic = [self.presenter bookmarkedComic];
+    [self showComic:bookmarkedComic];
+}
+
+- (void)showClearCacheConfirmation {
+    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:kClearCache style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self.presenter handleClearCache];
+    }];
+
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:kCancel style:UIAlertActionStyleCancel handler:nil];
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kAreYouSure message:kClearCacheWarning preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
+    [alertController addAction:clearCache];
+    [alertController addAction:cancel];
+
+    [self.navigationController presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)showComic:(Comic *)comic {
     ComicViewController *comicVC = [ComicViewController new];
     comicVC.delegate = self;
-    comicVC.allowComicNavigation = !self.searching && !self.filteringFavorites;
+    comicVC.allowComicNavigation = !self.presenter.isSearching && !self.presenter.isFilteringFavorites;
     comicVC.comic = comic;
     [self.navigationController pushViewController:comicVC animated:YES];
 }
 
 - (void)showRandomComic {
-    [self cancelAllNavBarActions];
+    Comic *randomComic = [self.presenter randomComic];
+    [self showComic:randomComic];
+}
 
-    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
-
-    [self showComic:[[DataManager sharedInstance] randomComic] atIndexPath:nil];
+- (void)showExplanationForComic:(Comic *)comic {
+    ComicWebViewController *comicWebVC = [ComicWebViewController new];
+    comicWebVC.title = kExplainTitle;
+    comicWebVC.URLString = comic.explainURLString;
+    [self.navigationController pushViewController:comicWebVC animated:YES];
 }
 
 
@@ -211,12 +272,15 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Comic *comic = self.comics[indexPath.item];
 
-    if (comic.isInteractive || [[DataManager sharedInstance].knownInteractiveComicNumbers containsObject:@(comic.num)]) {
+    // If we should show this comic as interactive, use the web view controller, otherwise
+    // use the normal comic presentation method.
+    if ([self.presenter shouldShowComicAsInteractive:comic]) {
         ComicWebViewController *comicWebVC = [ComicWebViewController new];
-        comicWebVC.comic = comic;
+        comicWebVC.title = comic.title;
+        comicWebVC.URLString = comic.comicURLString;
         [self.navigationController pushViewController:comicWebVC animated:YES];
     } else {
-        [self showComic:comic atIndexPath:indexPath];
+        [self showComic:comic];
     }
 }
 
@@ -262,80 +326,41 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 }
 
 - (Comic *)comicViewController:(ComicViewController *)comicViewController randomComic:(Comic *)currentComic {
-    return [[DataManager sharedInstance] randomComic];
+    return [self.presenter randomComic];
 }
 
 
 #pragma mark - Searching and Filtering
 
 - (void)toggleSearch {
-    if (!self.searching) {
-        self.searching = YES;
-        self.filteringFavorites = NO;
+    if (!self.presenter.isSearching) {
+        [self.presenter handleSearchBegan];
 
-        [self enableSearch];
+        [self.searchBar becomeFirstResponder];
+
+        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 40.0)];
+
+        UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:kCancel style:UIBarButtonItemStylePlain target:self action:@selector(cancelSearch)];
+
+        [toolbar setItems:@[spacer, cancel]];
+        self.searchBar.inputAccessoryView = toolbar;
+
+        self.navigationItem.titleView = self.searchBar;
     } else {
-        [self cancelAllNavBarActions];
+        [self cancelSearch];
     }
 }
 
-- (void)toggleFilterFavorites:(UIBarButtonItem *)favoritesButton {
-    if (!self.filteringFavorites) {
-        [self setFilterFavoritesButtonOn:YES];
+- (void)cancelSearch {
+    // Clear the search text, dismiss the keyboard, clear the title view, and
+    // tell the presenter to cancel.
+    self.searchBar.text = nil;
+    [self.searchBar resignFirstResponder];
 
-        self.filteringFavorites = YES;
-        self.searching = NO;
+    self.navigationItem.titleView = nil;
 
-        [self filterFavorites];
-    } else {
-        [self cancelAllNavBarActions];
-    }
-}
-
-- (void)setFilterFavoritesButtonOn:(BOOL)on {
-    UIImage *favoriteButtonImage = on ? [ThemeManager favoriteImage] : [ThemeManager favoriteOffImage];
-
-    self.filterFavoritesButton = [[UIBarButtonItem alloc] initWithImage:[favoriteButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] landscapeImagePhone:nil style:UIBarButtonItemStylePlain target:self action:@selector(toggleFilterFavorites:)];
-    self.filterFavoritesButton.imageInsets = UIEdgeInsetsMake(10, 10, 10, 10);
-
-    self.navigationItem.rightBarButtonItem = self.filterFavoritesButton;
-}
-
-- (void)enableSearch {
-    [self.searchBar becomeFirstResponder];
-
-    self.navigationItem.titleView = self.searchBar;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAllNavBarActions)];
-}
-
-- (void)searchForComicsWithSearchString:(NSString *)searchString {
-    self.comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchString];
-
-    self.noResultsLabel.text = kNoSearchResultsMessage;
-
-    [self handleSearchOrFilterCompleteWithScroll:YES];
-}
-
-- (void)filterFavorites {
-    self.comics = [[DataManager sharedInstance] allFavorites];
-
-    self.noResultsLabel.text = kNoFavoritesMessage;
-
-    [self handleSearchOrFilterCompleteWithScroll:NO];
-}
-
-- (void)handleSearchOrFilterCompleteWithScroll:(BOOL)scroll {
-    if (self.comics.count > 0) {
-        self.noResultsLabel.hidden = YES;
-
-        if (scroll) {
-            [self.collectionView setContentOffset:CGPointZero animated:YES];
-        }
-    } else {
-        self.noResultsLabel.hidden = NO;
-    }
-
-    [self.collectionView reloadData];
+    [self.presenter cancelSearch];
 }
 
 
@@ -352,30 +377,74 @@ static CGFloat const kRandomComicButtonSize = 60.0;
 }
 
 
-#pragma mark - Nav bar state
-
-- (void)cancelAllNavBarActions {
-    self.searching = NO;
-    self.filteringFavorites = NO;
-    self.searchBar.text = @"";
-    self.comics = [[DataManager sharedInstance] allSavedComics];
-    self.noResultsLabel.hidden = YES;
-
-    self.navigationItem.leftBarButtonItem = self.searchButton;
-    self.navigationItem.titleView = nil;
-
-    [self setFilterFavoritesButtonOn:NO];
-
-    [self.collectionView setContentOffset:CGPointZero animated:YES];
-    [self.collectionView reloadData];
-}
-
-
-
 #pragma mark - UISearchBar delegate
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self searchForComicsWithSearchString:searchBar.text];
+    [searchBar resignFirstResponder];
+
+    // Scroll to the top now that results will be changing.
+    [self.collectionView setContentOffset:CGPointMake(0.0, self.collectionView.contentInset.top) animated:YES];
+
+    // Tell our presenter to search.
+    [self.presenter searchForComicsWithText:searchBar.text];
+}
+
+
+#pragma mark - Comic view protocol
+
+- (void)didStartLoadingComics {
+    [LoadingView showInView:self.view];
+
+    // Disable nav buttons while loading.
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+}
+
+- (void)didFinishLoadingComics {
+    [LoadingView handleDoneLoading];
+
+    // Re-enable nav buttons now that loading is complete.
+    self.navigationItem.leftBarButtonItem.enabled = YES;
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+}
+
+- (void)comicListDidChange:(RLMResults *)comicList {
+    // Update our data source and reload the collection view.
+    self.comics = comicList;
+    [self.collectionView reloadData];
+
+    // Update UI components based on our state.
+    if (self.presenter.isFilteringFavorites) {
+        self.title = kComicListFavoritesTitle;
+    } else if (self.presenter.isFilteringUnread) {
+        self.title = kComicListUnreadTitle;
+    } else {
+        self.title = kComicListTitle;
+    }
+
+    // If we're searching and have no results, show the no results label.
+    self.noResultsLabel.hidden = !(self.presenter.isSearching && self.comics.count == 0);
+}
+
+- (void)didEncounterLoadingError {
+    if ([LoadingView isVisible]) {
+        [LoadingView dismiss];
+    }
+
+    UIAlertController *errorAlert = [UIAlertController alertControllerWithTitle:kErrorTitle message:kErrorLoadingMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:kOK style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.presenter handleInitialLoad];
+    }];
+    [errorAlert addAction:okAction];
+    [self.navigationController presentViewController:errorAlert animated:YES completion:nil];
+}
+
+
+#pragma mark - Alt view delegate
+
+- (void)altView:(AltView *)altView didSelectExplainForComic:(Comic *)comic {
+    [altView dismiss];
+    [self showExplanationForComic:comic];
 }
 
 #pragma mark - UIViewController previewing delegate

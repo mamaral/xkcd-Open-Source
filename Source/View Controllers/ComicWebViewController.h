@@ -12,6 +12,6 @@
 
 @interface ComicWebViewController : UIViewController
 
-@property (nonatomic, strong) Comic *comic;
+@property (nonatomic, strong) NSString *URLString;
 
 @end

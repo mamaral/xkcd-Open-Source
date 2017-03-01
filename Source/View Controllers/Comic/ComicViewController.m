@@ -15,6 +15,7 @@
 #import <TwitterKit/TwitterKit.h>
 #import "AltView.h"
 #import "XKCDDeviceManager.h"
+#import "ComicWebViewController.h"
 
 static CGFloat const kComicViewControllerPadding = 10.0;
 static CGFloat const kComicViewControllerSmallPadding = 7.0;
@@ -22,7 +23,7 @@ static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kBottomButtonPadSize = 70.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
-@interface ComicViewController ()
+@interface ComicViewController () <AltViewDelegate>
 
 @property (nonatomic) BOOL viewedAlt;
 
@@ -65,7 +66,9 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.altTextButton = [UIButton new];
     self.bookmarkButton = [UIButton buttonWithType:UIButtonTypeCustom];
+
     self.altView = [AltView new];
+    self.altView.delegate = self;
 
     self.buttonSize = [XKCDDeviceManager isPad] ? kBottomButtonPadSize : kBottomButtonSize;
 
@@ -80,6 +83,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(handleShareButton)];
 
     self.containerView.backgroundColor = [UIColor whiteColor];
@@ -97,7 +101,6 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.view addSubview:self.buttonContainerView];
 
     self.bookmarkButton.adjustsImageWhenHighlighted = NO;
-    [self.bookmarkButton setImage:[ThemeManager bookmarkedOffImage] forState:UIControlStateNormal];
     [self.bookmarkButton addTarget:self action:@selector(toggleBookmark) forControlEvents:UIControlEventTouchDown];
     [self.buttonContainerView addSubview:self.bookmarkButton];
 
@@ -234,7 +237,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 - (void)toggleBookmark {
     // If this is currently bookmarked, un-bookmark it, and vice-versa.
-    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComic];
+    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComicNumber];
     NSInteger bookmarkedComicNum = isCurrentlyBookmarked ? 0 : self.comic.num;
 
     [[DataManager sharedInstance] setBookmarkedComic:bookmarkedComicNum];
@@ -244,7 +247,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 }
 
 - (void)updateBookmarkButtonImage {
-    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComic];
+    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComicNumber];
     UIImage *newImage = isCurrentlyBookmarked ? [ThemeManager bookmarkedImage] : [ThemeManager bookmarkedOffImage];
     [self.bookmarkButton setImage:newImage forState:UIControlStateNormal];
 }
@@ -291,6 +294,18 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     shareSheet.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
     [self presentViewController:shareSheet animated:YES completion:nil];
+}
+
+
+#pragma mark - Alt view delegate
+
+- (void)altView:(AltView *)altView didSelectExplainForComic:(Comic *)comic {
+    [altView dismiss];
+
+    ComicWebViewController *comicWebVC = [ComicWebViewController new];
+    comicWebVC.title = kExplainTitle;
+    comicWebVC.URLString = comic.explainURLString;
+    [self.navigationController pushViewController:comicWebVC animated:YES];
 }
 
 @end

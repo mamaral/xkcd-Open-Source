@@ -7,24 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Realm/Realm.h>
-#import "ComicListFlowLayout.h"
-#import "ComicViewController.h"
-#import "ComicCell.h"
 
-@interface ComicListViewController : UICollectionViewController <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, UIViewControllerPreviewingDelegate>
+@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic, strong) RLMResults *comics;
 
 @property (nonatomic, strong) UIBarButtonItem *searchButton;
-@property (nonatomic, strong) UIBarButtonItem *filterFavoritesButton;
 
-@property (nonatomic, strong) UIButton *randomComicButton;
-
-@property (nonatomic) BOOL searching;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UILabel *noResultsLabel;
 
-@property (nonatomic) BOOL filteringFavorites;
+@property (nonatomic, strong) AltView *altView;
+
+@property (nonatomic, strong) ComicListPresenter *presenter;
 
 @end

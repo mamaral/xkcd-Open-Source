@@ -9,7 +9,7 @@
 #import "DataManager.h"
 #import "RequestManager.h"
 
-static NSInteger const kCurrentSchemaVersion = 3;
+static NSInteger const kCurrentSchemaVersion = 5;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
@@ -66,6 +66,12 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
                 // Generate the URL string for the comic.
                 newObject[@"comicURLString"] = [Comic generateComicURLStringFromNumber:[comicNumber integerValue]];
+
+                // Set the default bookmark value.
+                newObject[@"isBookmark"] = @(NO);
+
+                // Set the explain URL string.
+                newObject[@"explainURLString"] = [NSString stringWithFormat:@"%@/%@", kExplainURLBase, comicNumber];
             }];
         }
     };
@@ -80,21 +86,33 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 #pragma mark - Saving comics
 
 - (void)saveComics:(NSArray *)comics {
+    NSParameterAssert(comics);
+
     [self.realm beginWriteTransaction];
     [self.realm addOrUpdateObjectsFromArray:comics];
     [self.realm commitWriteTransaction];
 }
 
 - (void)markComicViewed:(Comic *)comic {
+    NSParameterAssert(comic);
+
     [self.realm beginWriteTransaction];
     comic.viewed = YES;
     [self.realm commitWriteTransaction];
+
+    // Broadcast this comic was read.
+    [[NSNotificationCenter defaultCenter] postNotificationName:ComicReadNotification object:nil userInfo:@{kComicKey: comic}];
 }
 
 - (void)markComic:(Comic *)comic favorited:(BOOL)favorited {
+    NSParameterAssert(comic);
+
     [self.realm beginWriteTransaction];
     comic.favorite = favorited;
     [self.realm commitWriteTransaction];
+
+    // Broadcast this comic was favorited.
+    [[NSNotificationCenter defaultCenter] postNotificationName:ComicFavoritedNotification object:nil userInfo:@{kComicKey: comic}];
 }
 
 
@@ -111,7 +129,13 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 #pragma mark - Bookmarked Comic
 
-- (NSInteger)bookmarkedComic {
+- (Comic *)bookmarkedComic {
+    NSInteger number = [self bookmarkedComicNumber];
+    NSString *primaryKey = [NSString stringWithFormat:@"%ld", (long)number];
+    return [Comic objectForPrimaryKey:primaryKey];
+}
+
+- (NSInteger)bookmarkedComicNumber {
     return [self.defaults integerForKey:kBookmarkedComicKey];
 }
 
@@ -151,6 +175,10 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 - (RLMResults *)allFavorites {
     return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]] sortedResultsUsingProperty:@"num" ascending:NO];
+}
+
+- (RLMResults *)allUnread {
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]] sortedResultsUsingProperty:@"num" ascending:NO];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
@@ -248,6 +276,17 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 - (void)setHasAskedForReview:(BOOL)hasAsked {
     [[NSUserDefaults standardUserDefaults] setBool:hasAsked forKey:kHasAskedForReviewKey];
+}
+
+
+#pragma mark - Clearing Cache
+
+- (void)clearCache {
+    [self setBookmarkedComic:0];
+    [self setLatestComicDownloaded:0];
+    [self.realm transactionWithBlock:^{
+        [self.realm deleteAllObjects];
+    }];
 }
 
 @end

@@ -119,6 +119,9 @@
 
     [self sharedInstance].isVisible = YES;
 
+    [self sharedInstance].loadingLabel.text = @"Loading xkcd...";
+    [self sharedInstance].doneButton.alpha = 0.0;
+
     [UIView animateWithDuration:0.4 animations:^{
         [self sharedInstance].alpha = 1.0;
     }];

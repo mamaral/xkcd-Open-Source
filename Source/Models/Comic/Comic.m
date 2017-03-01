@@ -7,6 +7,7 @@
 //
 
 #import "Comic.h"
+#import "DataManager.h"
 
 @implementation Comic
 
@@ -34,6 +35,7 @@
     self.viewed = NO;
     self.favorite = NO;
     self.isInteractive = [dictionary[kIsInteractiveKey] boolValue];
+    self.explainURLString = [NSString stringWithFormat:@"%@/%@", kExplainURLBase, @(self.num)];
 
     NSString *month = self.month.length > 0 ? [[[NSDateFormatter new] monthSymbols] objectAtIndex:([self.month integerValue] - 1)] : @"";
     self.formattedDateString = (month.length > 0 && self.day.length > 0 && self.year.length > 0) ? [NSString stringWithFormat:@"%@ %@, %@", month, self.day, self.year] : @"";
@@ -52,6 +54,13 @@
 
 + (NSString *)generateComicURLStringFromNumber:(NSInteger)number {
     return number > 0 ? [NSString stringWithFormat:@"%@/%ld", kShareURLBase, (long)number] : kShareURLBase;
+}
+
+
+#pragma mark - Custom Getters
+
+- (BOOL)isBookmark {
+    return [[DataManager sharedInstance] bookmarkedComicNumber] == self.num;
 }
 
 
