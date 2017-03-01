@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ComicListViewController ()
+@interface ComicListViewController : UICollectionViewController
   
 @end
