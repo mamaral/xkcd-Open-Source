@@ -451,9 +451,11 @@ static NSString * const kOK = @"OK";
 
 - (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
 	NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
-	UICollectionViewLayoutAttributes *cellattrs = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
-	[previewingContext setSourceRect:cellattrs.frame];
+	UICollectionViewLayoutAttributes *cellAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
+	[previewingContext setSourceRect:cellAttributes.frame];
+	
 	Comic *comic = self.comics[indexPath.item];
+	
 	if (comic.isInteractive || [[DataManager sharedInstance].knownInteractiveComicNumbers containsObject:@(comic.num)]) {
 		ComicWebViewController *comicWebVC = [ComicWebViewController new];
 		comicWebVC.comic = comic;
@@ -469,8 +471,9 @@ static NSString * const kOK = @"OK";
 }
 
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-	if ([viewControllerToCommit isKindOfClass:[ComicViewController class]])
+	if ([viewControllerToCommit isKindOfClass:[ComicViewController class]]) {
 		((ComicViewController *)viewControllerToCommit).previewMode = NO;
+	}
 	[self.navigationController pushViewController:viewControllerToCommit animated:YES];
 }
 
