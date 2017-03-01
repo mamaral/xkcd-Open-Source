@@ -39,7 +39,7 @@ static NSString * const kErrorLoadingMessage = @"An error occurred while loading
 static NSString * const kErrorTitle = @"Oops!";
 static NSString * const kOK = @"OK";
 
-@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate>
+@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic, strong) RLMResults *comics;
 
