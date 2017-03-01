@@ -8,17 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate, UIViewControllerPreviewingDelegate>
-
-@property (nonatomic, strong) RLMResults *comics;
-
-@property (nonatomic, strong) UIBarButtonItem *searchButton;
-
-@property (nonatomic, strong) UISearchBar *searchBar;
-@property (nonatomic, strong) UILabel *noResultsLabel;
-
-@property (nonatomic, strong) AltView *altView;
-
-@property (nonatomic, strong) ComicListPresenter *presenter;
-
+@interface ComicListViewController ()
+  
 @end
