@@ -7,8 +7,8 @@
 "common.button.continue" = "Continue";
 
 // Loading
-"loding.button.title" = "Loading xkcd...";
-"loding.button.complete" = "Loading Complete!";
+"loading.button.title" = "Loading xkcd...";
+"loading.button.complete" = "Loading Complete!";
 
 // Reviews
 "review.alert.title" = "Tell us what you think!";
