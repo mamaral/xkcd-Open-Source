@@ -388,7 +388,7 @@
 				2774C4091CC70CA2003B215A /* ComicWebViewController.h */,
 				2774C40A1CC70CA2003B215A /* ComicWebViewController.m */,
 			);
-			name = "Comic Web View Controller";
+			path = "Comic Web View Controller";
 			sourceTree = "<group>";
 		};
 		279D3B091E58C4B400476B13 /* Presenters */ = {
@@ -397,7 +397,7 @@
 				279D3B0A1E58C4D600476B13 /* ComicListPresenter.h */,
 				279D3B0B1E58C4D600476B13 /* ComicListPresenter.m */,
 			);
-			name = Presenters;
+			path = Presenters;
 			sourceTree = "<group>";
 		};
 		27AE1AD01B08CF0B002D5280 /* Comic */ = {

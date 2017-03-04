@@ -85,9 +85,9 @@ static NSString * const kOK = @"OK";
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
 	
-	if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
-		[self registerForPreviewingWithDelegate:self sourceView:self.collectionView];
-	}
+    if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
+        [self registerForPreviewingWithDelegate:self sourceView:self.collectionView];
+    }
 
     self.altView = [AltView new];
     self.altView.delegate = self;
@@ -450,31 +450,31 @@ static NSString * const kOK = @"OK";
 #pragma mark - UIViewController previewing delegate
 
 - (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
-	NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
-	UICollectionViewLayoutAttributes *cellAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
-	[previewingContext setSourceRect:cellAttributes.frame];
+    NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
+    UICollectionViewLayoutAttributes *cellAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
+    [previewingContext setSourceRect:cellAttributes.frame];
+
+    Comic *comic = self.comics[indexPath.item];
 	
-	Comic *comic = self.comics[indexPath.item];
-	
-	if (comic.isInteractive || [[DataManager sharedInstance].knownInteractiveComicNumbers containsObject:@(comic.num)]) {
-		ComicWebViewController *comicWebVC = [ComicWebViewController new];
-		comicWebVC.comic = comic;
-		return comicWebVC;
-	} else {
-		ComicViewController *comicVC = [ComicViewController new];
-		comicVC.delegate = self;
-		comicVC.allowComicNavigation = !self.searching && !self.filteringFavorites;
-		comicVC.comic = comic;
-		comicVC.previewMode = YES;
-		return comicVC;
-	}
+    if (comic.isInteractive || [self.presenter shouldShowComicAsInteractive:comic]) {
+        ComicWebViewController *comicWebVC = [ComicWebViewController new];
+        comicWebVC.URLString = comic.comicURLString;
+        return comicWebVC;
+    } else {
+        ComicViewController *comicVC = [ComicViewController new];
+        comicVC.delegate = self;
+        comicVC.allowComicNavigation = !self.presenter.isSearching && !self.presenter.isFilteringFavorites;
+        comicVC.comic = comic;
+        comicVC.previewMode = YES;
+        return comicVC;
+    }
 }
 
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-	if ([viewControllerToCommit isKindOfClass:[ComicViewController class]]) {
-		((ComicViewController *)viewControllerToCommit).previewMode = NO;
-	}
-	[self.navigationController pushViewController:viewControllerToCommit animated:YES];
+    if ([viewControllerToCommit isKindOfClass:[ComicViewController class]]) {
+        ((ComicViewController *)viewControllerToCommit).previewMode = NO;
+    }
+    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
 }
 
 @end
