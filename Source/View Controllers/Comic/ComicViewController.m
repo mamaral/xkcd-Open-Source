@@ -23,13 +23,7 @@ static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kBottomButtonPadSize = 70.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
-static NSString * const kComicViewAccessibilityLabel = @"comic";
-static NSString * const kRandomButtonAccessibilityLabel = @"view random comic";
-static NSString * const kViewAltAccessibilityLabel = @"view alternative text";
-static NSString * const kFavoriteAccessibilityLabel = @"favorite this comic";
-static NSString * const kBookmarkAccessibilityLabel = @"bookmark this comic";
-static NSString * const kNextAccessibilityLabel = @"view previous comic";
-static NSString * const kPrevAccessibilityLabel = @"view next comic";
+static NSString * const kAltButtonText = @"Alt";
 
 @interface ComicViewController () <AltViewDelegate>
 
@@ -68,27 +62,27 @@ static NSString * const kPrevAccessibilityLabel = @"view next comic";
     self.containerView = [UIScrollView new];
 
     self.comicImageView = [UIImageView new];
-    self.comicImageView.accessibilityLabel = kComicViewAccessibilityLabel;
+    self.comicImageView.accessibilityLabel = NSLocalizedString(@"comic.view.comic", nil);
 
     self.buttonContainerView = [UIView new];
 
     self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.favoriteButton.accessibilityLabel = kFavoriteAccessibilityLabel;
+    self.favoriteButton.accessibilityLabel = NSLocalizedString(@"comic.view.favorite", nil);
 
     self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.randomComicButton.accessibilityLabel = kRandomButtonAccessibilityLabel;
+    self.randomComicButton.accessibilityLabel = NSLocalizedString(@"comic.view.view random", nil);
 
     self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.prevButton.accessibilityLabel = kPrevAccessibilityLabel;
+    self.prevButton.accessibilityLabel = NSLocalizedString(@"comic.view.prev", nil);
 
     self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.nextButton.accessibilityLabel = kNextAccessibilityLabel;
+    self.nextButton.accessibilityLabel = NSLocalizedString(@"comic.view.next", nil);
 
     self.altTextButton = [UIButton new];
-    self.altTextButton.accessibilityLabel = kViewAltAccessibilityLabel;
+    self.altTextButton.accessibilityLabel = NSLocalizedString(@"comic.view.alt", nil);
 
     self.bookmarkButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.bookmarkButton.accessibilityLabel = kBookmarkAccessibilityLabel;
+    self.bookmarkButton.accessibilityLabel = NSLocalizedString(@"comic.view.bookmark", nil);
 
     self.altView = [AltView new];
     self.altView.delegate = self;
@@ -155,7 +149,7 @@ static NSString * const kPrevAccessibilityLabel = @"view next comic";
     [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
     [self.buttonContainerView addSubview:self.nextButton];
 
-    [self.altTextButton setTitle:@"Alt" forState:UIControlStateNormal];
+    [self.altTextButton setTitle:kAltButtonText forState:UIControlStateNormal];
     [self.altTextButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.altTextButton setTitleColor:[[UIColor blackColor] colorWithAlphaComponent:0.7] forState:UIControlStateHighlighted];
     [self.altTextButton.titleLabel setFont:[ThemeManager xkcdFontWithSize:20.0]];

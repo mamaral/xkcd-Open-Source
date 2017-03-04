@@ -5,7 +5,6 @@
 "review.alert.dont ask again" = "No... Leave me alone!";
 
 // Comic List
-"comic.list.title" = "xkcd: Open Source";
 "comic.list.favorites title" = "Favorites";
 "comic.list.unread title" = "Unread";
 "comic.list.no search results" = "No results found...";
@@ -22,6 +21,15 @@
 
 // Common
 "common.button.ok" = "OK";
-"common.error.title" = "Oops!"
+"common.error.title" = "Oops!";
 "common.button.cancel" = "Cancel";
 "common.button.are you sure" = "Are you sure?";
+
+// Comic
+"comic.view.comic" = "comic";
+"comic.view.view random" = "view random comic";
+"comic.view.alt" = "view alternative text";
+"comic.view.favorite" = "favorite this comic";
+"comic.view.bookmark" = "bookmark this comic";
+"comic.view.prev" = "view previous comic";
+"comic.view.next" = "view next comic";
