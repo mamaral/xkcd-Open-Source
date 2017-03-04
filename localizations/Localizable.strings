@@ -3,3 +3,25 @@
 "review.alert.message" = "We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
 "review.alert.leave review" = "Leave A Review";
 "review.alert.dont ask again" = "No... Leave me alone!";
+
+// Comic List
+"comic.list.title" = "xkcd: Open Source";
+"comic.list.favorites title" = "Favorites";
+"comic.list.unread title" = "Unread";
+"comic.list.no search results" = "No results found...";
+"comic.list.no favorites" = "You have no favorites yet!";
+"comic.list.view all" = "View All Comics";
+"comic.list.view unread" = "View All Unread";
+"comic.list.view favorites" = "View Favorites";
+"comic.list.view random" = "View Random Comic";
+"comic.list.view bookmark" = "View Bookmarked Comic";
+"comic.list.clear cache" = "Clear Cache";
+"comic.list.clear cache warning" = "This will delete all comics, set all as unread, reset all favorites, and clear your bookmark if you have one set.";
+"comic.list.loading error" = "An error occurred while loading this content. Please check your connection and try again.";
+"comic.list.menu accessibility" = "menu";
+
+// Common
+"common.button.ok" = "OK";
+"common.error.title" = "Oops!"
+"common.button.cancel" = "Cancel";
+"common.button.are you sure" = "Are you sure?";

@@ -22,24 +22,6 @@
 #import "DataManager.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
-static NSString * const kComicListFavoritesTitle = @"Favorites";
-static NSString * const kComicListUnreadTitle = @"Unread";
-static NSString * const kNoSearchResultsMessage = @"No results found...";
-static NSString * const kNoFavoritesMessage = @"You have no favorites yet!";
-static NSString * const kMenuButtonTitle = @"...";
-static NSString * const kViewAllComics = @"View All Comics";
-static NSString * const kViewAllUnread = @"View All Unread";
-static NSString * const kViewAllFavorites = @"View Favorites";
-static NSString * const kViewRandom = @"View Random Comic";
-static NSString * const kViewBookmark = @"View Bookmarked Comic";
-static NSString * const kClearCache = @"Clear Cache";
-static NSString * const kCancel = @"Cancel";
-static NSString * const kAreYouSure = @"Are you sure?";
-static NSString * const kClearCacheWarning = @"This will set delete all comics, set all as unread, reset all favorites, and clear your bookmark if you have one set.";
-static NSString * const kErrorLoadingMessage = @"An error occurred while loading this content. Please check your connection and try again.";
-static NSString * const kErrorTitle = @"Oops!";
-static NSString * const kOK = @"OK";
-static NSString * const kMenuAccessibilityLabel = @"menu";
 
 @interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate, UIViewControllerPreviewingDelegate>
 
@@ -101,7 +83,7 @@ static NSString * const kMenuAccessibilityLabel = @"menu";
     self.navigationItem.leftBarButtonItem = self.searchButton;
 
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[ThemeManager moreImage] style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
-    self.navigationItem.rightBarButtonItem.accessibilityLabel = kMenuAccessibilityLabel;
+    self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"comic.list.menu accessibility", nil);
 
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
@@ -110,7 +92,7 @@ static NSString * const kMenuAccessibilityLabel = @"menu";
 
     self.noResultsLabel = [UILabel new];
     self.noResultsLabel.hidden = YES;
-    self.noResultsLabel.text = kNoSearchResultsMessage;
+    self.noResultsLabel.text = NSLocalizedString(@"comic.list.no search results", nil);
     self.noResultsLabel.font = [ThemeManager xkcdFontWithSize:18];
     self.noResultsLabel.textColor = [UIColor blackColor];
     self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
@@ -153,31 +135,38 @@ static NSString * const kMenuAccessibilityLabel = @"menu";
         [self cancelSearch];
     }
 
-    UIAlertAction *viewAll = [UIAlertAction actionWithTitle:kViewAllComics style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    NSString *viewAllTitle = NSLocalizedString(@"comic.list.view all", nil);
+    UIAlertAction *viewAll = [UIAlertAction actionWithTitle:viewAllTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter handleShowAllComics];
     }];
 
-    UIAlertAction *viewUnread = [UIAlertAction actionWithTitle:kViewAllUnread style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    NSString *viewUnreadTitle = NSLocalizedString(@"comic.list.view unread", nil);
+    UIAlertAction *viewUnread = [UIAlertAction actionWithTitle:viewUnreadTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter toggleUnread];
     }];
 
-    UIAlertAction *toggleFavs = [UIAlertAction actionWithTitle:kViewAllFavorites style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    NSString *viewFavsTitle = NSLocalizedString(@"comic.list.view favorites", nil);
+    UIAlertAction *toggleFavs = [UIAlertAction actionWithTitle:viewFavsTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter toggleFilterFavorites];
     }];
 
-    UIAlertAction *viewRandom = [UIAlertAction actionWithTitle:kViewRandom style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    NSString *viewRandomTitle = NSLocalizedString(@"comic.list.view random", nil);
+    UIAlertAction *viewRandom = [UIAlertAction actionWithTitle:viewRandomTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self showRandomComic];
     }];
 
-    UIAlertAction *viewBookmark = [UIAlertAction actionWithTitle:kViewBookmark style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    NSString *viewBookmarkTitle = NSLocalizedString(@"comic.list.view bookmark", nil);
+    UIAlertAction *viewBookmark = [UIAlertAction actionWithTitle:viewBookmarkTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self viewBookmark];
     }];
 
-    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:kClearCache style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    NSString *clearCacheTitle = NSLocalizedString(@"comic.list.clear cache", nil);
+    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:clearCacheTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self showClearCacheConfirmation];
     }];
 
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:kCancel style:UIAlertActionStyleCancel handler:nil];
+    NSString *cancelTitle = NSLocalizedString(@"common.button.cancel", nil);
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:nil];
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
@@ -221,13 +210,17 @@ static NSString * const kMenuAccessibilityLabel = @"menu";
 }
 
 - (void)showClearCacheConfirmation {
-    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:kClearCache style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    NSString *clearCacheTitle = NSLocalizedString(@"comic.list.clear cache", nil);
+    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:clearCacheTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter handleClearCache];
     }];
 
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:kCancel style:UIAlertActionStyleCancel handler:nil];
+    NSString *cancelTitle = NSLocalizedString(@"common.button.cancel", nil);;
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:nil];
 
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kAreYouSure message:kClearCacheWarning preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
+    NSString *areYouSureTitle = NSLocalizedString(@"common.button.are you sure", nil);
+    NSString *warning = NSLocalizedString(@"comic.list.clear cache warning", nil);
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:areYouSureTitle message:warning preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
     [alertController addAction:clearCache];
     [alertController addAction:cancel];
 
@@ -347,7 +340,9 @@ static NSString * const kMenuAccessibilityLabel = @"menu";
         UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 40.0)];
 
         UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-        UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:kCancel style:UIBarButtonItemStylePlain target:self action:@selector(cancelSearch)];
+
+        NSString *cancelTitle = NSLocalizedString(@"common.button.cancel", nil);
+        UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:cancelTitle style:UIBarButtonItemStylePlain target:self action:@selector(cancelSearch)];
 
         [toolbar setItems:@[spacer, cancel]];
         self.searchBar.inputAccessoryView = toolbar;
@@ -421,9 +416,9 @@ static NSString * const kMenuAccessibilityLabel = @"menu";
 
     // Update UI components based on our state.
     if (self.presenter.isFilteringFavorites) {
-        self.title = kComicListFavoritesTitle;
+        self.title = NSLocalizedString(@"comic.list.favorites title", nil);
     } else if (self.presenter.isFilteringUnread) {
-        self.title = kComicListUnreadTitle;
+        self.title = NSLocalizedString(@"comic.list.unread title", nil);
     } else {
         self.title = kComicListTitle;
     }
@@ -437,8 +432,11 @@ static NSString * const kMenuAccessibilityLabel = @"menu";
         [LoadingView dismiss];
     }
 
-    UIAlertController *errorAlert = [UIAlertController alertControllerWithTitle:kErrorTitle message:kErrorLoadingMessage preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:kOK style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    NSString *errorTitle = NSLocalizedString(@"common.error.title", nil);
+    NSString *errorMessage = NSLocalizedString(@"comic.list.loading error", nil);
+    NSString *okString = NSLocalizedString(@"common.button.ok", nil);
+    UIAlertController *errorAlert = [UIAlertController alertControllerWithTitle:errorTitle message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:okString style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.presenter handleInitialLoad];
     }];
     [errorAlert addAction:okAction];
