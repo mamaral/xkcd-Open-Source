@@ -41,6 +41,7 @@
 		27B984AE1B0FF19A00684AA1 /* DataManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984AD1B0FF19A00684AA1 /* DataManagerTests.m */; };
 		27B984B21B10152D00684AA1 /* StubManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984B11B10152D00684AA1 /* StubManager.m */; };
 		27B984B41B10CB8B00684AA1 /* RequestManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984B31B10CB8B00684AA1 /* RequestManagerTests.m */; };
+		27D66DCF1E6A637A001A4506 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27D66DCE1E6A6379001A4506 /* Localizable.strings */; };
 		27EC248F1D977B9000D29A4F /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F91B056EAC00ED7978 /* DataManager.m */; };
 		27EC24901D977BA300D29A4F /* Comic.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F61B056A6000ED7978 /* Comic.m */; };
 		27EC24911D977BA600D29A4F /* XKCDDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */; };
@@ -142,6 +143,7 @@
 		27B984B01B10152D00684AA1 /* StubManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StubManager.h; sourceTree = "<group>"; };
 		27B984B11B10152D00684AA1 /* StubManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StubManager.m; sourceTree = "<group>"; };
 		27B984B31B10CB8B00684AA1 /* RequestManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RequestManagerTests.m; path = "Test Utilities/RequestManagerTests.m"; sourceTree = "<group>"; };
+		27D66DCE1E6A6379001A4506 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = ../../localizations/Localizable.strings; sourceTree = "<group>"; };
 		27EE4A5E1B07BDAA001454A3 /* ComicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicViewController.h; sourceTree = "<group>"; };
 		27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicViewController.m; sourceTree = "<group>"; };
 		27F653671B154C5C00F3377D /* silent.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = silent.m4a; sourceTree = "<group>"; };
@@ -270,6 +272,7 @@
 		2714CCD51B05667E00ADF009 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				27D66DCE1E6A6379001A4506 /* Localizable.strings */,
 				27F653631B1548FF00F3377D /* Audio */,
 				2773170B1B06D1A100ED7978 /* Fonts */,
 				277317081B06CE0300ED7978 /* Gifs */,
@@ -674,6 +677,7 @@
 				27F653681B154C5C00F3377D /* silent.m4a in Resources */,
 				2769EEA51B7ACFC5004C0C44 /* TwitterKitResources.bundle in Resources */,
 				2714CCBD1B05667400ADF009 /* Images.xcassets in Resources */,
+				27D66DCF1E6A637A001A4506 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

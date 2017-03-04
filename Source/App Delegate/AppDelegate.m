@@ -16,12 +16,6 @@
 
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
 
-static NSString * const kLeaveAReviewButtonTitle = @"Leave A Review";
-static NSString * const kDontAskAgainButtonTitle = @"No... Leave me alone!";
-
-static NSString * const kReviewAlertTitle = @"Tell us what you think!";
-static NSString * const kReviewAlertMessage = @"We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
-
 static NSTimeInterval const kReviewAlertDelay = 30.0;
 
 @interface AppDelegate ()
@@ -110,18 +104,22 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 
     // After a short delay, ask the nice people to leave a review.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, kReviewAlertDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        UIAlertAction *goToReview = [UIAlertAction actionWithTitle:kLeaveAReviewButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString *reviewTitle = NSLocalizedString(@"review.alert.leave review", nil);
+        UIAlertAction *goToReview = [UIAlertAction actionWithTitle:reviewTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             NSURL *appStoreURL = [NSURL URLWithString:kAppStoreURLString];
             [[UIApplication sharedApplication] openURL:appStoreURL];
 
             [self.dataManager setHasAskedForReview:YES];
         }];
 
-        UIAlertAction *dontAskAgain = [UIAlertAction actionWithTitle:kDontAskAgainButtonTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        NSString *dontAskTitle = NSLocalizedString(@"review.alert.dont ask again", nil);
+        UIAlertAction *dontAskAgain = [UIAlertAction actionWithTitle:dontAskTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.dataManager setHasAskedForReview:YES];
         }];
 
-        UIAlertController *reviewAlertController = [UIAlertController alertControllerWithTitle:kReviewAlertTitle message:kReviewAlertMessage preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
+        NSString *alertTitle = NSLocalizedString(@"review.alert.title", nil);
+        NSString *alertMessage = NSLocalizedString(@"review.alert.message", nil);
+        UIAlertController *reviewAlertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
         [reviewAlertController addAction:goToReview];
         [reviewAlertController addAction:dontAskAgain];
 
