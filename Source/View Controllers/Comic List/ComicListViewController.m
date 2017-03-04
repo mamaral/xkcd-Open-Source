@@ -39,6 +39,7 @@ static NSString * const kClearCacheWarning = @"This will set delete all comics, 
 static NSString * const kErrorLoadingMessage = @"An error occurred while loading this content. Please check your connection and try again.";
 static NSString * const kErrorTitle = @"Oops!";
 static NSString * const kOK = @"OK";
+static NSString * const kMenuAccessibilityLabel = @"menu";
 
 @interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate, UIViewControllerPreviewingDelegate>
 
@@ -100,6 +101,8 @@ static NSString * const kOK = @"OK";
     self.navigationItem.leftBarButtonItem = self.searchButton;
 
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[ThemeManager moreImage] style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
+    self.navigationItem.rightBarButtonItem.accessibilityLabel = kMenuAccessibilityLabel;
+
     self.searchBar = [UISearchBar new];
     self.searchBar.delegate = self;
     self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -459,7 +462,7 @@ static NSString * const kOK = @"OK";
 
     Comic *comic = self.comics[indexPath.item];
 
-    if (comic.isInteractive || [[DataManager sharedInstance].knownInteractiveComicNumbers containsObject:@(comic.num)]) {
+    if (comic.isInteractive || [self.presenter shouldShowComicAsInteractive:comic]) {
         ComicWebViewController *comicWebVC = [ComicWebViewController new];
         comicWebVC.URLString = comic.comicURLString;
         return comicWebVC;

@@ -23,6 +23,14 @@ static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kBottomButtonPadSize = 70.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
+static NSString * const kComicViewAccessibilityLabel = @"comic";
+static NSString * const kRandomButtonAccessibilityLabel = @"view random comic";
+static NSString * const kViewAltAccessibilityLabel = @"view alternative text";
+static NSString * const kFavoriteAccessibilityLabel = @"favorite this comic";
+static NSString * const kBookmarkAccessibilityLabel = @"bookmark this comic";
+static NSString * const kNextAccessibilityLabel = @"view previous comic";
+static NSString * const kPrevAccessibilityLabel = @"view next comic";
+
 @interface ComicViewController () <AltViewDelegate>
 
 @property (nonatomic) BOOL viewedAlt;
@@ -58,14 +66,29 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
 
     self.containerView = [UIScrollView new];
+
     self.comicImageView = [UIImageView new];
+    self.comicImageView.accessibilityLabel = kComicViewAccessibilityLabel;
+
     self.buttonContainerView = [UIView new];
+
     self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.favoriteButton.accessibilityLabel = kFavoriteAccessibilityLabel;
+
     self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.randomComicButton.accessibilityLabel = kRandomButtonAccessibilityLabel;
+
     self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.prevButton.accessibilityLabel = kPrevAccessibilityLabel;
+
     self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.nextButton.accessibilityLabel = kNextAccessibilityLabel;
+
     self.altTextButton = [UIButton new];
+    self.altTextButton.accessibilityLabel = kViewAltAccessibilityLabel;
+
     self.bookmarkButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.bookmarkButton.accessibilityLabel = kBookmarkAccessibilityLabel;
 
     self.altView = [AltView new];
     self.altView.delegate = self;

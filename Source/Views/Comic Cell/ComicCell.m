@@ -41,6 +41,7 @@ static CGFloat const kFavoriteIconSize = 55.0;
     self.comicNumberButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.highlightedMask = [UIView new];
     self.favoritedIcon = [[UIImageView alloc] initWithImage:[ThemeManager favoriteImage]];
+    self.isAccessibilityElement = YES;
 
     [self generateCell];
 
@@ -120,6 +121,17 @@ static CGFloat const kFavoriteIconSize = 55.0;
 
 - (void)handleComicNumberSelected {
     [self.delegate comicCell:self didSelectComicAltWithComic:self.comic];
+}
+
+
+#pragma mark - Accessibility
+
+- (NSString *)accessibilityLabel {
+    return self.comic.safeTitle;
+}
+
+- (UIAccessibilityTraits)accessibilityTraits {
+    return UIAccessibilityTraitStaticText;
 }
 
 @end
