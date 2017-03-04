@@ -12,9 +12,6 @@
 
 static CGFloat const kAltViewPadding = 10.0;
 
-static NSString * const kExplainText = @"Explain";
-static NSString * const kExplainAccessibilityLabel = @"explain this comic";
-
 @implementation AltView
 
 - (instancetype)init {
@@ -54,13 +51,13 @@ static NSString * const kExplainAccessibilityLabel = @"explain this comic";
     [self.containerView addSubview:self.altLabel];
 
     self.explainButton = [UIButton new];
-    self.explainButton.accessibilityLabel = kExplainAccessibilityLabel;
+    self.explainButton.accessibilityLabel = NSLocalizedString(@"comic.explain.accessibility", nil);
     self.explainButton.titleLabel.font = [ThemeManager xkcdFontWithSize:15];
     self.explainButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     self.explainButton.clipsToBounds = YES;
     self.explainButton.showsTouchWhenHighlighted = YES;
     self.explainButton.backgroundColor = [ThemeManager xkcdLightBlue];
-    [self.explainButton setTitle:kExplainText forState:UIControlStateNormal];
+    [self.explainButton setTitle:NSLocalizedString(@"comic.explain.title", nil) forState:UIControlStateNormal];
     [self.explainButton addTarget:self action:@selector(handleExplain) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.explainButton];
 

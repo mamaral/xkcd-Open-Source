@@ -112,6 +112,7 @@ static NSString * const kAltButtonText = @"Alt";
 
     self.comicImageView.contentMode = UIViewContentModeScaleAspectFit;
     self.comicImageView.userInteractionEnabled = YES;
+    self.comicImageView.isAccessibilityElement = YES;
     [self.containerView addSubview:self.comicImageView];
 
     self.buttonContainerView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
@@ -198,6 +199,10 @@ static NSString * const kAltButtonText = @"Alt";
 
     self.title = comic.safeTitle;
     self.containerView.zoomScale = 1.0;
+
+    if (comic.transcript.length > 0) {
+        self.comicImageView.accessibilityLabel = comic.transcript;
+    }
 
     [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         if (image) {
