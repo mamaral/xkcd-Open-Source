@@ -44,7 +44,7 @@
     self.loadingLabel.backgroundColor = [UIColor whiteColor];
     self.loadingLabel.clipsToBounds = YES;
     self.loadingLabel.font = [ThemeManager xkcdFontWithSize:22];
-    self.loadingLabel.text = @"Loading xkcd...";
+    self.loadingLabel.text = NSLocalizedString(@"loading.button.title", nil);
     self.loadingLabel.textAlignment = NSTextAlignmentCenter;
     self.loadingLabel.textColor = [UIColor blackColor];
     [self addSubview:self.loadingLabel];
@@ -73,7 +73,7 @@
     [self.doneButton setBackgroundColor:[UIColor whiteColor]];
     [self.doneButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.doneButton setTitleColor:[[UIColor blackColor] colorWithAlphaComponent:0.5] forState:UIControlStateHighlighted];
-    [self.doneButton setTitle:@"Continue" forState:UIControlStateNormal];
+    [self.doneButton setTitle:NSLocalizedString(@"common.button.continue", nil) forState:UIControlStateNormal];
     [self.doneButton addTarget:[self class] action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.doneButton];
 
@@ -119,7 +119,7 @@
 
     [self sharedInstance].isVisible = YES;
 
-    [self sharedInstance].loadingLabel.text = @"Loading xkcd...";
+    [self sharedInstance].loadingLabel.text = NSLocalizedString(@"loading.button.title", nil);
     [self sharedInstance].doneButton.alpha = 0.0;
 
     [UIView animateWithDuration:0.4 animations:^{
@@ -139,7 +139,7 @@
     animation.type = kCATransitionFade;
     animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     [[self sharedInstance].loadingLabel.layer addAnimation:animation forKey:@"changeTextTransition"];
-    [self sharedInstance].loadingLabel.text = @"Loading Complete!";;
+    [self sharedInstance].loadingLabel.text = NSLocalizedString(@"loading.button.complete", nil);
 }
 
 + (void)dismiss {

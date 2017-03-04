@@ -1,3 +1,15 @@
+
+// Common
+"common.button.ok" = "OK";
+"common.error.title" = "Oops!";
+"common.button.cancel" = "Cancel";
+"common.button.are you sure" = "Are you sure?";
+"common.button.continue" = "Continue";
+
+// Loading
+"loding.button.title" = "Loading xkcd...";
+"loding.button.complete" = "Loading Complete!";
+
 // Reviews
 "review.alert.title" = "Tell us what you think!";
 "review.alert.message" = "We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
@@ -19,12 +31,6 @@
 "comic.list.loading error" = "An error occurred while loading this content. Please check your connection and try again.";
 "comic.list.menu accessibility" = "menu";
 
-// Common
-"common.button.ok" = "OK";
-"common.error.title" = "Oops!";
-"common.button.cancel" = "Cancel";
-"common.button.are you sure" = "Are you sure?";
-
 // Comic
 "comic.view.comic" = "comic";
 "comic.view.view random" = "view random comic";
@@ -33,3 +39,7 @@
 "comic.view.bookmark" = "bookmark this comic";
 "comic.view.prev" = "view previous comic";
 "comic.view.next" = "view next comic";
+
+// Explain
+"comic.explain.title" = "Explain";
+"comic.explain.accessibility" = "explain this comic";
