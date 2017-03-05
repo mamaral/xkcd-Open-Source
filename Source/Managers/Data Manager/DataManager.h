@@ -83,4 +83,9 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 
 - (void)clearCache;
 
+
+#pragma mark - Date utils
+
+- (NSString *)dateStringFromDay:(NSInteger)day month:(NSInteger)month year:(NSInteger)year;
+
 @end

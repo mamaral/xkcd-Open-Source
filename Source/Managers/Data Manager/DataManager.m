@@ -17,6 +17,8 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 @property (nonatomic, strong) NSUserDefaults *defaults;
 
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+
 @end
 
 @implementation DataManager
@@ -41,6 +43,9 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     self = [super init];
 
     self.defaults = [NSUserDefaults standardUserDefaults];
+
+    self.dateFormatter = [NSDateFormatter new];
+    self.dateFormatter.dateStyle = NSDateFormatterMediumStyle;
 
     self.knownInteractiveComicNumbers = @[@1193, @1331, @1446, @1525, @1608, @1663];
 
@@ -287,6 +292,18 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     [self.realm transactionWithBlock:^{
         [self.realm deleteAllObjects];
     }];
+}
+
+
+#pragma mark - Date utils
+
+- (NSString *)dateStringFromDay:(NSInteger)day month:(NSInteger)month year:(NSInteger)year {
+    NSDateComponents *dateComponents = [NSDateComponents new];
+    dateComponents.day = day;
+    dateComponents.month = month;
+    dateComponents.year = year;
+
+    return [self.dateFormatter stringFromDate:dateComponents.date];
 }
 
 @end
