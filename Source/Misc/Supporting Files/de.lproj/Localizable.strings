@@ -1,45 +1,45 @@
 
 // Common
 "common.button.ok" = "OK";
-"common.error.title" = "Oops!";
-"common.button.cancel" = "Cancel";
-"common.button.are you sure" = "Are you sure?";
-"common.button.continue" = "Continue";
+"common.error.title" = "Oh!";
+"common.button.cancel" = "Abbrechen";
+"common.button.are you sure" = "Sicher?";
+"common.button.continue" = "Weiter";
 
 // Loading
-"loading.button.title" = "Loading xkcd...";
-"loading.button.complete" = "Loading Complete!";
+"loading.button.title" = "xkcd lädt...";
+"loading.button.complete" = "Fertig geladen!";
 
 // Reviews
-"review.alert.title" = "Tell us what you think!";
-"review.alert.message" = "We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
-"review.alert.leave review" = "Leave A Review";
-"review.alert.dont ask again" = "No... Leave me alone!";
+"review.alert.title" = "Sag uns deine Meinung!";
+"review.alert.message" = "Wir haben uns große Mühe gegeben, den besten xkcd-Comic-Reader aller Zeiten zu entwickeln, der kostenlos ist UND keine Werbung enthält! Es würde uns sehr viel bedeuten, wenn du dir kurz Zeit nehmen und uns dein ehrliches Feedback zur App geben könntest. Bitte, bitte!";
+"review.alert.leave review" = "App bewerten";
+"review.alert.dont ask again" = "Nö... Keinen Bock!";
 
 // Comic List
-"comic.list.favorites title" = "Favorites";
-"comic.list.unread title" = "Unread";
-"comic.list.no search results" = "No results found...";
-"comic.list.no favorites" = "You have no favorites yet!";
-"comic.list.view all" = "View All Comics";
-"comic.list.view unread" = "View All Unread";
-"comic.list.view favorites" = "View Favorites";
-"comic.list.view random" = "View Random Comic";
-"comic.list.view bookmark" = "View Bookmarked Comic";
-"comic.list.clear cache" = "Clear Cache";
-"comic.list.clear cache warning" = "This will delete all comics, set all as unread, reset all favorites, and clear your bookmark if you have one set.";
-"comic.list.loading error" = "An error occurred while loading this content. Please check your connection and try again.";
-"comic.list.menu accessibility" = "menu";
+"comic.list.favorites title" = "Favoriten";
+"comic.list.unread title" = "Ungelesen";
+"comic.list.no search results" = "Keine Ergebnisse gefunden...";
+"comic.list.no favorites" = "Du hast noch keine Favoriten!";
+"comic.list.view all" = "Alle Comics anzeigen";
+"comic.list.view unread" = "Alle ungelesenen anzeigen";
+"comic.list.view favorites" = "Favoriten anzeigen";
+"comic.list.view random" = "Zufälligen Comic anzeigen";
+"comic.list.view bookmark" = "Gemerkten Comic anzeigen";
+"comic.list.clear cache" = "Zwischenspeicher leeren";
+"comic.list.clear cache warning" = "Hiermit werden alle Comics gelöscht, alle Comics als ungelesen markiert, alle Favoriten zurückgesetzt und dein Lesezeichen entfernt, sofern du eins gesetzt hast.";
+"comic.list.loading error" = "Beim Laden dieses Inhalts ist ein Fehler aufgetreten. Bitte überprüfe deine Internetverbindung und versuche es erneut.";
+"comic.list.menu accessibility" = "Menü";
 
 // Comic
-"comic.view.comic" = "comic";
-"comic.view.view random" = "view random comic";
-"comic.view.alt" = "view alternative text";
-"comic.view.favorite" = "favorite this comic";
-"comic.view.bookmark" = "bookmark this comic";
-"comic.view.prev" = "view previous comic";
-"comic.view.next" = "view next comic";
+"comic.view.comic" = "Comic";
+"comic.view.view random" = "Zufälligen Comic anzeigen";
+"comic.view.alt" = "Alternativen Text anzeigen";
+"comic.view.favorite" = "Als Favorit speichern";
+"comic.view.bookmark" = "Lesezeichen setzen";
+"comic.view.prev" = "Vorherigen Comic anzeigen";
+"comic.view.next" = "Nächsten Comic anzeigen";
 
 // Explain
-"comic.explain.title" = "Explain";
-"comic.explain.accessibility" = "explain this comic";
+"comic.explain.title" = "Erklären";
+"comic.explain.accessibility" = "Comic erklären";
