@@ -84,7 +84,7 @@
 - [Sean Ferguson](https://github.com/fergusean) - Architect of the server that pulls content from xkcd and pushes to clients.
 - [Ryan Copley](https://github.com/RyanCopley) - CI build improvements.
 - [avikantz](https://github.com/avikantz) - Added "peek-and-pop" support for the comic list.
-- [NguyenDytrich]https://github.com/NguyenDytrich - Swipe navigation between comics and random comic button to comic view.
+- [NguyenDytrich](https://github.com/NguyenDytrich) - Swipe navigation between comics and random comic button to comic view.
 
 ## Want to help?
 
