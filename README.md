@@ -25,7 +25,7 @@
 
 
 ## Version History
-- **v2.5**
+- **v2.5** (Currently in development)
    - Added localization support for Russian, Spanish, Chinese (simplified), and German - the most common languages used currently.
    - Conducting an accessibility option, making almost the entire app as accessibile as possible.
    - Added "peek-and-pop" support for the comic list. Thanks [@avikantz](https://github.com/avikantz)!
