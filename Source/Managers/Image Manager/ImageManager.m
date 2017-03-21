@@ -10,7 +10,7 @@
 
 #import "OrderedDictionary.h"
 
-static NSUInteger kImageCacheLimit = 100;
+static NSUInteger kDefaultImageCacheLimit = 100;
 
 @interface ImageManager ()
 
@@ -50,29 +50,42 @@ static NSUInteger kImageCacheLimit = 100;
     // a FIFO queue.
     self.imageCache = [MutableOrderedDictionary dictionary];
 
+    // Set our default cache limit
+    self.cacheLimit = kDefaultImageCacheLimit;
+
     return self;
 }
 
 - (nullable UIImage *)loadImageWithFilename:(NSString *)filename
                                   urlString:(NSString *)urlString
-                            downloadHandler:(void (^)(UIImage * nullable))handler {
-    // #1 - Load from cache.
+                                    handler:(void (^)(UIImage * nullable))handler {
+    // #1 - Load from cache synchronously.
     UIImage *cachedImage = self.imageCache[filename];
     if (cachedImage) {
         NSLog(@"Image found in cache with filename: %@", filename);
         return cachedImage;
     }
 
-    // #2 - Load from disk.
-    UIImage *imageOnDisk = [self loadImageFromDiskWithFilename:filename];
-    if (imageOnDisk) {
-        NSLog(@"Image found on disk with filename: %@", filename);
-        return imageOnDisk;
+    // #2 - Load from disk asynchronously.
+    NSString *path = [self.documentsDirectoryPath stringByAppendingPathComponent:filename];
+    if ([self.fileManager fileExistsAtPath:path]) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            UIImage *imageOnDisk = [self loadImageFromDiskWithFilename:filename];
+            if (imageOnDisk) {
+                NSLog(@"Image found on disk with filename: %@", filename);
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    handler(imageOnDisk);
+                });
+            }
+        });
     }
 
-    // #3 - Download from URL.
-    NSLog(@"Image not in cache and not on disk. Attempting to download now...");
-    [self downloadAndStoreImageFromURLString:urlString filename:filename handler:handler];
+    // #3 - Download from URL asynchronously.
+    else {
+        NSLog(@"Image not in cache and not on disk. Attempting to download now...");
+        [self downloadAndStoreImageFromURLString:urlString filename:filename handler:handler];
+    }
 
     return nil;
 }
@@ -158,7 +171,8 @@ static NSUInteger kImageCacheLimit = 100;
     NSParameterAssert(image);
 
     // Remove the first (oldest) object from the cache if we're at the limit.
-    if (self.imageCache.count == kImageCacheLimit) {
+    NSUInteger currentCacheSize = self.imageCache.count;
+    if (currentCacheSize > 0 && currentCacheSize == self.cacheLimit) {
         [self.imageCache removeObjectAtIndex:0];
     }
 

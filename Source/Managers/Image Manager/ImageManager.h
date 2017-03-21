@@ -20,12 +20,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface ImageManager : NSObject
 
+@property (nonatomic) NSUInteger cacheLimit;
+
 /**
- * Returns an image with a given filename if it's present in our image cache or
- * from disk if we have it stored. If the image isn't in the cache or in disk it
- * is then downloaded from the provided remote url, saved in both the cache and
- * on disk, and the provided download handler block is called with the image as
- * the only parameter.
+ * Returns an image with a given filename if it's present in our image cache.
+ * If the image isn't in the cache but has been previously saved to disk, the
+ * image is asynchronously loaded from disk and the handler block is called
+ * with that image. If the image is not in our cache or on disk, it is then
+ * downloaded from the provided remote url, saved in both the cache and on
+ * disk, and the provided handler block is called with the image.
  *
  * @param filename The name of the file that will be used as the key in the image
  * cache and the path for the image to be loaded on or saved to disk.
@@ -34,15 +37,15 @@ NS_ASSUME_NONNULL_BEGIN
  * that will be used to download the image if it is not present in the cache
  * or on disk.
  *
- * @param downloadHandler A block that will be called only when an image is
- * not found in our cache, not found on disk, and successfully downloaded from
- * the provided url.
+ * @param handler A block that will be called only when an image is
+ * not found in our cache and is either loaded from disk or successfully
+ * downloaded from the provided url.
  *
- * @return The image loaded from our cache or on disk, if present; nil otherwise.
+ * @return The image loaded from our cache if present; nil otherwise.
  */
 - (nullable UIImage *)loadImageWithFilename:(NSString *)filename
                                   urlString:(NSString *)urlString
-                            downloadHandler:(void (^)(UIImage * nullable))handler;
+                                    handler:(void (^)(UIImage * nullable))handler;
 
 /**
  * Cancels the download handler for a given filename, preventing a previous

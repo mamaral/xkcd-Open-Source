@@ -217,7 +217,7 @@ static NSString * const kAltButtonText = @"Alt";
         self.comicImageView.accessibilityLabel = comic.transcript;
     }
 
-    UIImage *cachedImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString downloadHandler:^(UIImage *image) {
+    UIImage *cachedImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString handler:^(UIImage *image) {
         self.comicImageView.image = image;
     }];
     self.comicImageView.image = cachedImage ?: [ThemeManager loadingImage];

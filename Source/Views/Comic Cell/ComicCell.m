@@ -109,9 +109,9 @@ static CGFloat const kFavoriteIconSize = 55.0;
     // Now we can set our local comic.
     _comic = comic;
 
-    // Get the existing cached or on-disk image from our image manager.
-    UIImage *existingImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString downloadHandler:^(UIImage *image) {
-        // Update our image view with the newly downloaded image.
+    // Get the existing cached image from our image manager.
+    UIImage *existingImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString handler:^(UIImage *image) {
+        // Update our image view with the newly loaded image.
         self.imageView.image = image;
     }];
 
