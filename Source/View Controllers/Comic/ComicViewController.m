@@ -16,6 +16,8 @@
 #import "AltView.h"
 #import "XKCDDeviceManager.h"
 #import "ComicWebViewController.h"
+#import "Assembler.h"
+#import "ImageManager.h"
 
 static CGFloat const kComicViewControllerPadding = 10.0;
 static CGFloat const kComicViewControllerSmallPadding = 7.0;
@@ -26,6 +28,8 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 static NSString * const kAltButtonText = @"Alt";
 
 @interface ComicViewController () <AltViewDelegate>
+
+@property (nonatomic, weak) ImageManager *imageManager;
 
 @property (nonatomic) BOOL viewedAlt;
 
@@ -55,6 +59,8 @@ static NSString * const kAltButtonText = @"Alt";
     if (self == nil) {
         return nil;
     }
+
+    self.imageManager = [Assembler sharedInstance].imageManager;
 
     self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
     self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
@@ -191,6 +197,13 @@ static NSString * const kAltButtonText = @"Alt";
 #pragma mark - Setters
 
 - (void)setComic:(Comic *)comic {
+    // First we need to grab the filename for the previous comic so we can cancel
+    // the download handler for it. This will prevent this view from loading an
+    // outdated image if users switch comics fast and a download finishes for a
+    // prior comic.
+    NSString *previousFilename = [self.comic getFilename];
+    [self.imageManager cancelDownloadHandlerForFilename:previousFilename];
+
     _comic = comic;
 
     if (!self.comic.viewed) {
@@ -204,11 +217,10 @@ static NSString * const kAltButtonText = @"Alt";
         self.comicImageView.accessibilityLabel = comic.transcript;
     }
 
-    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        if (image) {
-            self.comicImage = image;
-        }
+    UIImage *cachedImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString downloadHandler:^(UIImage *image) {
+        self.comicImageView.image = image;
     }];
+    self.comicImageView.image = cachedImage ?: [ThemeManager loadingImage];
 
     [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
 

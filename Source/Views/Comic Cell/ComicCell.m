@@ -11,12 +11,15 @@
 #import <UIImageView+WebCache.h>
 #import "ThemeManager.h"
 #import "DataManager.h"
+#import "Assembler.h"
+#import "ImageManager.h"
 
 static CGFloat const kComicCellNumberLabelWidth = 35.0;
 static CGFloat const kFavoriteIconSize = 55.0;
 
 @interface ComicCell ()
 
+@property (nonatomic, weak) ImageManager *imageManager;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *maskView;
@@ -35,6 +38,7 @@ static CGFloat const kFavoriteIconSize = 55.0;
         return nil;
     }
 
+    self.imageManager = [Assembler sharedInstance].imageManager;
     self.containerView = [UIView new];
     self.imageView = [UIImageView new];
     self.maskView = [UIView new];
@@ -96,9 +100,24 @@ static CGFloat const kFavoriteIconSize = 55.0;
 }
 
 - (void)setComic:(Comic *)comic {
+    // First we need to grab the filename for the previous comic so we can cancel
+    // the download handler for it. This will prevent this cell from loading an
+    // outdated image if users scroll really fast and this cell is reused.
+    NSString *previousFilename = [self.comic getFilename];
+    [self.imageManager cancelDownloadHandlerForFilename:previousFilename];
+
+    // Now we can set our local comic.
     _comic = comic;
 
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString] placeholderImage:[ThemeManager loadingImage]];
+    // Get the existing cached or on-disk image from our image manager.
+    UIImage *existingImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString downloadHandler:^(UIImage *image) {
+        // Update our image view with the newly downloaded image.
+        self.imageView.image = image;
+    }];
+
+    // If we have an existing image, update our image view with it, otherwise
+    // use the loading image as a placeholder.
+    self.imageView.image = existingImage ?: [ThemeManager loadingImage];
 
     self.maskView.alpha = comic.viewed ? 1.0 : 0.0;
     [self.comicNumberButton setTitle:[NSString stringWithFormat:@"%ld", (long)comic.num] forState:UIControlStateNormal];

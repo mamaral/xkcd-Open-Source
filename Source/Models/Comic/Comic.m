@@ -53,6 +53,13 @@
 }
 
 
+#pragma mark - Filename utils
+
+- (NSString *)getFilename {
+    return [NSString stringWithFormat:@"%@.png", self.comicID];
+}
+
+
 #pragma mark - Comic URL Generation
 
 + (NSString *)generateComicURLStringFromNumber:(NSInteger)number {

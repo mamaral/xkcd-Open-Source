@@ -13,6 +13,8 @@
 #import <Crashlytics/Crashlytics.h>
 #import <TwitterKit/TwitterKit.h>
 #import "XKCDDeviceManager.h"
+#import "Assembler.h"
+#import "ImageManager.h"
 
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
 
@@ -39,8 +41,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
         application.applicationIconBadgeNumber = 0;
     }
 
-    self.dataManager = [DataManager sharedInstance];
-    self.requestManager = [RequestManager sharedInstance];
+    [self setupAssembler];
 
     [self setupThirdPartyLibraries];
     [self setupPushNotifications];
@@ -58,6 +59,16 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
     if (application.applicationIconBadgeNumber > 0) {
         application.applicationIconBadgeNumber = 0;
     }
+}
+
+
+#pragma mark - Assembler setup
+
+- (void)setupAssembler {
+    [Assembler sharedInstance].imageManager = [ImageManager new];
+
+    self.dataManager = [DataManager sharedInstance];
+    self.requestManager = [RequestManager sharedInstance];
 }
 
 

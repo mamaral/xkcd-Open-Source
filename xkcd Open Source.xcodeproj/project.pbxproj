@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		270101AA1E77B9560009A0C3 /* OrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 270101A91E77B9560009A0C3 /* OrderedDictionary.m */; };
+		270101AD1E77BABE0009A0C3 /* Assembler.m in Sources */ = {isa = PBXBuildFile; fileRef = 270101AC1E77BABE0009A0C3 /* Assembler.m */; };
 		270508EB1D72330B00D34A6A /* XKCDDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */; };
 		270B574B1B07F28700651787 /* AltView.m in Sources */ = {isa = PBXBuildFile; fileRef = 270B574A1B07F28700651787 /* AltView.m */; };
 		270C3E831D9777BF003CF197 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270C3E821D9777BF003CF197 /* NotificationCenter.framework */; };
@@ -18,6 +20,7 @@
 		2715C2EE1B090AFD00F50645 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2715C2EC1B090AFD00F50645 /* Fabric.framework */; };
 		2715C2EF1B090AFD00F50645 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2715C2ED1B090AFD00F50645 /* Crashlytics.framework */; };
 		27469F831E6A76CD009466F4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27469F851E6A76CD009466F4 /* Localizable.strings */; };
+		27469FDC1E77B5CA009466F4 /* ImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27469FDB1E77B5CA009466F4 /* ImageManager.m */; };
 		2769EEA41B7ACFC5004C0C44 /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EEA11B7ACFC5004C0C44 /* TwitterKit.framework */; };
 		2769EEA51B7ACFC5004C0C44 /* TwitterKitResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2769EEA21B7ACFC5004C0C44 /* TwitterKitResources.bundle */; };
 		2769EEA61B7ACFC5004C0C44 /* TwitterCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EEA31B7ACFC5004C0C44 /* TwitterCore.framework */; };
@@ -87,6 +90,10 @@
 
 /* Begin PBXFileReference section */
 		0E69F5E414C056D6417BAB6C /* libPods-xkcdOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-xkcdOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		270101A81E77B9560009A0C3 /* OrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderedDictionary.h; sourceTree = "<group>"; };
+		270101A91E77B9560009A0C3 /* OrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderedDictionary.m; sourceTree = "<group>"; };
+		270101AB1E77BABE0009A0C3 /* Assembler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Assembler.h; sourceTree = "<group>"; };
+		270101AC1E77BABE0009A0C3 /* Assembler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Assembler.m; sourceTree = "<group>"; };
 		270508E91D72330B00D34A6A /* XKCDDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKCDDeviceManager.h; sourceTree = "<group>"; };
 		270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XKCDDeviceManager.m; sourceTree = "<group>"; };
 		270B57491B07F28700651787 /* AltView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AltView.h; sourceTree = "<group>"; };
@@ -109,6 +116,8 @@
 		27469F871E6A76DC009466F4 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		27469F881E6A76E4009466F4 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		27469F891E6A76E7009466F4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		27469FDA1E77B5CA009466F4 /* ImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageManager.h; sourceTree = "<group>"; };
+		27469FDB1E77B5CA009466F4 /* ImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageManager.m; sourceTree = "<group>"; };
 		27570E2F1DFC929B00E91019 /* xkcd Open Source.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "xkcd Open Source.entitlements"; path = "../../../xkcd Open Source.entitlements"; sourceTree = "<group>"; };
 		2769EEA11B7ACFC5004C0C44 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = SOURCE_ROOT; };
 		2769EEA21B7ACFC5004C0C44 /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle; sourceTree = SOURCE_ROOT; };
@@ -197,6 +206,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		270101A71E77B94B0009A0C3 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				270101A81E77B9560009A0C3 /* OrderedDictionary.h */,
+				270101A91E77B9560009A0C3 /* OrderedDictionary.m */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
 		270508E81D7232F800D34A6A /* Device Manager */ = {
 			isa = PBXGroup;
 			children = (
@@ -204,6 +222,7 @@
 				270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */,
 			);
 			name = "Device Manager";
+			path = XKCDDeviceManager;
 			sourceTree = "<group>";
 		};
 		270B57481B07F27700651787 /* Alt View */ = {
@@ -277,6 +296,7 @@
 		2714CCD51B05667E00ADF009 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				270101A71E77B94B0009A0C3 /* Utilities */,
 				27F653631B1548FF00F3377D /* Audio */,
 				2773170B1B06D1A100ED7978 /* Fonts */,
 				277317081B06CE0300ED7978 /* Gifs */,
@@ -308,9 +328,21 @@
 			path = "App Delegate";
 			sourceTree = "<group>";
 		};
+		27469FD91E77B5BC009466F4 /* Image Manager */ = {
+			isa = PBXGroup;
+			children = (
+				27469FDA1E77B5CA009466F4 /* ImageManager.h */,
+				27469FDB1E77B5CA009466F4 /* ImageManager.m */,
+			);
+			path = "Image Manager";
+			sourceTree = "<group>";
+		};
 		277316EE1B05679500ED7978 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				270101AB1E77BABE0009A0C3 /* Assembler.h */,
+				270101AC1E77BABE0009A0C3 /* Assembler.m */,
+				27469FD91E77B5BC009466F4 /* Image Manager */,
 				270508E81D7232F800D34A6A /* Device Manager */,
 				277317111B06DF9700ED7978 /* Theme Manager */,
 				277316F31B0568DA00ED7978 /* Data Manager */,
@@ -853,11 +885,14 @@
 			files = (
 				270B574B1B07F28700651787 /* AltView.m in Sources */,
 				270508EB1D72330B00D34A6A /* XKCDDeviceManager.m in Sources */,
+				270101AA1E77B9560009A0C3 /* OrderedDictionary.m in Sources */,
 				277316F11B0567B300ED7978 /* RequestManager.m in Sources */,
 				277317041B0592D600ED7978 /* ComicListViewController.m in Sources */,
 				277316FA1B056EAC00ED7978 /* DataManager.m in Sources */,
+				270101AD1E77BABE0009A0C3 /* Assembler.m in Sources */,
 				277316F71B056A6000ED7978 /* Comic.m in Sources */,
 				2714CCBB1B05667400ADF009 /* AppDelegate.m in Sources */,
+				27469FDC1E77B5CA009466F4 /* ImageManager.m in Sources */,
 				27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */,
 				277317071B05955300ED7978 /* ComicCell.m in Sources */,
 				2774C40B1CC70CA2003B215A /* ComicWebViewController.m in Sources */,

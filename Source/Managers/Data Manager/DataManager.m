@@ -9,7 +9,7 @@
 #import "DataManager.h"
 #import "RequestManager.h"
 
-static NSInteger const kCurrentSchemaVersion = 5;
+static NSInteger const kCurrentSchemaVersion = 7;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
@@ -186,6 +186,10 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]] sortedResultsUsingProperty:@"num" ascending:NO];
 }
 
+- (RLMResults *)allComicsWithUnsavedImages {
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"imageSaved == NO"]] sortedResultsUsingProperty:@"num" ascending:NO];
+}
+
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
     // Calculate the starting index.
     NSInteger since = [self latestComicDownloaded];
@@ -302,6 +306,7 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     dateComponents.day = day;
     dateComponents.month = month;
     dateComponents.year = year;
+    dateComponents.calendar = [NSCalendar autoupdatingCurrentCalendar];
 
     return [self.dateFormatter stringFromDate:dateComponents.date];
 }

@@ -55,6 +55,11 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 + (instancetype)comicFromDictionary:(NSDictionary *)dictionary;
 
 
+#pragma mark - Filename utils
+
+- (NSString *)getFilename;
+
+
 #pragma mark - Comic URL Generation
 
 + (NSString *)generateComicURLStringFromNumber:(NSInteger)number;
