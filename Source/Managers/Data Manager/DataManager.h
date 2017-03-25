@@ -22,12 +22,6 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 
 @property (nonatomic, strong) NSArray *knownInteractiveComicNumbers;
 
-
-#pragma mark - Singleton
-
-+ (instancetype)sharedInstance;
-
-
 #pragma mark - Saving / updating comics
 
 - (void)saveComics:(NSArray *)comics;

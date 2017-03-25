@@ -8,6 +8,7 @@
 
 #import "Comic.h"
 #import "DataManager.h"
+#import "Assembler.h"
 
 @implementation Comic
 
@@ -41,7 +42,7 @@
     NSInteger month = [self.month integerValue];
     NSInteger year = [self.year integerValue];
 
-    self.formattedDateString = [[DataManager sharedInstance] dateStringFromDay:day month:month year:year];
+    self.formattedDateString = [[Assembler sharedInstance].dataManager dateStringFromDay:day month:month year:year];
 
     self.comicURLString = [[self class] generateComicURLStringFromNumber:self.num];
 
@@ -70,7 +71,7 @@
 #pragma mark - Custom Getters
 
 - (BOOL)isBookmark {
-    return [[DataManager sharedInstance] bookmarkedComicNumber] == self.num;
+    return [[Assembler sharedInstance].dataManager bookmarkedComicNumber] == self.num;
 }
 
 

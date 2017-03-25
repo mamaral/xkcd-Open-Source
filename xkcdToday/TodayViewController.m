@@ -13,12 +13,16 @@
 #import "DataManager.h"
 #import "ThemeManager.h"
 #import "XKCDDeviceManager.h"
+#import "Assembler.h"
+#import "RequestManager.h"
+#import "ImageManager.h"
 
 static CGFloat const kComicNumberLabelPadding = 7.0;
 static CGFloat const kMaxContentHeight = 300.0;
 
 @interface TodayViewController () <NCWidgetProviding>
 
+@property (strong, nonatomic) DataManager *dataManager;
 @property (strong, nonatomic) Comic *comic;
 @property (strong, nonatomic) UIImageView *comicImageView;
 @property (strong, nonatomic) UILabel *comicNumberLabel;
@@ -27,10 +31,19 @@ static CGFloat const kMaxContentHeight = 300.0;
 
 @implementation TodayViewController
 
+- (void)setupAssembler {
+    [Assembler sharedInstance].dataManager = [DataManager new];
+    [Assembler sharedInstance].requestManager = [RequestManager new];
+
+    self.dataManager = [Assembler sharedInstance].dataManager;
+}
+
 #pragma mark - View life cycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    [self setupAssembler];
 
     if ([self.extensionContext respondsToSelector:@selector(setWidgetLargestAvailableDisplayMode:)]) {
         [self.extensionContext setWidgetLargestAvailableDisplayMode:NCWidgetDisplayModeExpanded];
@@ -84,8 +97,8 @@ static CGFloat const kMaxContentHeight = 300.0;
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     // Fetch the comics and show the most recent.
-    [[DataManager sharedInstance] downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-        self.comic = [[DataManager sharedInstance] allSavedComics].firstObject;
+    [self.dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
+        self.comic = [self.dataManager allSavedComics].firstObject;
 
         if (error) {
             completionHandler(NCUpdateResultFailed);

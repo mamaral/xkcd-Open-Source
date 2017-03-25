@@ -7,28 +7,19 @@
 //
 
 #import "RequestManager.h"
+#import "Assembler.h"
 #import "DataManager.h"
 
 static NSString * const kFetchURLString = @"http://xkcdos.app.sgnl24.com/fetch-comics.php";
 static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/register-push.php";
 
-@implementation RequestManager {
-    DataManager *_dataManager;
-}
+@interface RequestManager ()
 
+@property (nonatomic, strong) DataManager *dataManager;
 
-#pragma mark - Singleton
+@end
 
-+ (instancetype)sharedInstance {
-    static dispatch_once_t pred = 0;
-    __strong static id _sharedObject = nil;
-    dispatch_once(&pred, ^{
-        _sharedObject = [[self alloc] init];
-    });
-
-    return _sharedObject;
-}
-
+@implementation RequestManager
 
 #pragma mark - Initialization
 
@@ -37,7 +28,7 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 
     self.manager = [self generateHTTPRequestOperationManager];
 
-    _dataManager = [DataManager sharedInstance];
+    self.dataManager = [Assembler sharedInstance].dataManager;
 
     return self;
 }

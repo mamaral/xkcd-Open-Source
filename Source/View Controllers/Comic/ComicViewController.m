@@ -30,6 +30,7 @@ static NSString * const kAltButtonText = @"Alt";
 @interface ComicViewController () <AltViewDelegate>
 
 @property (nonatomic, weak) ImageManager *imageManager;
+@property (nonatomic, weak) DataManager *dataManager;
 
 @property (nonatomic) BOOL viewedAlt;
 
@@ -61,6 +62,7 @@ static NSString * const kAltButtonText = @"Alt";
     }
 
     self.imageManager = [Assembler sharedInstance].imageManager;
+    self.dataManager = [Assembler sharedInstance].dataManager;
 
     self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
     self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
@@ -207,7 +209,7 @@ static NSString * const kAltButtonText = @"Alt";
     _comic = comic;
 
     if (!self.comic.viewed) {
-        [[DataManager sharedInstance] markComicViewed:comic];
+        [self.dataManager markComicViewed:comic];
     }
 
     self.title = comic.safeTitle;
@@ -261,7 +263,7 @@ static NSString * const kAltButtonText = @"Alt";
 - (void)toggleComicFavorited {
     BOOL isNowFavorited = !self.comic.favorite;
 
-    [[DataManager sharedInstance] markComic:self.comic favorited:isNowFavorited];
+    [self.dataManager markComic:self.comic favorited:isNowFavorited];
 
     [self.favoriteButton setAlpha:isNowFavorited ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
 }
@@ -271,17 +273,17 @@ static NSString * const kAltButtonText = @"Alt";
 
 - (void)toggleBookmark {
     // If this is currently bookmarked, un-bookmark it, and vice-versa.
-    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComicNumber];
+    BOOL isCurrentlyBookmarked = self.comic.num == [self.dataManager bookmarkedComicNumber];
     NSInteger bookmarkedComicNum = isCurrentlyBookmarked ? 0 : self.comic.num;
 
-    [[DataManager sharedInstance] setBookmarkedComic:bookmarkedComicNum];
+    [self.dataManager setBookmarkedComic:bookmarkedComicNum];
 
     // Update the image on the button.
     [self updateBookmarkButtonImage];
 }
 
 - (void)updateBookmarkButtonImage {
-    BOOL isCurrentlyBookmarked = self.comic.num == [[DataManager sharedInstance] bookmarkedComicNumber];
+    BOOL isCurrentlyBookmarked = self.comic.num == [self.dataManager bookmarkedComicNumber];
     UIImage *newImage = isCurrentlyBookmarked ? [ThemeManager bookmarkedImage] : [ThemeManager bookmarkedOffImage];
     [self.bookmarkButton setImage:newImage forState:UIControlStateNormal];
 }

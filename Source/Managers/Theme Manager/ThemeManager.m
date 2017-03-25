@@ -8,6 +8,7 @@
 
 #import "ThemeManager.h"
 #import "DataManager.h"
+#import "Assembler.h"
 
 @implementation ThemeManager
 
@@ -39,7 +40,7 @@
 }
 
 + (UIImage *)randomImage {
-    NSInteger randomNumber = [[DataManager sharedInstance] randomNumberBetweenMin:1 andMax:6];
+    NSInteger randomNumber = [[Assembler sharedInstance].dataManager randomNumberBetweenMin:1 andMax:6];
     NSString *randomImageName = [NSString stringWithFormat:@"r%ld", (long)randomNumber];
     return [UIImage imageNamed:randomImageName] ?: [UIImage imageNamed:kDefaultRandomImageName];
 }

@@ -8,6 +8,7 @@
 
 #import "ComicListPresenter.h"
 
+#import "Assembler.h"
 #import "DataManager.h"
 
 @interface ComicListPresenter ()
@@ -22,15 +23,14 @@
 
 @implementation ComicListPresenter
 
-- (instancetype)initWithView:(id<ComicListView>)view {
+- (instancetype)init {
     self = [super init];
 
     if (!self) {
         return nil;
     }
 
-    self.view = view;
-    self.dataManager = [DataManager sharedInstance];
+    self.dataManager = [Assembler sharedInstance].dataManager;
     self.comics = [self.dataManager allSavedComics];
 
     // Fetch comics whenever we get notified more are available.
@@ -43,6 +43,17 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleComicRead) name:ComicReadNotification object:nil];
 
     return self;
+}
+
+- (void)attachToView:(id<ComicListView>)view {
+    NSParameterAssert(view);
+
+    self.view = view;
+    [self.view comicListDidChange:self.comics];
+}
+
+- (void)dettachFromView:(id<ComicListView>)view {
+    self.view = nil;
 }
 
 
@@ -156,7 +167,7 @@
 - (void)searchForComicsWithText:(NSString *)searchText {
     _isSearching = YES;
 
-    self.comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchText];
+    self.comics = [self.dataManager comicsMatchingSearchString:searchText];
     [self.view comicListDidChange:self.comics];
 }
 
@@ -195,7 +206,7 @@
 #pragma mark - Clearing cache
 
 - (void)handleClearCache {
-    [[DataManager sharedInstance] clearCache];
+    [self.dataManager clearCache];
 
     self.comics = [self.dataManager allSavedComics];
     [self.view comicListDidChange:self.comics];

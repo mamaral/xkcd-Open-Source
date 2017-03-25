@@ -48,8 +48,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         return nil;
     }
 
-    self.presenter = [[ComicListPresenter alloc] initWithView:self];;
-    self.comics = [self.presenter getSavedComicList];
+    self.presenter = [ComicListPresenter new];
     
     return self;
 }
@@ -59,6 +58,8 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    [self.presenter attachToView:self];
 
     self.navigationItem.title = kComicListTitle;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -104,6 +105,10 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
     if ([self.presenter isInitialLoadRequired]) {
         [self.presenter handleInitialLoad];
     }
+}
+
+- (void)dealloc {
+    [self.presenter dettachFromView:self];
 }
 
 

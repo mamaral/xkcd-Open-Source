@@ -28,10 +28,10 @@
 @property (nonatomic, readonly) BOOL isSearching;
 @property (nonatomic, readonly) BOOL isFilteringUnread;
 
-- (instancetype)initWithView:(id<ComicListView>)view;
+- (void)attachToView:(id<ComicListView>)view;
+- (void)dettachFromView:(id<ComicListView>)view;
 
 #pragma mark - Loading
-- (RLMResults *)getSavedComicList;
 - (BOOL)isInitialLoadRequired;
 - (void)handleInitialLoad;
 - (void)handleShowAllComics;

@@ -23,12 +23,6 @@ static NSString * const kContentTypeKey = @"Content-Type";
 
 @property (nonatomic, strong) AFHTTPRequestOperationManager *manager;
 
-
-#pragma mark - Singleton
-
-+ (instancetype)sharedInstance;
-
-
 #pragma mark - Downloading comics
 
 - (void)downloadComicsSince:(NSInteger)since completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler;

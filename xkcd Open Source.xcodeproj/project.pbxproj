@@ -37,6 +37,8 @@
 		277317101B06DF9300ED7978 /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2773170F1B06DF9300ED7978 /* ThemeManager.m */; };
 		277317161B06E3E600ED7978 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 277317151B06E3E600ED7978 /* LoadingView.m */; };
 		2774C40B1CC70CA2003B215A /* ComicWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2774C40A1CC70CA2003B215A /* ComicWebViewController.m */; };
+		27871CF71E86C1F500817481 /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2773170F1B06DF9300ED7978 /* ThemeManager.m */; };
+		27871CF81E86C20800817481 /* Assembler.m in Sources */ = {isa = PBXBuildFile; fileRef = 270101AC1E77BABE0009A0C3 /* Assembler.m */; };
 		279D3B0C1E58C4D600476B13 /* ComicListPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 279D3B0B1E58C4D600476B13 /* ComicListPresenter.m */; };
 		27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */; };
 		27AE51DA1B10DF8F0090292A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27AE51D91B10DF8F0090292A /* LaunchScreen.xib */; };
@@ -48,7 +50,6 @@
 		27EC248F1D977B9000D29A4F /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F91B056EAC00ED7978 /* DataManager.m */; };
 		27EC24901D977BA300D29A4F /* Comic.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F61B056A6000ED7978 /* Comic.m */; };
 		27EC24911D977BA600D29A4F /* XKCDDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 270508EA1D72330B00D34A6A /* XKCDDeviceManager.m */; };
-		27EC24921D977BA900D29A4F /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2773170F1B06DF9300ED7978 /* ThemeManager.m */; };
 		27EC24931D977BAE00D29A4F /* RequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F01B0567B300ED7978 /* RequestManager.m */; };
 		27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */; };
 		27F653681B154C5C00F3377D /* silent.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 27F653671B154C5C00F3377D /* silent.m4a */; };
@@ -871,11 +872,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				27EC24901D977BA300D29A4F /* Comic.m in Sources */,
+				27871CF81E86C20800817481 /* Assembler.m in Sources */,
 				270C3E871D9777BF003CF197 /* TodayViewController.m in Sources */,
-				27EC24921D977BA900D29A4F /* ThemeManager.m in Sources */,
 				27EC24931D977BAE00D29A4F /* RequestManager.m in Sources */,
 				27EC248F1D977B9000D29A4F /* DataManager.m in Sources */,
 				27EC24911D977BA600D29A4F /* XKCDDeviceManager.m in Sources */,
+				27871CF71E86C1F500817481 /* ThemeManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

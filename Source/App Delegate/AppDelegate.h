@@ -14,9 +14,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (nonatomic, strong) RequestManager *requestManager;
-@property (nonatomic, strong) DataManager *dataManager;
-
 + (instancetype)sharedAppDelegate;
 
 @end

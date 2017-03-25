@@ -22,6 +22,9 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 
 @interface AppDelegate ()
 
+@property (nonatomic, strong) RequestManager *requestManager;
+@property (nonatomic, strong) DataManager *dataManager;
+
 @end
 
 @implementation AppDelegate
@@ -65,10 +68,12 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 #pragma mark - Assembler setup
 
 - (void)setupAssembler {
+    [Assembler sharedInstance].dataManager = [DataManager new];
+    [Assembler sharedInstance].requestManager = [RequestManager new];
     [Assembler sharedInstance].imageManager = [ImageManager new];
 
-    self.dataManager = [DataManager sharedInstance];
-    self.requestManager = [RequestManager sharedInstance];
+    self.dataManager = [Assembler sharedInstance].dataManager;
+    self.requestManager = [Assembler sharedInstance].requestManager;
 }
 
 
@@ -91,7 +96,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSString *token = [[DataManager sharedInstance] tokenStringFromData:deviceToken];
+    NSString *token = [self.dataManager tokenStringFromData:deviceToken];
     
     [self.requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
         if (error) {
@@ -109,7 +114,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 
 - (void)askNicelyForAReviewIfNecessary {
     // If we've already asked for a review in the past, don't ask again.
-    if ([[DataManager sharedInstance] hasAskedForReview]) {
+    if ([self.dataManager hasAskedForReview]) {
         return;
     }
 

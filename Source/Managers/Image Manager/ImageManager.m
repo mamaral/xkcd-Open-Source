@@ -10,15 +10,13 @@
 
 #import "OrderedDictionary.h"
 
-static NSUInteger kDefaultImageCacheLimit = 100;
-
 @interface ImageManager ()
 
 @property (nonatomic, strong) NSString *documentsDirectoryPath;
 
 @property (nonatomic, strong) NSFileManager *fileManager;
 
-@property (nonatomic, strong) MutableOrderedDictionary *imageCache;
+@property (nonatomic, strong) NSCache *imageCache;
 
 @property (nonatomic, strong) NSOperationQueue *downloadQueue;
 
@@ -44,14 +42,8 @@ static NSUInteger kDefaultImageCacheLimit = 100;
     // Create our file manager.
     self.fileManager = [NSFileManager defaultManager];
 
-    // Create our image cache, which is simply a mutable ordered dictionary.
-    // We use an ordered dictionary to be able to utilize the key/value pairing
-    // of a dictionary coupled with the ordered nature of an array to enforce
-    // a FIFO queue.
-    self.imageCache = [MutableOrderedDictionary dictionary];
-
-    // Set our default cache limit
-    self.cacheLimit = kDefaultImageCacheLimit;
+    // Create our image cache
+    self.imageCache = [NSCache new];
 
     return self;
 }
@@ -60,7 +52,7 @@ static NSUInteger kDefaultImageCacheLimit = 100;
                                   urlString:(NSString *)urlString
                                     handler:(void (^)(UIImage * nullable))handler {
     // #1 - Load from cache synchronously.
-    UIImage *cachedImage = self.imageCache[filename];
+    UIImage *cachedImage = [self.imageCache objectForKey:filename];
     if (cachedImage) {
         NSLog(@"Image found in cache with filename: %@", filename);
         return cachedImage;
@@ -160,8 +152,7 @@ static NSUInteger kDefaultImageCacheLimit = 100;
 
 /**
  * Updates our image cache by adding the provided filename as the key and the image object
- * as the value for that key. If the cache is full, remove the first image and add the new
- * image to the end of the queue.
+ * as the value for that key.
  *
  * @param filename The name of the image file that will be used as the key for the image.
  * @param image The image to be cached.
@@ -170,14 +161,8 @@ static NSUInteger kDefaultImageCacheLimit = 100;
     NSParameterAssert(filename);
     NSParameterAssert(image);
 
-    // Remove the first (oldest) object from the cache if we're at the limit.
-    NSUInteger currentCacheSize = self.imageCache.count;
-    if (currentCacheSize > 0 && currentCacheSize == self.cacheLimit) {
-        [self.imageCache removeObjectAtIndex:0];
-    }
-
-    // Insert the new key/value pair at the end of the cache.
-    self.imageCache[filename] = image;
+    // Insert the new key/value pair in the cache.
+    [self.imageCache setObject:image forKey:filename];
 }
 
 @end

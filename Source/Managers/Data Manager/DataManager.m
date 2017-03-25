@@ -8,6 +8,7 @@
 
 #import "DataManager.h"
 #import "RequestManager.h"
+#import "Assembler.h"
 
 static NSInteger const kCurrentSchemaVersion = 7;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
@@ -22,20 +23,6 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 @end
 
 @implementation DataManager
-
-
-#pragma mark - Singleton
-
-+ (instancetype)sharedInstance {
-    static dispatch_once_t pred = 0;
-    __strong static id _sharedObject = nil;
-    dispatch_once(&pred, ^{
-        _sharedObject = [[self alloc] init];
-    });
-
-    return _sharedObject;
-}
-
 
 #pragma mark - Initialization
 
@@ -171,23 +158,23 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 #pragma mark - Fetching comics
 
 - (RLMResults *)allSavedComics {
-    return [[Comic allObjects] sortedResultsUsingProperty:@"num" ascending:NO];
+    return [[Comic allObjects] sortedResultsUsingKeyPath:@"num" ascending:NO];
 }
 
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingProperty:@"num" ascending:NO];
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingKeyPath:@"num" ascending:NO];
 }
 
 - (RLMResults *)allFavorites {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]] sortedResultsUsingProperty:@"num" ascending:NO];
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]] sortedResultsUsingKeyPath:@"num" ascending:NO];
 }
 
 - (RLMResults *)allUnread {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]] sortedResultsUsingProperty:@"num" ascending:NO];
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]] sortedResultsUsingKeyPath:@"num" ascending:NO];
 }
 
 - (RLMResults *)allComicsWithUnsavedImages {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"imageSaved == NO"]] sortedResultsUsingProperty:@"num" ascending:NO];
+    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"imageSaved == NO"]] sortedResultsUsingKeyPath:@"num" ascending:NO];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
@@ -195,7 +182,7 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     NSInteger since = [self latestComicDownloaded];
 
     // Pass that to our request manager to fetch it.
-    [[RequestManager sharedInstance] downloadComicsSince:since completionHandler:^(NSError *error, NSArray *comicDicts) {
+    [[Assembler sharedInstance].requestManager downloadComicsSince:since completionHandler:^(NSError *error, NSArray *comicDicts) {
         // Error handling
         if (error) {
             handler(error, 0);
@@ -293,9 +280,9 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 - (void)clearCache {
     [self setBookmarkedComic:0];
     [self setLatestComicDownloaded:0];
-    [self.realm transactionWithBlock:^{
-        [self.realm deleteAllObjects];
-    }];
+    [self.realm beginWriteTransaction];
+    [self.realm deleteAllObjects];
+    [self.realm commitWriteTransaction];
 }
 
 

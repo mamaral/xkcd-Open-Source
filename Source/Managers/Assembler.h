@@ -8,11 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+@class DataManager;
 @class ImageManager;
+@class RequestManager;
 
 @interface Assembler : NSObject
 
+@property (nonatomic, strong) DataManager *dataManager;
 @property (nonatomic, strong) ImageManager *imageManager;
+@property (nonatomic, strong) RequestManager *requestManager;
 
 + (instancetype)sharedInstance;
 
