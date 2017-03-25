@@ -25,7 +25,12 @@
 
 
 ## Version History
-- **v2.4** (Submitted to the App Store)
+- **v2.5** (Currently in development)
+   - Added localization support for Russian, Spanish, Chinese (simplified), and German - the most common languages used currently.
+   - Conducting an accessibility option, making almost the entire app as accessibile as possible.
+   - Added "peek-and-pop" support for the comic list. Thanks [@avikantz](https://github.com/avikantz)!
+   
+- **v2.4** (Available for download in the App Store)
    - Bookmarking comics - If you enjoy reading all the comics in order, you can bookmark a comic from the comic screen and we've provided an option from the main comic list to be taken back to where you left off at any time.
    - The "alt" view now includes the comic number as well as a "Explain" button that will take you to the explainXKCD site for that comic, in case you'd like a little more context.
    - View All Unread - quickly filter out all viewed comics, seeing only unread comics in the list.
@@ -78,6 +83,8 @@
 - [Yours Truly](https://github.com/mamaral) - Architect of the iOS app.
 - [Sean Ferguson](https://github.com/fergusean) - Architect of the server that pulls content from xkcd and pushes to clients.
 - [Ryan Copley](https://github.com/RyanCopley) - CI build improvements.
+- [avikantz](https://github.com/avikantz) - Added "peek-and-pop" support for the comic list.
+- [NguyenDytrich](https://github.com/NguyenDytrich) - Swipe navigation between comics and random comic button to comic view.
 
 ## Want to help?
 
