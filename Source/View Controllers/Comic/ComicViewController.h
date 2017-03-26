@@ -19,10 +19,12 @@
 - (Comic *)comicViewController:(ComicViewController *)comicViewController comicBeforeCurrentComic:(Comic *)currentComic;
 - (Comic *)comicViewController:(ComicViewController *)comicViewController comicAfterCurrentComic:(Comic *)currentComic;
 - (Comic *)comicViewController:(ComicViewController *)comicViewController randomComic:(Comic *) currentComic;
+- (NSUInteger)numberOfComics;
+- (Comic *)comicForIndex:(NSInteger)index;
 
 @end
 
-@interface ComicViewController : UIViewController <UIScrollViewDelegate>
+@interface ComicViewController : UIViewController
 
 @property (nonatomic) id<ComicViewControllerDelegate> delegate;
 

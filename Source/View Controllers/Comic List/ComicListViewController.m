@@ -50,10 +50,8 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
     }
 
     self.presenter = [[ComicListPresenter alloc] initWithAssembler:[Assembler sharedInstance]];
-    
     return self;
 }
-
 
 #pragma mark - View life cycle
 
@@ -319,6 +317,15 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
     return [self.presenter randomComic];
 }
 
+- (NSUInteger)numberOfComics
+{
+    return self.comics.count;
+}
+
+- (Comic *)comicForIndex:(NSInteger)index
+{
+    return self.comics[index];
+}
 
 #pragma mark - Searching and Filtering
 

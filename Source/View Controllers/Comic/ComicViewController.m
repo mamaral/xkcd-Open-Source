@@ -18,6 +18,8 @@
 #import "ComicWebViewController.h"
 #import "Assembler.h"
 #import "ImageManager.h"
+#import "PageView.h"
+#import "ComicImageView.h"
 
 static CGFloat const kComicViewControllerPadding = 10.0;
 static CGFloat const kComicViewControllerSmallPadding = 7.0;
@@ -27,15 +29,14 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 static NSString * const kAltButtonText = @"Alt";
 
-@interface ComicViewController () <AltViewDelegate>
+@interface ComicViewController () <AltViewDelegate, PageViewDataSource, PageViewDelegate>
 
 @property (nonatomic, weak) ImageManager *imageManager;
 @property (nonatomic, weak) DataManager *dataManager;
 
 @property (nonatomic) BOOL viewedAlt;
 
-@property (nonatomic, strong) UIScrollView *containerView;
-@property (nonatomic, strong) UIImageView *comicImageView;
+@property(nonatomic, strong) PageView *pageView;
 @property (nonatomic, strong) AltView *altView;
 @property (nonatomic, strong) UIButton *favoriteButton;
 @property (nonatomic, strong) UIButton *randomComicButton;
@@ -66,11 +67,8 @@ static NSString * const kAltButtonText = @"Alt";
 
     self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
     self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
-
-    self.containerView = [UIScrollView new];
-
-    self.comicImageView = [UIImageView new];
-    self.comicImageView.accessibilityLabel = NSLocalizedString(@"comic.view.comic", nil);
+    
+    self.pageView = [PageView new];
 
     self.buttonContainerView = [UIView new];
 
@@ -110,18 +108,10 @@ static NSString * const kAltButtonText = @"Alt";
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(handleShareButton)];
-
-    self.containerView.backgroundColor = [UIColor whiteColor];
-    self.containerView.scrollEnabled = YES;
-    self.containerView.minimumZoomScale = 1.0;
-    self.containerView.maximumZoomScale = 10.0;
-    self.containerView.delegate = self;
-    [self.view addSubview:self.containerView];
-
-    self.comicImageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.comicImageView.userInteractionEnabled = YES;
-    self.comicImageView.isAccessibilityElement = YES;
-    [self.containerView addSubview:self.comicImageView];
+    
+    self.pageView.delegate = self;
+    self.pageView.dataSource = self;
+    [self.view addSubview:self.pageView];
 
     self.buttonContainerView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
     [self.view addSubview:self.buttonContainerView];
@@ -175,12 +165,10 @@ static NSString * const kAltButtonText = @"Alt";
 }
 
 - (void)layoutFacade {
-    // Layout the container
-    [self.containerView fillSuperview];
-    self.containerView.contentSize = self.containerView.frame.size;
-
-    // Layout the comic image view
-    [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.view.height - (2 * kComicViewControllerPadding) - self.buttonSize];
+    [self.pageView fillSuperviewWithLeftPadding:kComicViewControllerPadding
+                                   rightPadding:kComicViewControllerPadding
+                                     topPadding:kComicViewControllerPadding
+                                  bottomPadding:kComicViewControllerPadding + self.buttonSize];
 
     // Layout the button container and buttons
     CGFloat spacing = [XKCDDeviceManager isSmallDevice] ? kComicViewControllerSmallPadding : kComicViewControllerPadding;
@@ -213,16 +201,7 @@ static NSString * const kAltButtonText = @"Alt";
     }
 
     self.title = comic.safeTitle;
-    self.containerView.zoomScale = 1.0;
 
-    if (comic.transcript.length > 0) {
-        self.comicImageView.accessibilityLabel = comic.transcript;
-    }
-
-    UIImage *cachedImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString handler:^(UIImage *image) {
-        self.comicImageView.image = image;
-    }];
-    self.comicImageView.image = cachedImage ?: [ThemeManager loadingImage];
 
     [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
 
@@ -249,7 +228,6 @@ static NSString * const kAltButtonText = @"Alt";
 - (void)toggleAltView {
     if (!self.altView.isVisible) {
         self.viewedAlt = YES;
-        self.containerView.zoomScale = 1.0;
 
         [self.altView showInView:self.view];
     } else {
@@ -288,12 +266,6 @@ static NSString * const kAltButtonText = @"Alt";
     [self.bookmarkButton setImage:newImage forState:UIControlStateNormal];
 }
 
-
-#pragma mark - Scroll view delegate
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
-    return self.comicImageView;
-}
 
 #pragma mark - Navigation between comics
 
@@ -342,6 +314,36 @@ static NSString * const kAltButtonText = @"Alt";
     comicWebVC.title = kExplainTitle;
     comicWebVC.URLString = comic.explainURLString;
     [self.navigationController pushViewController:comicWebVC animated:YES];
+}
+
+#pragma mark - PageView data source
+
+-(UIView *)createPage
+{
+    return [ComicImageView new];
+}
+
+-(void)setupPage:(UIView *)page forIndex:(NSUInteger)index
+{
+    ComicImageView *comicView = (ComicImageView *)page;
+    Comic *comic = [self.delegate comicForIndex:index];
+
+    UIImage *cachedImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString handler:^(UIImage *image) {
+        comicView.image = image;
+    }];
+    comicView.image = cachedImage ?: [ThemeManager loadingImage];
+}
+
+-(NSInteger)numberOfPages
+{
+    return self.delegate.numberOfComics;
+}
+
+#pragma mark - PageView delegate
+
+- (void) pageView:(PageView *)pageView shownPageWithIndex:(NSUInteger)index
+{
+    self.comic = [self.delegate comicForIndex:index];
 }
 
 @end
