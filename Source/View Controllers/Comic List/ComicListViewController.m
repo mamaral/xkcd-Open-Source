@@ -377,19 +377,8 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 #pragma mark - Comic view protocol
 
 - (void)showComic:(Comic *)comic allowingNavigation:(BOOL)allowNavigation isInteractive:(BOOL)isInteractive inPreviewMode:(BOOL)inPreviewMode {
-    if (isInteractive) {
-        ComicWebViewController *comicWebVC = [ComicWebViewController new];
-        comicWebVC.title = comic.title;
-        comicWebVC.URLString = comic.comicURLString;
-        [self.navigationController pushViewController:comicWebVC animated:YES];
-    } else {
-        ComicViewController *comicVC = [ComicViewController new];
-        comicVC.delegate = self;
-        comicVC.allowComicNavigation = allowNavigation;
-        comicVC.comic = comic;
-        comicVC.previewMode = inPreviewMode;
-        [self.navigationController pushViewController:comicVC animated:YES];
-    }
+    UIViewController *viewController = [self viewControllerForComic:comic isInteractive:isInteractive allowNavigation:allowNavigation inPreviewMode:inPreviewMode];
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (void)didStartLoadingComics {
@@ -458,7 +447,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
     [previewingContext setSourceRect:cellAttributes.frame];
 
     Comic *comic = self.comics[indexPath.item];
-    [self.presenter comicSelected:comic inPreviewMode:YES];
+    return [self viewControllerForComic:comic isInteractive:comic.isInteractive allowNavigation:NO inPreviewMode:YES];
 }
 
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
@@ -466,6 +455,25 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         ((ComicViewController *)viewControllerToCommit).previewMode = NO;
     }
     [self.navigationController pushViewController:viewControllerToCommit animated:YES];
+}
+
+
+#pragma mark - Convenience methods
+
+- (UIViewController *)viewControllerForComic:(Comic *)comic isInteractive:(BOOL)isInteractive allowNavigation:(BOOL)allowNavigation inPreviewMode:(BOOL)inPreviewMode {
+    if (isInteractive) {
+        ComicWebViewController *comicWebVC = [ComicWebViewController new];
+        comicWebVC.title = comic.title;
+        comicWebVC.URLString = comic.comicURLString;
+        return comicWebVC;
+    } else {
+        ComicViewController *comicVC = [ComicViewController new];
+        comicVC.delegate = self;
+        comicVC.allowComicNavigation = allowNavigation;
+        comicVC.comic = comic;
+        comicVC.previewMode = inPreviewMode;
+        return comicVC;
+    }
 }
 
 @end
