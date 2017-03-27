@@ -33,7 +33,7 @@
 
     // Create a new queue we'll use for the download operations.
     self.downloadQueue = [NSOperationQueue new];
-    self.downloadQueue.maxConcurrentOperationCount = 10;
+    self.downloadQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
 
     // Get our documents directory path.
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
