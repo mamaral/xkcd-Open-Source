@@ -189,7 +189,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
     [alertController addAction:viewRandom];
 
     // Allow them to view bookmarked comic if they have one.
-    if ([self.presenter bookmarkedComic]) {
+    if ([self.presenter hasBookmark]) {
         [alertController addAction:viewBookmark];
     }
 
@@ -207,8 +207,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 }
 
 - (void)viewBookmark {
-    Comic *bookmarkedComic = [self.presenter bookmarkedComic];
-    [self showComic:bookmarkedComic];
+    [self.presenter showBookmarkedComic];
 }
 
 - (void)showClearCacheConfirmation {
@@ -229,17 +228,8 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
     [self.navigationController presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)showComic:(Comic *)comic {
-    ComicViewController *comicVC = [ComicViewController new];
-    comicVC.delegate = self;
-    comicVC.allowComicNavigation = !self.presenter.isSearching && !self.presenter.isFilteringFavorites;
-    comicVC.comic = comic;
-    [self.navigationController pushViewController:comicVC animated:YES];
-}
-
 - (void)showRandomComic {
-    Comic *randomComic = [self.presenter randomComic];
-    [self showComic:randomComic];
+    [self.presenter showRandomComic];
 }
 
 - (void)showExplanationForComic:(Comic *)comic {
@@ -273,16 +263,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Comic *comic = self.comics[indexPath.item];
 
-    // If we should show this comic as interactive, use the web view controller, otherwise
-    // use the normal comic presentation method.
-    if ([self.presenter shouldShowComicAsInteractive:comic]) {
-        ComicWebViewController *comicWebVC = [ComicWebViewController new];
-        comicWebVC.title = comic.title;
-        comicWebVC.URLString = comic.comicURLString;
-        [self.navigationController pushViewController:comicWebVC animated:YES];
-    } else {
-        [self showComic:comic];
-    }
+    [self.presenter comicSelected:comic inPreviewMode:NO];
 }
 
 
@@ -395,6 +376,22 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
 #pragma mark - Comic view protocol
 
+- (void)showComic:(Comic *)comic allowingNavigation:(BOOL)allowNavigation isInteractive:(BOOL)isInteractive inPreviewMode:(BOOL)inPreviewMode {
+    if (isInteractive) {
+        ComicWebViewController *comicWebVC = [ComicWebViewController new];
+        comicWebVC.title = comic.title;
+        comicWebVC.URLString = comic.comicURLString;
+        [self.navigationController pushViewController:comicWebVC animated:YES];
+    } else {
+        ComicViewController *comicVC = [ComicViewController new];
+        comicVC.delegate = self;
+        comicVC.allowComicNavigation = allowNavigation;
+        comicVC.comic = comic;
+        comicVC.previewMode = inPreviewMode;
+        [self.navigationController pushViewController:comicVC animated:YES];
+    }
+}
+
 - (void)didStartLoadingComics {
     [LoadingView showInView:self.view];
 
@@ -461,19 +458,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
     [previewingContext setSourceRect:cellAttributes.frame];
 
     Comic *comic = self.comics[indexPath.item];
-
-    if (comic.isInteractive || [self.presenter shouldShowComicAsInteractive:comic]) {
-        ComicWebViewController *comicWebVC = [ComicWebViewController new];
-        comicWebVC.URLString = comic.comicURLString;
-        return comicWebVC;
-    } else {
-        ComicViewController *comicVC = [ComicViewController new];
-        comicVC.delegate = self;
-        comicVC.allowComicNavigation = !self.presenter.isSearching && !self.presenter.isFilteringFavorites;
-        comicVC.comic = comic;
-        comicVC.previewMode = YES;
-        return comicVC;
-    }
+    [self.presenter comicSelected:comic inPreviewMode:YES];
 }
 
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {

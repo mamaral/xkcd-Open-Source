@@ -119,6 +119,13 @@
 }
 
 
+#pragma mark - Selecting comics
+
+- (void)comicSelected:(Comic *)comic inPreviewMode:(BOOL)previewMode {
+    [self showComic:comic inPreviewMode:previewMode];
+}
+
+
 #pragma mark - Unread
 
 - (void)toggleUnread {
@@ -182,26 +189,24 @@
 #pragma mark - Bookmarking
 
 - (BOOL)hasBookmark {
-    return [self bookmarkedComic] != nil;
+    return [self.dataManager bookmarkedComic] != nil;
 }
 
-- (Comic *)bookmarkedComic {
-    return [self.dataManager bookmarkedComic];
+- (void)showBookmarkedComic {
+    [self showComic:[self.dataManager bookmarkedComic] inPreviewMode:NO];
 }
 
 
 #pragma mark - Random
 
+- (void)showRandomComic {
+    [self showComic:[self.dataManager randomComic] inPreviewMode:NO];
+}
+
 - (Comic *)randomComic {
     return [self.dataManager randomComic];
 }
 
-
-#pragma mark - Interactive comics
-
-- (BOOL)shouldShowComicAsInteractive:(Comic *)comic {
-    return comic.isInteractive || [self.dataManager.knownInteractiveComicNumbers containsObject:@(comic.num)];
-}
 
 #pragma mark - Clearing cache
 
@@ -212,6 +217,15 @@
     [self.view comicListDidChange:self.comics];
 
     [self handleInitialLoad];
+}
+
+
+#pragma mark - Convenience methods
+
+- (void)showComic:(Comic *)comic inPreviewMode:(BOOL)previewMode {
+    BOOL allowNavigation = !self.isSearching && !self.isFilteringFavorites;
+    BOOL isInteractive = comic.isInteractive || [self.dataManager.knownInteractiveComicNumbers containsObject:@(comic.num)];
+    [self.view showComic:comic allowingNavigation:allowNavigation isInteractive:isInteractive inPreviewMode:previewMode];
 }
 
 @end

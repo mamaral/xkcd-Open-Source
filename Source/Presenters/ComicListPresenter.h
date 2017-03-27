@@ -15,6 +15,7 @@
 @protocol ComicListView <NSObject>
 
 @required
+- (void)showComic:(Comic *)comic allowingNavigation:(BOOL)allowNavigation isInteractive:(BOOL)isInteractive inPreviewMode:(BOOL)inPreviewMode;
 - (void)didStartLoadingComics;
 - (void)didFinishLoadingComics;
 - (void)comicListDidChange:(RLMResults *)comicList;
@@ -36,6 +37,9 @@
 - (void)handleInitialLoad;
 - (void)handleShowAllComics;
 
+#pragma mark - Selecting comics
+- (void)comicSelected:(Comic *)comic inPreviewMode:(BOOL)previewMode;
+
 #pragma mark - Unread
 - (void)toggleUnread;
 
@@ -51,13 +55,11 @@
 
 #pragma mark - Bookmarking
 - (BOOL)hasBookmark;
-- (Comic *)bookmarkedComic;
+- (void)showBookmarkedComic;
 
 #pragma mark - Random
+- (void)showRandomComic;
 - (Comic *)randomComic;
-
-#pragma mark - Interactive comics
-- (BOOL)shouldShowComicAsInteractive:(Comic *)comic;
 
 #pragma mark - Clearing cache
 - (void)handleClearCache;

@@ -341,8 +341,7 @@
 		277316EE1B05679500ED7978 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				270101AB1E77BABE0009A0C3 /* Assembler.h */,
-				270101AC1E77BABE0009A0C3 /* Assembler.m */,
+				27871CF91E88CC8400817481 /* Assembler */,
 				27469FD91E77B5BC009466F4 /* Image Manager */,
 				270508E81D7232F800D34A6A /* Device Manager */,
 				277317111B06DF9700ED7978 /* Theme Manager */,
@@ -429,6 +428,15 @@
 				2774C40A1CC70CA2003B215A /* ComicWebViewController.m */,
 			);
 			path = "Comic Web View Controller";
+			sourceTree = "<group>";
+		};
+		27871CF91E88CC8400817481 /* Assembler */ = {
+			isa = PBXGroup;
+			children = (
+				270101AB1E77BABE0009A0C3 /* Assembler.h */,
+				270101AC1E77BABE0009A0C3 /* Assembler.m */,
+			);
+			name = Assembler;
 			sourceTree = "<group>";
 		};
 		279D3B091E58C4B400476B13 /* Presenters */ = {
