@@ -28,6 +28,7 @@
 
 @property(nonatomic, weak) id<PageViewDataSource> dataSource;
 @property(nonatomic, weak) id<PageViewDelegate> delegate;
+@property(nonatomic, assign) CGFloat pageSpacing;
 @property(nonatomic, assign) NSInteger pageIndex;
 
 @end

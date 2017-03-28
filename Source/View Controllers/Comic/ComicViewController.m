@@ -45,8 +45,6 @@ static NSString * const kAltButtonText = @"Alt";
 @property (nonatomic, strong) UIButton *altTextButton;
 @property (nonatomic, strong) UIButton *bookmarkButton;
 @property (nonatomic, strong) UIView *buttonContainerView;
-@property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
-@property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
 @property (nonatomic, strong) UIImage *comicImage;
 
 @property (nonatomic) CGFloat buttonSize;
@@ -64,11 +62,9 @@ static NSString * const kAltButtonText = @"Alt";
 
     self.imageManager = [Assembler sharedInstance].imageManager;
     self.dataManager = [Assembler sharedInstance].dataManager;
-
-    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
-    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
     
     self.pageView = [PageView new];
+    self.pageView.pageSpacing = 80;
 
     self.buttonContainerView = [UIView new];
 
@@ -137,12 +133,6 @@ static NSString * const kAltButtonText = @"Alt";
     [self.prevButton addTarget:self action:@selector(showPrev) forControlEvents:UIControlEventTouchDown];
     [self.buttonContainerView addSubview:self.prevButton];
 
-    self.prevSwipe.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.view addGestureRecognizer:self.prevSwipe];
-
-    self.nextSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self.view addGestureRecognizer:self.nextSwipe];
-
     self.nextButton.adjustsImageWhenHighlighted = NO;
     [self.nextButton setImage:[ThemeManager nextComicImage] forState:UIControlStateNormal];
     [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
@@ -207,9 +197,6 @@ static NSString * const kAltButtonText = @"Alt";
 
     self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
     self.nextButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicAfterCurrentComic:comic] == nil;
-    
-    self.prevSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicBeforeCurrentComic:comic] != nil;
-    self.nextSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicAfterCurrentComic:comic] != nil;
 
     [self prefetchImagesForComicsBeforeAndAfter];
 

@@ -19,6 +19,7 @@
 - (void)reloadData;
 - (void)loadPageForIndex:(NSInteger)index;
 - (void)unloadPageForKey:(NSNumber*)key;
+- (void)setupFrameForPage:(UIView *)page withIndex: (NSInteger)index;
 
 @end
 
@@ -83,13 +84,13 @@
 
 - (void)setup
 {
+    self.clipsToBounds = YES;
     self.pagingScrollView = [UIScrollView new];
     self.pagingScrollView.showsVerticalScrollIndicator = NO;
     self.pagingScrollView.showsHorizontalScrollIndicator = NO;
     self.pagingScrollView.pagingEnabled = YES;
     self.pagingScrollView.backgroundColor = [UIColor whiteColor];
     self.pagingScrollView.delegate = self;
-    self.pagingScrollView.backgroundColor = [UIColor blueColor];
     self.loadedPages = [NSMutableDictionary new];
     self.unloadedPages = [NSMutableArray new];
     [self addSubview:self.pagingScrollView];
@@ -121,11 +122,8 @@
         page = [self.dataSource createPage];
     }
     
-   // UIView *page = [self.dataSource createPage];
-    
     [self.dataSource setupPage:page forIndex:index];
-    CGSize pageRect = self.pagingScrollView.bounds.size;
-    page.frame = CGRectMake(pageRect.width * index, 0, pageRect.width, pageRect.height);
+    [self setupFrameForPage:page withIndex:index];
     [self.loadedPages setObject:page forKey:key];
     [self.pagingScrollView addSubview:page];
 }
@@ -140,18 +138,28 @@
 - (void)layoutSubviews
 {
     self.ignoreScroll = YES;
-    CGRect pageRect = self.bounds;
-    self.pagingScrollView.frame = pageRect;
-    self.pagingScrollView.contentSize = CGSizeMake(CGRectGetWidth(pageRect) * self.dataSource.numberOfPages, CGRectGetHeight(pageRect));
-    self.pagingScrollView.contentOffset = CGPointMake(CGRectGetWidth(pageRect) * self.pageIndex, 0);
+    
+    CGRect scrollViewFrame = CGRectInset(self.bounds, -self.pageSpacing * 0.5, 0);
+    CGFloat pageWidth = scrollViewFrame.size.width;
+    self.pagingScrollView.frame = scrollViewFrame;
+    self.pagingScrollView.contentSize = CGSizeMake(pageWidth * self.dataSource.numberOfPages, self.bounds.size.height);
+    self.pagingScrollView.contentOffset = CGPointMake(pageWidth * self.pageIndex, 0);
     
     for (NSNumber *key in self.loadedPages) {
         UIView *page = [self.loadedPages objectForKey:key];
         NSInteger index = key.integerValue;
-        page.frame = CGRectMake(index * CGRectGetWidth(pageRect), 0, CGRectGetWidth(pageRect), CGRectGetHeight(pageRect));
+    
+        [self setupFrameForPage:page withIndex:index];
     }
     
     self.ignoreScroll = NO;
+}
+
+- (void)setupFrameForPage:(UIView *)page withIndex: (NSInteger)index
+{
+    CGFloat pageWidth = self.bounds.size.width + self.pageSpacing;
+    CGRect pageRect = CGRectMake(index * pageWidth, 0, pageWidth, self.bounds.size.height);
+    page.frame = CGRectInset(pageRect, self.pageSpacing * 0.5, 0);
 }
 
 // MARK: - UIScrollViewDelegate
@@ -163,10 +171,10 @@
     }
     
     CGFloat offset = self.pagingScrollView.contentOffset.x;
-    CGFloat pageWidth = self.pagingScrollView.bounds.size.width;
+    CGFloat pageWidth = self.bounds.size.width + self.pageSpacing;
     
     if (fabs(offset - self.pageIndex * pageWidth) > 0.5 * pageWidth) {
-        NSInteger newIndex = MAX(0, floor(offset / pageWidth));
+        NSInteger newIndex = MAX(0, round(offset / pageWidth));
         
         if (self.pageIndex != newIndex) {
             self.pageIndex = newIndex;
