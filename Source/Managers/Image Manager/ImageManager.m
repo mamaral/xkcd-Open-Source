@@ -1,6 +1,5 @@
 //
 //  ImageManager.m
-//  xkcd Open Source
 //
 //  Created by Mike on 3/14/17.
 //  Copyright © 2017 Mike Amaral. All rights reserved.
@@ -8,16 +7,29 @@
 
 #import "ImageManager.h"
 
-#import "OrderedDictionary.h"
-
 @interface ImageManager ()
 
+/**
+ * The path to this application's documents directory, used for storing downloaded
+ * images on disk.
+ */
 @property (nonatomic, strong) NSString *documentsDirectoryPath;
 
+/**
+ * A reference to the default NSFileManager instance, used for storing and
+ * retrieving image data from disk.
+ */
 @property (nonatomic, strong) NSFileManager *fileManager;
 
+/**
+ * The cache we will use to store images in memory while the application
+ * is running.
+ */
 @property (nonatomic, strong) NSCache *imageCache;
 
+/**
+ * Our download queue we will use to schedule image download block operations.
+ */
 @property (nonatomic, strong) NSOperationQueue *downloadQueue;
 
 @end
@@ -54,7 +66,6 @@
     // #1 - Load from cache synchronously.
     UIImage *cachedImage = [self.imageCache objectForKey:filename];
     if (cachedImage) {
-        NSLog(@"Image found in cache with filename: %@", filename);
         return cachedImage;
     }
 
@@ -64,8 +75,6 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             UIImage *imageOnDisk = [self loadImageFromDiskWithFilename:filename];
             if (imageOnDisk) {
-                NSLog(@"Image found on disk with filename: %@", filename);
-
                 dispatch_async(dispatch_get_main_queue(), ^{
                     handler(imageOnDisk);
                 });
@@ -73,9 +82,8 @@
         });
     }
 
-    // #3 - Download from URL asynchronously.
+    // #3 - Download from remote URL asynchronously.
     else {
-        NSLog(@"Image not in cache and not on disk. Attempting to download now...");
         [self downloadAndStoreImageFromURLString:urlString filename:filename handler:handler];
     }
 
@@ -96,7 +104,16 @@
     }
 }
 
-- (UIImage *)loadImageFromDiskWithFilename:(NSString *)filename {
+#pragma mark - Loading images from disk
+
+/**
+ * Loads and returns the image previously saved to the documents directory.
+ *
+ * @param filename The filename the image was saved with.
+ *
+ * @return The image previously saved to the documents directory, if it exists, otherwise returns nil.
+ */
+- (nullable UIImage *)loadImageFromDiskWithFilename:(NSString *)filename {
     NSString *path = [self.documentsDirectoryPath stringByAppendingPathComponent:filename];
 
     if ([self.fileManager fileExistsAtPath:path]) {
@@ -112,7 +129,19 @@
     return nil;
 }
 
-- (void)downloadAndStoreImageFromURLString:(NSString *)urlString filename:(NSString *)filename handler:(void (^)(UIImage * nullable))handler {
+
+#pragma mark - Download and storing images
+
+/**
+ * Downloads image data from a remote URL and upon success stores the image in our cache and on disk.
+ *
+ * @param urlString The remote URL string where the image can be downloaded from.
+ * @param filname The name of the image to be used as the key in the cache, the name of the
+ * file on disk, and as the key for the download operation.
+ * @param handler A block that takes a single UIImage argument that will be called only when the image
+ * is successfully downloaded.
+ */
+- (void)downloadAndStoreImageFromURLString:(NSString *)urlString filename:(NSString *)filename handler:(void (^)(UIImage *))handler {
     __block NSBlockOperation *downloadOperation = [NSBlockOperation blockOperationWithBlock:^{
         NSURL *url = [NSURL URLWithString:urlString];
         NSData *dataFromServer = [NSData dataWithContentsOfURL:url];
@@ -121,8 +150,6 @@
             UIImage *imageFromServer = [UIImage imageWithData:dataFromServer];
 
             if (imageFromServer) {
-                NSLog(@"Image downloaded.");
-
                 // Dispatch the handler on the main thread only if our operation wasn't cancelled.
                 if (![downloadOperation isCancelled]) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -130,25 +157,25 @@
                     });
                 }
 
+                // Now let's update the cache with the newly downloaded image.
                 [self updateCacheWithFilename:filename image:imageFromServer];
             }
 
+            // Save the raw image data to disk.
             NSString *path = [self.documentsDirectoryPath stringByAppendingPathComponent:filename];
-            BOOL success = [dataFromServer writeToFile:path atomically:YES];
-
-            if (success) {
-                NSLog(@"Image saved to disk successfully with filename: %@", filename);
-            } else {
-                NSLog(@"Image save failed for filename: %@", filename);
-            }
-        } else {
-            NSLog(@"Unable to download image.");
+            [dataFromServer writeToFile:path atomically:YES];
         }
     }];
+
+    // Set the download operation's name as the filename - this will be used if we want to cancel the
+    // download operation in the future.
     downloadOperation.name = filename;
 
     [self.downloadQueue addOperation:downloadOperation];
 }
+
+
+#pragma mark - Image caching
 
 /**
  * Updates our image cache by adding the provided filename as the key and the image object

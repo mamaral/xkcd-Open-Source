@@ -1,6 +1,5 @@
 //
 //  ImageManager.h
-//  xkcd Open Source
 //
 //  Created by Mike on 3/14/17.
 //  Copyright © 2017 Mike Amaral. All rights reserved.
@@ -15,12 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
  * used in the app, loading and saving images to disk, and downloading remote
  * images and updating the cache and disk with the recently downloaded images.
  * It also provides a mechanism to cancel previous download handler operations,
- * aimed at high performance when used in conjunction with UITableView and
- * UIScrollView cell reuse.
+ * designed for high performance when used in conjunction with UITableView and
+ * UICollectionView cell reuse.
  */
 @interface ImageManager : NSObject
-
-@property (nonatomic) NSUInteger cacheLimit;
 
 /**
  * Returns an image with a given filename if it's present in our image cache.
@@ -31,7 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
  * disk, and the provided handler block is called with the image.
  *
  * @param filename The name of the file that will be used as the key in the image
- * cache and the path for the image to be loaded on or saved to disk.
+ * cache and the path for the image to be loaded on or saved to the application's
+ * documents directory.
  *
  * @param urlString The string representation of the remote url for this image
  * that will be used to download the image if it is not present in the cache
@@ -45,13 +43,21 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable UIImage *)loadImageWithFilename:(NSString *)filename
                                   urlString:(NSString *)urlString
-                                    handler:(void (^)(UIImage * nullable))handler;
+                                    handler:(void (^)(UIImage *))handler;
 
 /**
- * Cancels the download handler for a given filename, preventing a previous
- * download operation from calling the download handler for that file.
+ * Cancels a previously started image download for a given filename if the download
+ * exists in our download queue. This will prevent the handler for being called on a previous
+ * call to loadImageWithFilename:urlString:handler:.
  *
  * @param filename The name of the file downloaded.
+ *
+ * @discussion If you're using this in a UITableView, UICollectionView, or any other view
+ * that implements a reuse/recycle mechanism, you'll want to cancel the download for a given
+ * cell or view prior to calling loadImageWithFilename:urlString:handler: again for that
+ * same cell or view. This will prevent weird behavior in many cases, such as scrolling
+ * very quickly, that may lead to a single image view cycling through multiple images as
+ * each of the download operations finishes in an arbitrary order.
  */
 - (void)cancelDownloadHandlerForFilename:(nullable NSString *)filename;
 
