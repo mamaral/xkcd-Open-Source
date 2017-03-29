@@ -29,7 +29,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 static NSString * const kAltButtonText = @"Alt";
 
-@interface ComicViewController () <AltViewDelegate, PageViewDataSource, PageViewDelegate>
+@interface ComicViewController () <AltViewDelegate, PageViewDelegate>
 
 @property (nonatomic, weak) ImageManager *imageManager;
 @property (nonatomic, weak) DataManager *dataManager;
@@ -65,6 +65,7 @@ static NSString * const kAltButtonText = @"Alt";
     
     self.pageView = [PageView new];
     self.pageView.pageSpacing = 80;
+    self.pageView.delegate = self;
 
     self.buttonContainerView = [UIView new];
 
@@ -104,9 +105,7 @@ static NSString * const kAltButtonText = @"Alt";
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(handleShareButton)];
-    
-    self.pageView.delegate = self;
-    self.pageView.dataSource = self;
+
     [self.view addSubview:self.pageView];
 
     self.buttonContainerView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
@@ -177,32 +176,8 @@ static NSString * const kAltButtonText = @"Alt";
 #pragma mark - Setters
 
 - (void)setComic:(Comic *)comic {
-    // First we need to grab the filename for the previous comic so we can cancel
-    // the download handler for it. This will prevent this view from loading an
-    // outdated image if users switch comics fast and a download finishes for a
-    // prior comic.
-    NSString *previousFilename = [self.comic getFilename];
-    [self.imageManager cancelDownloadHandlerForFilename:previousFilename];
-
-    _comic = comic;
-
-    if (!self.comic.viewed) {
-        [self.dataManager markComicViewed:comic];
-    }
-
-    self.title = comic.safeTitle;
-
-
-    [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
-
-    self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
-    self.nextButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicAfterCurrentComic:comic] == nil;
-
-    [self prefetchImagesForComicsBeforeAndAfter];
-
-    self.altView.comic = comic;
-
-    [self updateBookmarkButtonImage];
+    [self setComicInternal:comic];
+    self.pageView.currentPage = [self imageViewForComic:comic];
 }
 
 - (void)setPreviewMode:(BOOL)previewMode {
@@ -221,7 +196,6 @@ static NSString * const kAltButtonText = @"Alt";
         [self.altView dismiss];
     }
 }
-
 
 #pragma mark - Favorite
 
@@ -303,34 +277,64 @@ static NSString * const kAltButtonText = @"Alt";
     [self.navigationController pushViewController:comicWebVC animated:YES];
 }
 
-#pragma mark - PageView data source
+#pragma mark - Page view delegate
 
--(UIView *)createPage
+- (ComicImageView *)imageViewForComic: (Comic *)comic
 {
-    return [ComicImageView new];
-}
-
--(void)setupPage:(UIView *)page forIndex:(NSUInteger)index
-{
-    ComicImageView *comicView = (ComicImageView *)page;
-    Comic *comic = [self.delegate comicForIndex:index];
-
+    ComicImageView *comicView = [ComicImageView new];
+    
     UIImage *cachedImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString handler:^(UIImage *image) {
         comicView.image = image;
     }];
     comicView.image = cachedImage ?: [ThemeManager loadingImage];
+    comicView.comic = comic;
+    return comicView;
 }
 
--(NSInteger)numberOfPages
+- (UIView *)pageBeforePage: (UIView *)page
 {
-    return self.delegate.numberOfComics;
+    ComicImageView *imageView = (ComicImageView *)page;
+    Comic *prevComic = [self.delegate comicViewController:self comicBeforeCurrentComic:imageView.comic];
+    if (!prevComic) return nil;
+    return [self imageViewForComic: prevComic];
 }
 
-#pragma mark - PageView delegate
-
-- (void) pageView:(PageView *)pageView shownPageWithIndex:(NSUInteger)index
+- (UIView *)pageAfterPage: (UIView *)page
 {
-    self.comic = [self.delegate comicForIndex:index];
+    ComicImageView *imageView = (ComicImageView *)page;
+    Comic *nextComic = [self.delegate comicViewController:self comicAfterCurrentComic:imageView.comic];
+    if (!nextComic) return nil;
+    return [self imageViewForComic: nextComic];
+}
+
+- (void)pageDidBecomeCurrent: (UIView *)page
+{
+    ComicImageView *imageView = (ComicImageView *)page;
+    [self setComicInternal:imageView.comic];
+}
+
+#pragma mark - Internals
+
+- (void)setComicInternal: (Comic *)comic
+{
+    _comic = comic;
+    
+    if (!self.comic.viewed) {
+        [self.dataManager markComicViewed:comic];
+    }
+    
+    self.title = comic.safeTitle;
+    
+    [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
+    
+    self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
+    self.nextButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicAfterCurrentComic:comic] == nil;
+    
+    [self prefetchImagesForComicsBeforeAndAfter];
+    
+    self.altView.comic = comic;
+    
+    [self updateBookmarkButtonImage];
 }
 
 @end

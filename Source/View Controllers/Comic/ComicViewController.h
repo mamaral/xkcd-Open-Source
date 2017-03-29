@@ -19,8 +19,6 @@
 - (Comic *)comicViewController:(ComicViewController *)comicViewController comicBeforeCurrentComic:(Comic *)currentComic;
 - (Comic *)comicViewController:(ComicViewController *)comicViewController comicAfterCurrentComic:(Comic *)currentComic;
 - (Comic *)comicViewController:(ComicViewController *)comicViewController randomComic:(Comic *) currentComic;
-- (NSUInteger)numberOfComics;
-- (Comic *)comicForIndex:(NSInteger)index;
 
 @end
 
