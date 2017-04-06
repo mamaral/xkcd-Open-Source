@@ -73,6 +73,9 @@
     NSString *path = [self.documentsDirectoryPath stringByAppendingPathComponent:filename];
     if ([self.fileManager fileExistsAtPath:path]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+            // If an image was loaded from disk, call our handler on the main thread
+            // providing that image.
             UIImage *imageOnDisk = [self loadImageFromDiskWithFilename:filename];
             if (imageOnDisk) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -87,6 +90,8 @@
         [self downloadAndStoreImageFromURLString:urlString filename:filename handler:handler];
     }
 
+    // If we got this far, the image was not found in the cache and we will hopefully
+    // be calling the handler at some FUTURE.TIME with the image.
     return nil;
 }
 
@@ -97,12 +102,12 @@
 
     for (NSBlockOperation *operation in self.downloadQueue.operations) {
         if ([operation.name isEqualToString:filename]) {
-            NSLog(@"Canceling operation for filename: %@", filename);
             [operation cancel];
             return;
         }
     }
 }
+
 
 #pragma mark - Loading images from disk
 
