@@ -176,7 +176,6 @@ static NSString * const kAltButtonText = @"Alt";
 #pragma mark - Setters
 
 - (void)setComic:(Comic *)comic {
-    [self setComicInternal:comic];
     self.pageView.currentPage = [self imageViewForComic:comic];
 }
 

@@ -13,6 +13,7 @@
 @property(nonatomic, strong) UIScrollView *pagingScrollView;
 @property(nonatomic, strong) UIView *prevPage;
 @property(nonatomic, strong) UIView *nextPage;
+@property(nonatomic) BOOL ignoreScroll;
 
 // Current page index (0,1,2)
 @property(nonatomic) int currentPageIndex;
@@ -124,15 +125,19 @@
 
 - (void)layoutSubviews
 {
+    self.ignoreScroll = YES;
     CGRect scrollViewFrame = CGRectInset(self.bounds, -self.pageSpacing * 0.5, 0);
     self.pagingScrollView.frame = scrollViewFrame;
     [self arrangePageFrames];
+    self.ignoreScroll = NO;
 }
 
 // MARK: - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    if (self.ignoreScroll) return;
+    
     CGFloat offset = self.pagingScrollView.contentOffset.x;
     int newPageIndex = MAX(0, round(offset / self.pageWidth));
     
