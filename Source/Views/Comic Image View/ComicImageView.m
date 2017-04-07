@@ -1,5 +1,5 @@
 //
-//  ZoomingImageView.m
+//  ComicImageView.m
 //  xkcd Open Source
 //
 //  Created by Oleg on 3/20/17.
@@ -9,15 +9,12 @@
 #import <UIImageView+WebCache.h>
 #import "ComicImageView.h"
 #import "ThemeManager.h"
+#import "Comic.h"
 
 @interface ComicImageView () <UIScrollViewDelegate>
 
 @property(nonatomic, strong) UIScrollView *scrollView;
 @property(nonatomic, strong) UIImageView *imageView;
-
-- (void)setup;
-- (void)setupZoomScale;
-- (void)centerImage;
 
 @end
 
@@ -54,12 +51,22 @@
     [self setNeedsLayout];
 }
 
+- (void)setComic:(Comic *)comic
+{
+    _comic = comic;
+    if (comic.transcript.length > 0) {
+        self.imageView.accessibilityLabel = comic.transcript;
+    }
+}
+
 - (void) setup
 {
     self.scrollView = [UIScrollView new];
     self.imageView = [UIImageView new];
     self.imageView.frame = CGRectZero;
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.imageView.isAccessibilityElement = YES;
+    self.imageView.accessibilityLabel = NSLocalizedString(@"comic.view.comic", nil);
     self.scrollView.backgroundColor = [UIColor whiteColor];
     self.scrollView.delegate = self;
     self.scrollView.minimumZoomScale = 1.0;
@@ -70,7 +77,7 @@
     [self addSubview:self.scrollView];
 }
 
-- (void) setupZoomScale
+- (void)setupZoomScale
 {
     CGSize imageSize = self.imageView.bounds.size;
     CGSize scrollViewSize = self.scrollView.bounds.size;

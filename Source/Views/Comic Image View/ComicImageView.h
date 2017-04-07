@@ -1,5 +1,5 @@
 //
-//  ZoomingImageView.h
+//  ComicImageView.h
 //  xkcd Open Source
 //
 //  Created by Oleg on 3/20/17.
@@ -14,4 +14,5 @@
 
 @property UIImage *image;
 @property(nonatomic, strong) Comic* comic;
+
 @end
