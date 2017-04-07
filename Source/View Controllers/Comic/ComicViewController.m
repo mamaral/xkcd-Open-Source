@@ -282,8 +282,9 @@ static NSString * const kAltButtonText = @"Alt";
 {
     ComicImageView *comicView = [ComicImageView new];
     
+    __weak ComicImageView *weakComicView = comicView;
     UIImage *cachedImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString handler:^(UIImage *image) {
-        comicView.image = image;
+        weakComicView.image = image;
     }];
     comicView.image = cachedImage ?: [ThemeManager loadingImage];
     comicView.comic = comic;
