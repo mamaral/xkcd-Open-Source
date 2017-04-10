@@ -221,4 +221,8 @@
     }
 }
 
+- (void)deleteAllImagesFromCache {
+    [self.imageCache removeAllObjects];
+}
+
 @end

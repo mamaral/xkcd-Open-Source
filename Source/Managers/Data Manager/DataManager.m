@@ -51,7 +51,6 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     [self initializeRealm];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteringForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteringForeground) name:UIApplicationDidFinishLaunchingNotification object:nil];
 
     return self;
 }
@@ -174,19 +173,18 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 }
 
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingKeyPath:@"num" ascending:NO];
+    NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString];
+    return [[Comic objectsWithPredicate:searchPredicate] sortedResultsUsingKeyPath:@"num" ascending:NO];
 }
 
 - (RLMResults *)allFavorites {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]] sortedResultsUsingKeyPath:@"num" ascending:NO];
+    NSPredicate *favoritedPredicate = [NSPredicate predicateWithFormat:@"favorite == YES"];
+    return [[Comic objectsWithPredicate:favoritedPredicate] sortedResultsUsingKeyPath:@"num" ascending:NO];
 }
 
 - (RLMResults *)allUnread {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]] sortedResultsUsingKeyPath:@"num" ascending:NO];
-}
-
-- (RLMResults *)allComicsWithUnsavedImages {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"imageSaved == NO"]] sortedResultsUsingKeyPath:@"num" ascending:NO];
+    NSPredicate *unreadPredicate = [NSPredicate predicateWithFormat:@"viewed == NO"];
+    return [[Comic objectsWithPredicate:unreadPredicate] sortedResultsUsingKeyPath:@"num" ascending:NO];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
@@ -194,7 +192,7 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     NSInteger since = [self latestComicDownloaded];
 
     // Pass that to our request manager to fetch it.
-    [[Assembler sharedInstance].requestManager downloadComicsSince:since completionHandler:^(NSError *error, NSArray *comicDicts) {
+    [self.assembler.requestManager downloadComicsSince:since completionHandler:^(NSError *error, NSArray *comicDicts) {
         // Error handling
         if (error) {
             handler(error, 0);
@@ -271,6 +269,11 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 - (Comic *)randomComic {
     RLMResults *allComics = [self allSavedComics];
+
+    if (allComics.count == 0) {
+        return nil;
+    }
+
     NSInteger randomIndex = [self randomNumberBetweenMin:0 andMax:allComics.count - 1];
     return allComics[randomIndex];
 }
@@ -279,11 +282,11 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 #pragma mark - Reviews
 
 - (BOOL)hasAskedForReview {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:kHasAskedForReviewKey];
+    return [self.defaults boolForKey:kHasAskedForReviewKey];
 }
 
 - (void)setHasAskedForReview:(BOOL)hasAsked {
-    [[NSUserDefaults standardUserDefaults] setBool:hasAsked forKey:kHasAskedForReviewKey];
+    [self.defaults setBool:hasAsked forKey:kHasAskedForReviewKey];
 }
 
 
@@ -296,16 +299,17 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     // Reset the latest comic download index
     [self setLatestComicDownloaded:0];
 
-    // Reset the
+    // Reset the viewed and favorite state of all comics.
+    RLMResults *allComics = [Comic allObjects];
     [self.realm beginWriteTransaction];
-    RLMResults *allComics = [self allSavedComics];
     [allComics setValue:@NO forKey:@"viewed"];
     [allComics setValue:@NO forKey:@"favorite"];
     [self.realm commitWriteTransaction];
 
-    // Remove all images from disk on a background thread.
+    // Remove all images from disk and the cache on a background thread.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self.assembler.imageManager deleteAllImagesFromDisk];
+        [self.assembler.imageManager deleteAllImagesFromCache];
     });
 }
 

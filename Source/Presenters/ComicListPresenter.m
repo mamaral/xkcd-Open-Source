@@ -24,14 +24,14 @@
 
 @implementation ComicListPresenter
 
-- (instancetype)init {
+- (instancetype)initWithAssembler:(Assembler *)assembler {
     self = [super init];
 
     if (!self) {
         return nil;
     }
 
-    self.dataManager = [Assembler sharedInstance].dataManager;
+    self.dataManager = assembler.dataManager;
     self.comics = [self.dataManager allSavedComics];
 
     // Fetch comics whenever we get notified more are available.
@@ -224,6 +224,8 @@
 #pragma mark - Convenience methods
 
 - (void)showComic:(Comic *)comic inPreviewMode:(BOOL)previewMode {
+    NSParameterAssert(comic);
+
     BOOL allowNavigation = !self.isSearching && !self.isFilteringFavorites;
     BOOL isInteractive = comic.isInteractive || [self.dataManager.knownInteractiveComicNumbers containsObject:@(comic.num)];
     [self.view showComic:comic allowingNavigation:allowNavigation isInteractive:isInteractive inPreviewMode:previewMode];

@@ -10,6 +10,8 @@
 #import <AFNetworking.h>
 #import "Comic.h"
 
+@class Assembler;
+
 // TODO: Refactor this class.
 
 static NSString * const kRequestManagerErrorDomain = @"Request Manager";
@@ -24,6 +26,8 @@ static NSString * const kContentTypeKey = @"Content-Type";
 @interface RequestManager : NSObject
 
 @property (nonatomic, strong) AFHTTPRequestOperationManager *manager;
+
+- (instancetype)initWithAssembler:(Assembler *)assembler;
 
 #pragma mark - Downloading comics
 

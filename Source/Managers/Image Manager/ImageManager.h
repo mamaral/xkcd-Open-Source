@@ -66,6 +66,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)deleteAllImagesFromDisk;
 
+/**
+ * Deletes all images from cache.
+ */
+- (void)deleteAllImagesFromCache;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -71,7 +71,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 - (void)setupAssembler {
     self.assembler = [Assembler sharedInstance];
     self.assembler.dataManager = [[DataManager alloc] initWithAssembler:self.assembler];
-    self.assembler.requestManager = [RequestManager new];
+    self.assembler.requestManager = [[RequestManager alloc] initWithAssembler:self.assembler];
     self.assembler.imageManager = [ImageManager new];
 }
 

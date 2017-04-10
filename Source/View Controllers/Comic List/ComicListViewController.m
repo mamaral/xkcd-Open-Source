@@ -19,6 +19,7 @@
 #import "ComicViewController.h"
 #import "ComicCell.h"
 #import "XKCDDeviceManager.h"
+#import "Assembler.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 
@@ -48,7 +49,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         return nil;
     }
 
-    self.presenter = [ComicListPresenter new];
+    self.presenter = [[ComicListPresenter alloc] initWithAssembler:[Assembler sharedInstance]];
     
     return self;
 }
@@ -172,24 +173,29 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
+    BOOL hasComics = self.comics.count > 0;
+
     // Allow them to view all if we're filtering in any way.
-    if (self.presenter.isFilteringUnread || self.presenter.isFilteringFavorites) {
+    if (hasComics && (self.presenter.isFilteringUnread || self.presenter.isFilteringFavorites)) {
         [alertController addAction:viewAll];
     }
     // Allow them to view unread if we're not already.
-    if (!self.presenter.isFilteringUnread) {
+    if (hasComics && !self.presenter.isFilteringUnread) {
         [alertController addAction:viewUnread];
     }
 
     // Allow them to view favorites if we're not already and they have favorites.
-    if (!self.presenter.isFilteringFavorites && [self.presenter hasFavorites]) {
+    if (hasComics && !self.presenter.isFilteringFavorites && [self.presenter hasFavorites]) {
         [alertController addAction:toggleFavs];
     }
 
-    [alertController addAction:viewRandom];
+    // Allow them to view random is we have comics.
+    if (hasComics) {
+        [alertController addAction:viewRandom];
+    }
 
     // Allow them to view bookmarked comic if they have one.
-    if ([self.presenter hasBookmark]) {
+    if (hasComics && [self.presenter hasBookmark]) {
         [alertController addAction:viewBookmark];
     }
 

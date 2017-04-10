@@ -23,7 +23,7 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 
 #pragma mark - Initialization
 
-- (instancetype)init {
+- (instancetype)initWithAssembler:(Assembler *)assembler {
     self = [super init];
 
     self.manager = [self generateHTTPRequestOperationManager];

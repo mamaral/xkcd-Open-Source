@@ -11,6 +11,7 @@
 #import <Realm/Realm.h>
 
 @class Comic;
+@class Assembler;
 
 @protocol ComicListView <NSObject>
 
@@ -28,6 +29,8 @@
 @property (nonatomic, readonly) BOOL isFilteringFavorites;
 @property (nonatomic, readonly) BOOL isSearching;
 @property (nonatomic, readonly) BOOL isFilteringUnread;
+
+- (instancetype)initWithAssembler:(Assembler *)assembler;
 
 - (void)attachToView:(id<ComicListView>)view;
 - (void)dettachFromView:(id<ComicListView>)view;
