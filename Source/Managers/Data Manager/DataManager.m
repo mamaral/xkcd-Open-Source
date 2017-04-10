@@ -9,12 +9,16 @@
 #import "DataManager.h"
 #import "RequestManager.h"
 #import "Assembler.h"
+#import "Comic.h"
+#import "ImageManager.h"
 
 static NSInteger const kCurrentSchemaVersion = 7;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 @interface DataManager ()
+
+@property (nonatomic, strong) Assembler *assembler;
 
 @property (nonatomic, strong) NSUserDefaults *defaults;
 
@@ -26,8 +30,16 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 #pragma mark - Initialization
 
-- (instancetype)init {
+- (instancetype)initWithAssembler:(Assembler *)assembler {
+    NSParameterAssert(assembler);
+
     self = [super init];
+
+    if (!self) {
+        return nil;
+    }
+
+    self.assembler = assembler;
 
     self.defaults = [NSUserDefaults standardUserDefaults];
 
@@ -278,11 +290,23 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 #pragma mark - Clearing Cache
 
 - (void)clearCache {
+    // Reset bookmarked comic
     [self setBookmarkedComic:0];
+
+    // Reset the latest comic download index
     [self setLatestComicDownloaded:0];
+
+    // Reset the
     [self.realm beginWriteTransaction];
-    [self.realm deleteAllObjects];
+    RLMResults *allComics = [self allSavedComics];
+    [allComics setValue:@NO forKey:@"viewed"];
+    [allComics setValue:@NO forKey:@"favorite"];
     [self.realm commitWriteTransaction];
+
+    // Remove all images from disk on a background thread.
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.assembler.imageManager deleteAllImagesFromDisk];
+    });
 }
 
 

@@ -197,4 +197,28 @@
     [self.imageCache setObject:image forKey:filename];
 }
 
+
+#pragma mark - Clearing cache
+
+- (void)deleteAllImagesFromDisk {
+    NSError *error = nil;
+    NSArray *filePaths = [self.fileManager contentsOfDirectoryAtPath:self.documentsDirectoryPath error:&error];
+
+    if (!filePaths) {
+        NSLog(@"Error retrieving file paths from documents directory: %@", error);
+        return;
+    }
+
+    for (NSString *filePath in filePaths) {
+        NSError *removeError = nil;
+        NSString *fullPath = [self.documentsDirectoryPath stringByAppendingPathComponent:filePath];
+        BOOL success = [self.fileManager removeItemAtPath:fullPath error:&removeError];
+
+        if (!success) {
+            NSLog(@"Removing file at path: %@ failed with error: %@", fullPath, error);
+            continue;
+        }
+    }
+}
+
 @end

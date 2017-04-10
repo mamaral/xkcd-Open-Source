@@ -10,6 +10,8 @@
 #import <AFNetworking.h>
 #import "Comic.h"
 
+// TODO: Refactor this class.
+
 static NSString * const kRequestManagerErrorDomain = @"Request Manager";
 static NSString * const kRequestManagerUserInfoKey = @"error";
 static NSString * const kRequestManagerNilTokenErrorMessage = @"Request Manager";

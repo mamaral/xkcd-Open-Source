@@ -6,8 +6,13 @@
 //  Copyright (c) 2015 Mike Amaral. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import <Realm/Realm.h>
-#import "Comic.h"
+
+@class Comic;
+@class Assembler;
+
+// TODO: Refactor this class.
 
 static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 static NSString * const ComicFavoritedNotification = @"ComicFavorited";
@@ -21,6 +26,8 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 @property (nonatomic, strong) RLMRealm *realm;
 
 @property (nonatomic, strong) NSArray *knownInteractiveComicNumbers;
+
+- (instancetype)initWithAssembler:(Assembler *)assembler;
 
 #pragma mark - Saving / updating comics
 
@@ -53,7 +60,7 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 
 #pragma mark - Background fetching 
 
-- (void)performBackgroundFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
+- (void)performBackgroundFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
 
 
 #pragma mark - Converting token data

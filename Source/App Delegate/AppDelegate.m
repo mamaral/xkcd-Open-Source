@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "DataManager.h"
+#import "RequestManager.h"
 #import "ComicListViewController.h"
 #import "ThemeManager.h"
 #import <Fabric/Fabric.h>
@@ -22,8 +24,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 
 @interface AppDelegate ()
 
-@property (nonatomic, strong) RequestManager *requestManager;
-@property (nonatomic, strong) DataManager *dataManager;
+@property (nonatomic, strong) Assembler *assembler;
 
 @end
 
@@ -68,12 +69,10 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 #pragma mark - Assembler setup
 
 - (void)setupAssembler {
-    [Assembler sharedInstance].dataManager = [DataManager new];
-    [Assembler sharedInstance].requestManager = [RequestManager new];
-    [Assembler sharedInstance].imageManager = [ImageManager new];
-
-    self.dataManager = [Assembler sharedInstance].dataManager;
-    self.requestManager = [Assembler sharedInstance].requestManager;
+    self.assembler = [Assembler sharedInstance];
+    self.assembler.dataManager = [[DataManager alloc] initWithAssembler:self.assembler];
+    self.assembler.requestManager = [RequestManager new];
+    self.assembler.imageManager = [ImageManager new];
 }
 
 
@@ -96,9 +95,9 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSString *token = [self.dataManager tokenStringFromData:deviceToken];
+    NSString *token = [self.assembler.dataManager tokenStringFromData:deviceToken];
     
-    [self.requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
+    [self.assembler.requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
         if (error) {
             NSLog(@"Sending token to server failed with error: %@", error);
         }
@@ -106,7 +105,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [self.dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
+    [self.assembler.dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
 }
 
 
@@ -114,7 +113,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 
 - (void)askNicelyForAReviewIfNecessary {
     // If we've already asked for a review in the past, don't ask again.
-    if ([self.dataManager hasAskedForReview]) {
+    if ([self.assembler.dataManager hasAskedForReview]) {
         return;
     }
 
@@ -125,12 +124,12 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
             NSURL *appStoreURL = [NSURL URLWithString:kAppStoreURLString];
             [[UIApplication sharedApplication] openURL:appStoreURL];
 
-            [self.dataManager setHasAskedForReview:YES];
+            [self.assembler.dataManager setHasAskedForReview:YES];
         }];
 
         NSString *dontAskTitle = NSLocalizedString(@"review.alert.dont ask again", nil);
         UIAlertAction *dontAskAgain = [UIAlertAction actionWithTitle:dontAskTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            [self.dataManager setHasAskedForReview:YES];
+            [self.assembler.dataManager setHasAskedForReview:YES];
         }];
 
         NSString *alertTitle = NSLocalizedString(@"review.alert.title", nil);

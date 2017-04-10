@@ -7,8 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DataManager.h"
-#import "RequestManager.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

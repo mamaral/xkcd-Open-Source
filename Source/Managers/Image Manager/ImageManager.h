@@ -61,6 +61,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)cancelDownloadHandlerForFilename:(nullable NSString *)filename;
 
+/**
+ * Deletes all images previously stored on disk.
+ */
+- (void)deleteAllImagesFromDisk;
+
 @end
 
 NS_ASSUME_NONNULL_END

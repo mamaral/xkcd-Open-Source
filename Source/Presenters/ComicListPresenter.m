@@ -10,6 +10,7 @@
 
 #import "Assembler.h"
 #import "DataManager.h"
+#import "Comic.h"
 
 @interface ComicListPresenter ()
 

@@ -12,6 +12,11 @@
 @class ImageManager;
 @class RequestManager;
 
+/**
+ * The Assembler is our implementation of an Inversion of Control Container.
+ *
+ * @discussion Read here for more details: https://en.wikipedia.org/wiki/Inversion_of_control
+ */
 @interface Assembler : NSObject
 
 @property (nonatomic, strong) DataManager *dataManager;
