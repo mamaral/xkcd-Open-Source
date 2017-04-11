@@ -296,15 +296,10 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     // Reset bookmarked comic
     [self setBookmarkedComic:0];
 
-    // Reset the latest comic download index
+    // Reset the latest comic download index. This will result in the next
+    // comic request fetching all of the comics from the beginning with their
+    // default state being set/updated.
     [self setLatestComicDownloaded:0];
-
-    // Reset the viewed and favorite state of all comics.
-    RLMResults *allComics = [Comic allObjects];
-    [self.realm beginWriteTransaction];
-    [allComics setValue:@NO forKey:@"viewed"];
-    [allComics setValue:@NO forKey:@"favorite"];
-    [self.realm commitWriteTransaction];
 
     // Remove all images from disk and the cache on a background thread.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -322,7 +317,6 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     dateComponents.month = month;
     dateComponents.year = year;
     dateComponents.calendar = [NSCalendar autoupdatingCurrentCalendar];
-
     return [self.dateFormatter stringFromDate:dateComponents.date];
 }
 

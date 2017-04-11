@@ -212,11 +212,19 @@
 #pragma mark - Clearing cache
 
 - (void)handleClearCache {
+    // Clear our state
+    _isSearching = NO;
+    _isFilteringUnread = NO;
+    _isFilteringFavorites = NO;
+
+    // Tell the data manager to clear the cache.
     [self.dataManager clearCache];
 
+    // Get our updated list and pass it to the view.
     self.comics = [self.dataManager allSavedComics];
     [self.view comicListDidChange:self.comics];
 
+    // Act as if this is the initial load.
     [self handleInitialLoad];
 }
 
