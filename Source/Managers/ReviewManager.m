@@ -41,6 +41,11 @@ static NSTimeInterval const kReviewAlertDelay = 15.0;
 }
 
 - (void)handleAppLaunched {
+    // If the API we're going to use isn't available, bail early.
+    if (![self isFancyNewAppReviewAPIAvailable]) {
+        return;
+    }
+
     // If we've already prompted for this version, bail early.
     if ([self hasAlreadyPromptedForReviewForCurrentVersion]) {
         return;
@@ -54,6 +59,14 @@ static NSTimeInterval const kReviewAlertDelay = 15.0;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, kReviewAlertDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             [SKStoreReviewController requestReview];
         });
+    }
+}
+
+- (BOOL)isFancyNewAppReviewAPIAvailable {
+    if ([SKStoreReviewController class]) {
+        return [SKStoreReviewController respondsToSelector:@selector(requestReview)];
+    } else {
+        return NO;
     }
 }
 
