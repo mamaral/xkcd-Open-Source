@@ -163,10 +163,12 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         [self viewBookmark];
     }];
 
-    NSString *clearCacheTitle = NSLocalizedString(@"comic.list.clear cache", nil);
-    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:clearCacheTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [self showClearCacheConfirmation];
-    }];
+    // Temporarily disabling the clear cache feature as this is causing some
+    // issues and I don't feel like debugging it any more. :)
+//    NSString *clearCacheTitle = NSLocalizedString(@"comic.list.clear cache", nil);
+//    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:clearCacheTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+//        [self showClearCacheConfirmation];
+//    }];
 
     NSString *cancelTitle = NSLocalizedString(@"common.button.cancel", nil);
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:nil];
@@ -199,8 +201,8 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         [alertController addAction:viewBookmark];
     }
 
-    // Always allow to clear cache and cancel.
-    [alertController addAction:clearCache];
+    //[alertController addAction:clearCache];
+
     [alertController addAction:cancel];
 
     if ([XKCDDeviceManager isPad]) {
