@@ -11,6 +11,7 @@
 @class DataManager;
 @class ImageManager;
 @class RequestManager;
+@class ReviewManager;
 
 /**
  * The Assembler is our implementation of an Inversion of Control Container.
@@ -22,6 +23,7 @@
 @property (nonatomic, strong) DataManager *dataManager;
 @property (nonatomic, strong) ImageManager *imageManager;
 @property (nonatomic, strong) RequestManager *requestManager;
+@property (nonatomic, strong) ReviewManager *reviewManager;
 
 + (instancetype)sharedInstance;
 

@@ -17,10 +17,7 @@
 #import "XKCDDeviceManager.h"
 #import "Assembler.h"
 #import "ImageManager.h"
-
-static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
-
-static NSTimeInterval const kReviewAlertDelay = 30.0;
+#import "ReviewManager.h"
 
 @interface AppDelegate ()
 
@@ -53,7 +50,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];;
     [self.window makeKeyAndVisible];
 
-    [self askNicelyForAReviewIfNecessary];
+    [self.assembler.reviewManager handleAppLaunched];
 
     return YES;
 }
@@ -73,6 +70,7 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
     self.assembler.dataManager = [[DataManager alloc] initWithAssembler:self.assembler];
     self.assembler.requestManager = [[RequestManager alloc] initWithAssembler:self.assembler];
     self.assembler.imageManager = [ImageManager new];
+    self.assembler.reviewManager = [ReviewManager new];
 }
 
 
@@ -106,40 +104,6 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     [self.assembler.dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
-}
-
-
-#pragma mark - Annoying review stuff
-
-- (void)askNicelyForAReviewIfNecessary {
-    // If we've already asked for a review in the past, don't ask again.
-    if ([self.assembler.dataManager hasAskedForReview]) {
-        return;
-    }
-
-    // After a short delay, ask the nice people to leave a review.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, kReviewAlertDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        NSString *reviewTitle = NSLocalizedString(@"review.alert.leave review", nil);
-        UIAlertAction *goToReview = [UIAlertAction actionWithTitle:reviewTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSURL *appStoreURL = [NSURL URLWithString:kAppStoreURLString];
-            [[UIApplication sharedApplication] openURL:appStoreURL];
-
-            [self.assembler.dataManager setHasAskedForReview:YES];
-        }];
-
-        NSString *dontAskTitle = NSLocalizedString(@"review.alert.dont ask again", nil);
-        UIAlertAction *dontAskAgain = [UIAlertAction actionWithTitle:dontAskTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            [self.assembler.dataManager setHasAskedForReview:YES];
-        }];
-
-        NSString *alertTitle = NSLocalizedString(@"review.alert.title", nil);
-        NSString *alertMessage = NSLocalizedString(@"review.alert.message", nil);
-        UIAlertController *reviewAlertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
-        [reviewAlertController addAction:goToReview];
-        [reviewAlertController addAction:dontAskAgain];
-
-        [self.window.rootViewController presentViewController:reviewAlertController animated:YES completion:nil];
-    });
 }
 
 @end

@@ -21,6 +21,7 @@
 		2715C2EF1B090AFD00F50645 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2715C2ED1B090AFD00F50645 /* Crashlytics.framework */; };
 		27469F831E6A76CD009466F4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27469F851E6A76CD009466F4 /* Localizable.strings */; };
 		27469FDC1E77B5CA009466F4 /* ImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27469FDB1E77B5CA009466F4 /* ImageManager.m */; };
+		2759D4A71E9C85BB0037B7E0 /* ReviewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2759D4A61E9C85BB0037B7E0 /* ReviewManager.m */; };
 		2769EEA41B7ACFC5004C0C44 /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EEA11B7ACFC5004C0C44 /* TwitterKit.framework */; };
 		2769EEA51B7ACFC5004C0C44 /* TwitterKitResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2769EEA21B7ACFC5004C0C44 /* TwitterKitResources.bundle */; };
 		2769EEA61B7ACFC5004C0C44 /* TwitterCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2769EEA31B7ACFC5004C0C44 /* TwitterCore.framework */; };
@@ -120,6 +121,8 @@
 		27469FDA1E77B5CA009466F4 /* ImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageManager.h; sourceTree = "<group>"; };
 		27469FDB1E77B5CA009466F4 /* ImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageManager.m; sourceTree = "<group>"; };
 		27570E2F1DFC929B00E91019 /* xkcd Open Source.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "xkcd Open Source.entitlements"; path = "../../../xkcd Open Source.entitlements"; sourceTree = "<group>"; };
+		2759D4A51E9C85BB0037B7E0 /* ReviewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReviewManager.h; sourceTree = "<group>"; };
+		2759D4A61E9C85BB0037B7E0 /* ReviewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReviewManager.m; sourceTree = "<group>"; };
 		2769EEA11B7ACFC5004C0C44 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = SOURCE_ROOT; };
 		2769EEA21B7ACFC5004C0C44 /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle; sourceTree = SOURCE_ROOT; };
 		2769EEA31B7ACFC5004C0C44 /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterCore.framework; sourceTree = SOURCE_ROOT; };
@@ -338,9 +341,19 @@
 			path = "Image Manager";
 			sourceTree = "<group>";
 		};
+		2759D4A41E9C85AE0037B7E0 /* Review Manager */ = {
+			isa = PBXGroup;
+			children = (
+				2759D4A51E9C85BB0037B7E0 /* ReviewManager.h */,
+				2759D4A61E9C85BB0037B7E0 /* ReviewManager.m */,
+			);
+			name = "Review Manager";
+			sourceTree = "<group>";
+		};
 		277316EE1B05679500ED7978 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				2759D4A41E9C85AE0037B7E0 /* Review Manager */,
 				27871CF91E88CC8400817481 /* Assembler */,
 				27469FD91E77B5BC009466F4 /* Image Manager */,
 				270508E81D7232F800D34A6A /* Device Manager */,
@@ -908,6 +921,7 @@
 				2774C40B1CC70CA2003B215A /* ComicWebViewController.m in Sources */,
 				2714CCB81B05667400ADF009 /* main.m in Sources */,
 				277317161B06E3E600ED7978 /* LoadingView.m in Sources */,
+				2759D4A71E9C85BB0037B7E0 /* ReviewManager.m in Sources */,
 				277317101B06DF9300ED7978 /* ThemeManager.m in Sources */,
 				279D3B0C1E58C4D600476B13 /* ComicListPresenter.m in Sources */,
 				27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */,
