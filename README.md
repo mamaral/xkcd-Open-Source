@@ -27,7 +27,7 @@
 ## Version History
 - **v2.5** (Currently in test)
    - Added localization support for Russian, Spanish, Chinese (simplified), and German - the most common languages used currently.
-   - Conducting an accessibility option, making almost the entire app as accessibile as possible.
+   - Conducting an accessibility audit, making almost the entire app as accessibile as possible.
    - Added "peek-and-pop" support for the comic list. Thanks [@avikantz](https://github.com/avikantz)!
    - Replaced old and busted app review prompting and logic with some new iOS 10.3 hotness.
    - Temporarily removed clear cache as a menu option as I've been running into issues debugging why that isn't working as expected. In the meantime if you *really* want to truly clear everything, delete the app and install fresh.
