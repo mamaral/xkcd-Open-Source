@@ -18,6 +18,8 @@
 #import "ComicWebViewController.h"
 #import "Assembler.h"
 #import "ImageManager.h"
+#import "PageView.h"
+#import "ComicImageView.h"
 
 static CGFloat const kComicViewControllerPadding = 10.0;
 static CGFloat const kComicViewControllerSmallPadding = 7.0;
@@ -27,15 +29,14 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 static NSString * const kAltButtonText = @"Alt";
 
-@interface ComicViewController () <AltViewDelegate>
+@interface ComicViewController () <AltViewDelegate, PageViewDelegate>
 
 @property (nonatomic, weak) ImageManager *imageManager;
 @property (nonatomic, weak) DataManager *dataManager;
 
 @property (nonatomic) BOOL viewedAlt;
 
-@property (nonatomic, strong) UIScrollView *containerView;
-@property (nonatomic, strong) UIImageView *comicImageView;
+@property(nonatomic, strong) PageView *pageView;
 @property (nonatomic, strong) AltView *altView;
 @property (nonatomic, strong) UIButton *favoriteButton;
 @property (nonatomic, strong) UIButton *randomComicButton;
@@ -44,8 +45,6 @@ static NSString * const kAltButtonText = @"Alt";
 @property (nonatomic, strong) UIButton *altTextButton;
 @property (nonatomic, strong) UIButton *bookmarkButton;
 @property (nonatomic, strong) UIView *buttonContainerView;
-@property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
-@property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
 @property (nonatomic, strong) UIImage *comicImage;
 
 @property (nonatomic) CGFloat buttonSize;
@@ -63,14 +62,10 @@ static NSString * const kAltButtonText = @"Alt";
 
     self.imageManager = [Assembler sharedInstance].imageManager;
     self.dataManager = [Assembler sharedInstance].dataManager;
-
-    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
-    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
-
-    self.containerView = [UIScrollView new];
-
-    self.comicImageView = [UIImageView new];
-    self.comicImageView.accessibilityLabel = NSLocalizedString(@"comic.view.comic", nil);
+    
+    self.pageView = [PageView new];
+    self.pageView.pageSpacing = 80;
+    self.pageView.delegate = self;
 
     self.buttonContainerView = [UIView new];
 
@@ -111,17 +106,7 @@ static NSString * const kAltButtonText = @"Alt";
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(handleShareButton)];
 
-    self.containerView.backgroundColor = [UIColor whiteColor];
-    self.containerView.scrollEnabled = YES;
-    self.containerView.minimumZoomScale = 1.0;
-    self.containerView.maximumZoomScale = 10.0;
-    self.containerView.delegate = self;
-    [self.view addSubview:self.containerView];
-
-    self.comicImageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.comicImageView.userInteractionEnabled = YES;
-    self.comicImageView.isAccessibilityElement = YES;
-    [self.containerView addSubview:self.comicImageView];
+    [self.view addSubview:self.pageView];
 
     self.buttonContainerView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
     [self.view addSubview:self.buttonContainerView];
@@ -147,12 +132,6 @@ static NSString * const kAltButtonText = @"Alt";
     [self.prevButton addTarget:self action:@selector(showPrev) forControlEvents:UIControlEventTouchDown];
     [self.buttonContainerView addSubview:self.prevButton];
 
-    self.prevSwipe.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.view addGestureRecognizer:self.prevSwipe];
-
-    self.nextSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self.view addGestureRecognizer:self.nextSwipe];
-
     self.nextButton.adjustsImageWhenHighlighted = NO;
     [self.nextButton setImage:[ThemeManager nextComicImage] forState:UIControlStateNormal];
     [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
@@ -175,12 +154,10 @@ static NSString * const kAltButtonText = @"Alt";
 }
 
 - (void)layoutFacade {
-    // Layout the container
-    [self.containerView fillSuperview];
-    self.containerView.contentSize = self.containerView.frame.size;
-
-    // Layout the comic image view
-    [self.comicImageView anchorTopCenterWithTopPadding:kComicViewControllerPadding width:self.view.width - (kComicViewControllerPadding * 2) height:self.view.height - (2 * kComicViewControllerPadding) - self.buttonSize];
+    [self.pageView fillSuperviewWithLeftPadding:kComicViewControllerPadding
+                                   rightPadding:kComicViewControllerPadding
+                                     topPadding:kComicViewControllerPadding
+                                  bottomPadding:kComicViewControllerPadding + self.buttonSize];
 
     // Layout the button container and buttons
     CGFloat spacing = [XKCDDeviceManager isSmallDevice] ? kComicViewControllerSmallPadding : kComicViewControllerPadding;
@@ -199,44 +176,7 @@ static NSString * const kAltButtonText = @"Alt";
 #pragma mark - Setters
 
 - (void)setComic:(Comic *)comic {
-    // First we need to grab the filename for the previous comic so we can cancel
-    // the download handler for it. This will prevent this view from loading an
-    // outdated image if users switch comics fast and a download finishes for a
-    // prior comic.
-    NSString *previousFilename = [self.comic getFilename];
-    [self.imageManager cancelDownloadHandlerForFilename:previousFilename];
-
-    _comic = comic;
-
-    if (!self.comic.viewed) {
-        [self.dataManager markComicViewed:comic];
-    }
-
-    self.title = comic.safeTitle;
-    self.containerView.zoomScale = 1.0;
-
-    if (comic.transcript.length > 0) {
-        self.comicImageView.accessibilityLabel = comic.transcript;
-    }
-
-    UIImage *cachedImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString handler:^(UIImage *image) {
-        self.comicImageView.image = image;
-    }];
-    self.comicImageView.image = cachedImage ?: [ThemeManager loadingImage];
-
-    [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
-
-    self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
-    self.nextButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicAfterCurrentComic:comic] == nil;
-    
-    self.prevSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicBeforeCurrentComic:comic] != nil;
-    self.nextSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicAfterCurrentComic:comic] != nil;
-
-    [self prefetchImagesForComicsBeforeAndAfter];
-
-    self.altView.comic = comic;
-
-    [self updateBookmarkButtonImage];
+    self.pageView.currentPage = [self imageViewForComic:comic];
 }
 
 - (void)setPreviewMode:(BOOL)previewMode {
@@ -249,14 +189,12 @@ static NSString * const kAltButtonText = @"Alt";
 - (void)toggleAltView {
     if (!self.altView.isVisible) {
         self.viewedAlt = YES;
-        self.containerView.zoomScale = 1.0;
 
         [self.altView showInView:self.view];
     } else {
         [self.altView dismiss];
     }
 }
-
 
 #pragma mark - Favorite
 
@@ -288,12 +226,6 @@ static NSString * const kAltButtonText = @"Alt";
     [self.bookmarkButton setImage:newImage forState:UIControlStateNormal];
 }
 
-
-#pragma mark - Scroll view delegate
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
-    return self.comicImageView;
-}
 
 #pragma mark - Navigation between comics
 
@@ -342,6 +274,67 @@ static NSString * const kAltButtonText = @"Alt";
     comicWebVC.title = kExplainTitle;
     comicWebVC.URLString = comic.explainURLString;
     [self.navigationController pushViewController:comicWebVC animated:YES];
+}
+
+#pragma mark - Page view delegate
+
+- (ComicImageView *)imageViewForComic: (Comic *)comic
+{
+    ComicImageView *comicView = [ComicImageView new];
+    
+    __weak ComicImageView *weakComicView = comicView;
+    UIImage *cachedImage = [self.imageManager loadImageWithFilename:[comic getFilename] urlString:comic.imageURLString handler:^(UIImage *image) {
+        weakComicView.image = image;
+    }];
+    comicView.image = cachedImage ?: [ThemeManager loadingImage];
+    comicView.comic = comic;
+    return comicView;
+}
+
+- (UIView *)pageBeforePage: (UIView *)page
+{
+    ComicImageView *imageView = (ComicImageView *)page;
+    Comic *prevComic = [self.delegate comicViewController:self comicBeforeCurrentComic:imageView.comic];
+    if (!prevComic) return nil;
+    return [self imageViewForComic: prevComic];
+}
+
+- (UIView *)pageAfterPage: (UIView *)page
+{
+    ComicImageView *imageView = (ComicImageView *)page;
+    Comic *nextComic = [self.delegate comicViewController:self comicAfterCurrentComic:imageView.comic];
+    if (!nextComic) return nil;
+    return [self imageViewForComic: nextComic];
+}
+
+- (void)pageDidBecomeCurrent: (UIView *)page
+{
+    ComicImageView *imageView = (ComicImageView *)page;
+    [self setComicInternal:imageView.comic];
+}
+
+#pragma mark - Internals
+
+- (void)setComicInternal: (Comic *)comic
+{
+    _comic = comic;
+    
+    if (!self.comic.viewed) {
+        [self.dataManager markComicViewed:comic];
+    }
+    
+    self.title = comic.safeTitle;
+    
+    [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
+    
+    self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
+    self.nextButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicAfterCurrentComic:comic] == nil;
+    
+    [self prefetchImagesForComicsBeforeAndAfter];
+    
+    self.altView.comic = comic;
+    
+    [self updateBookmarkButtonImage];
 }
 
 @end

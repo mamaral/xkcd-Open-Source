@@ -54,6 +54,8 @@
 		27EC24931D977BAE00D29A4F /* RequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F01B0567B300ED7978 /* RequestManager.m */; };
 		27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */; };
 		27F653681B154C5C00F3377D /* silent.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 27F653671B154C5C00F3377D /* silent.m4a */; };
+		7C52E2B61E87C152009E161E /* PageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C52E2B51E87C152009E161E /* PageView.m */; };
+		7C72894C1E8822FD00D088F4 /* ComicImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C72894B1E8822FD00D088F4 /* ComicImageView.m */; };
 		A6964EB278DE5FAD53FAE64E /* libPods-xkcd Open Source.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6725348942BDED8113C3A0E6 /* libPods-xkcd Open Source.a */; };
 		B2E2C3BB8A0BF182D5B63AA7 /* libPods-xkcdOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E69F5E414C056D6417BAB6C /* libPods-xkcdOSTests.a */; };
 		CFBE9B0DFB023BE7F9947460 /* libPods-xkcdToday.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA14FE212EF9148483390BD6 /* libPods-xkcdToday.a */; };
@@ -170,6 +172,10 @@
 		6E1FA3469DB8BE67C35FC01F /* Pods-xkcdToday.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-xkcdToday.debug.xcconfig"; path = "Pods/Target Support Files/Pods-xkcdToday/Pods-xkcdToday.debug.xcconfig"; sourceTree = "<group>"; };
 		6FC62ADD7F65F52E7FE39EE1 /* Pods-xkcdOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-xkcdOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-xkcdOSTests/Pods-xkcdOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		79DD09DB279FA5413379F8A0 /* Pods-xkcdToday.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-xkcdToday.release.xcconfig"; path = "Pods/Target Support Files/Pods-xkcdToday/Pods-xkcdToday.release.xcconfig"; sourceTree = "<group>"; };
+		7C52E2B41E87C152009E161E /* PageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PageView.h; path = "Page View/PageView.h"; sourceTree = "<group>"; };
+		7C52E2B51E87C152009E161E /* PageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PageView.m; path = "Page View/PageView.m"; sourceTree = "<group>"; };
+		7C72894A1E8822FD00D088F4 /* ComicImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComicImageView.h; path = "Comic Image View/ComicImageView.h"; sourceTree = "<group>"; };
+		7C72894B1E8822FD00D088F4 /* ComicImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComicImageView.m; path = "Comic Image View/ComicImageView.m"; sourceTree = "<group>"; };
 		A2969305AA6551B43D83A5AF /* Pods-xkcd Open Source.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-xkcd Open Source.debug.xcconfig"; path = "Pods/Target Support Files/Pods-xkcd Open Source/Pods-xkcd Open Source.debug.xcconfig"; sourceTree = "<group>"; };
 		BA14FE212EF9148483390BD6 /* libPods-xkcdToday.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-xkcdToday.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -418,6 +424,8 @@
 		277317121B06E3D300ED7978 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				7C52E2B31E87C111009E161E /* Page View */,
+				7C52E2B21E87C103009E161E /* Comic Image View */,
 				270B57481B07F27700651787 /* Alt View */,
 				27EE4A5B1B07BD8D001454A3 /* Comic Cell */,
 				277317131B06E3D900ED7978 /* Loading View */,
@@ -554,6 +562,24 @@
 				2715C2ED1B090AFD00F50645 /* Crashlytics.framework */,
 			);
 			path = Frameworks;
+			sourceTree = "<group>";
+		};
+		7C52E2B21E87C103009E161E /* Comic Image View */ = {
+			isa = PBXGroup;
+			children = (
+				7C72894A1E8822FD00D088F4 /* ComicImageView.h */,
+				7C72894B1E8822FD00D088F4 /* ComicImageView.m */,
+			);
+			name = "Comic Image View";
+			sourceTree = "<group>";
+		};
+		7C52E2B31E87C111009E161E /* Page View */ = {
+			isa = PBXGroup;
+			children = (
+				7C52E2B41E87C152009E161E /* PageView.h */,
+				7C52E2B51E87C152009E161E /* PageView.m */,
+			);
+			name = "Page View";
 			sourceTree = "<group>";
 		};
 		A8CF523BE9ECB6EFEFBFD740 /* Products */ = {
@@ -914,6 +940,7 @@
 				277316FA1B056EAC00ED7978 /* DataManager.m in Sources */,
 				270101AD1E77BABE0009A0C3 /* Assembler.m in Sources */,
 				277316F71B056A6000ED7978 /* Comic.m in Sources */,
+				7C72894C1E8822FD00D088F4 /* ComicImageView.m in Sources */,
 				2714CCBB1B05667400ADF009 /* AppDelegate.m in Sources */,
 				27469FDC1E77B5CA009466F4 /* ImageManager.m in Sources */,
 				27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */,
@@ -923,6 +950,7 @@
 				277317161B06E3E600ED7978 /* LoadingView.m in Sources */,
 				2759D4A71E9C85BB0037B7E0 /* ReviewManager.m in Sources */,
 				277317101B06DF9300ED7978 /* ThemeManager.m in Sources */,
+				7C52E2B61E87C152009E161E /* PageView.m in Sources */,
 				279D3B0C1E58C4D600476B13 /* ComicListPresenter.m in Sources */,
 				27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */,
 			);
