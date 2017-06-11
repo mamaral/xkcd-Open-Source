@@ -63,7 +63,4 @@
 - (void)showRandomComic;
 - (Comic *)randomComic;
 
-#pragma mark - Clearing cache
-- (void)handleClearCache;
-
 @end
