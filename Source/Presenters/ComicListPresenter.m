@@ -241,6 +241,9 @@
 - (void)showComic:(Comic *)comic inPreviewMode:(BOOL)previewMode {
     NSParameterAssert(comic);
 
+    // Mark this comic as viewed.
+    [self.dataManager markComicViewed:comic];
+
     BOOL allowNavigation = !self.isSearching && !self.isFilteringFavorites;
     BOOL isInteractive = comic.isInteractive || [self.dataManager.knownInteractiveComicNumbers containsObject:@(comic.num)];
     [self.view showComic:comic allowingNavigation:allowNavigation isInteractive:isInteractive inPreviewMode:previewMode];
