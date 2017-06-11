@@ -30,18 +30,17 @@
 @property (nonatomic, readonly) BOOL isSearching;
 @property (nonatomic, readonly) BOOL isFilteringUnread;
 
-- (instancetype)initWithAssembler:(Assembler *)assembler;
-
 - (void)attachToView:(id<ComicListView>)view;
 - (void)dettachFromView:(id<ComicListView>)view;
 
 #pragma mark - Loading
-- (BOOL)isInitialLoadRequired;
-- (void)handleInitialLoad;
-- (void)handleShowAllComics;
+- (void)handleLoadRetry;
 
 #pragma mark - Selecting comics
 - (void)comicSelected:(Comic *)comic inPreviewMode:(BOOL)previewMode;
+
+#pragma mark - Showing all comics
+- (void)handleShowAllComics;
 
 #pragma mark - Unread
 - (void)toggleUnread;

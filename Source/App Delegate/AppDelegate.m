@@ -7,21 +7,13 @@
 //
 
 #import "AppDelegate.h"
-#import "DataManager.h"
-#import "RequestManager.h"
 #import "ComicListViewController.h"
-#import "ThemeManager.h"
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-#import <TwitterKit/TwitterKit.h>
-#import "XKCDDeviceManager.h"
+#import "ApplicationController.h"
 #import "Assembler.h"
-#import "ImageManager.h"
-#import "ReviewManager.h"
 
 @interface AppDelegate ()
 
-@property (nonatomic, strong) Assembler *assembler;
+@property (nonatomic, strong) ApplicationController *appController;
 
 @end
 
@@ -30,7 +22,6 @@
 + (instancetype)sharedAppDelegate {
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
-
 
 #pragma mark - App life cycle
 
@@ -42,15 +33,13 @@
         application.applicationIconBadgeNumber = 0;
     }
 
-    [self setupAssembler];
+    self.appController = [ApplicationController new];
+    [self.appController handleAppLaunch];
 
-    [self setupThirdPartyLibraries];
     [self setupPushNotifications];
 
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];;
     [self.window makeKeyAndVisible];
-
-    [self.assembler.reviewManager handleAppLaunched];
 
     return YES;
 }
@@ -60,25 +49,6 @@
     if (application.applicationIconBadgeNumber > 0) {
         application.applicationIconBadgeNumber = 0;
     }
-}
-
-
-#pragma mark - Assembler setup
-
-- (void)setupAssembler {
-    self.assembler = [Assembler sharedInstance];
-    self.assembler.dataManager = [[DataManager alloc] initWithAssembler:self.assembler];
-    self.assembler.requestManager = [[RequestManager alloc] initWithAssembler:self.assembler];
-    self.assembler.imageManager = [ImageManager new];
-    self.assembler.reviewManager = [ReviewManager new];
-}
-
-
-#pragma mark - Third-party library setup
-
-- (void)setupThirdPartyLibraries {
-    [ThemeManager setupTheme];
-    [Fabric with:@[CrashlyticsKit, TwitterKit]];
 }
 
 
@@ -93,17 +63,7 @@
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSString *token = [self.assembler.dataManager tokenStringFromData:deviceToken];
-    
-    [self.assembler.requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
-        if (error) {
-            NSLog(@"Sending token to server failed with error: %@", error);
-        }
-    }];
-}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [self.assembler.dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
+    [self.appController handlePushRegistrationWithTokenData:deviceToken];
 }
 
 @end

@@ -16,9 +16,9 @@ static NSInteger const kCurrentSchemaVersion = 7;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
-@interface DataManager ()
+static NSString * const kFetchURLString = @"http://xkcdos.app.sgnl24.com/fetch-comics.php";
 
-@property (nonatomic, strong) Assembler *assembler;
+@interface DataManager ()
 
 @property (nonatomic, strong) NSUserDefaults *defaults;
 
@@ -30,16 +30,12 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 #pragma mark - Initialization
 
-- (instancetype)initWithAssembler:(Assembler *)assembler {
-    NSParameterAssert(assembler);
-
+- (instancetype)init {
     self = [super init];
 
     if (!self) {
         return nil;
     }
-
-    self.assembler = assembler;
 
     self.defaults = [NSUserDefaults standardUserDefaults];
 
@@ -49,8 +45,6 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     self.knownInteractiveComicNumbers = @[@1193, @1331, @1446, @1525, @1608, @1663];
 
     [self initializeRealm];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteringForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
 
     return self;
 }
@@ -129,7 +123,6 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     [self.defaults setInteger:latest forKey:kLatestComicDownloadedKey];
 }
 
-
 #pragma mark - Bookmarked Comic
 
 - (Comic *)bookmarkedComic {
@@ -145,26 +138,6 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 - (void)setBookmarkedComic:(NSInteger)bookmarkedComic {
     [self.defaults setInteger:bookmarkedComic forKey:kBookmarkedComicKey];
 }
-
-
-#pragma mark - App life cycle handling
-
-- (void)handleAppEnteringForeground {
-    // Download the latest comics.
-    [self downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-
-        // If there was an error and we have none saved, there was an issue loading the first batch of
-        // comics and we should probably retry after a short delay Otherwise if we have new comics, notify the app that there are more available.
-        if (error && [self allSavedComics].count == 0) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [self handleAppEnteringForeground];
-            });
-        } else if (numberOfNewComics > 0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:NewComicsAvailableNotification object:nil];
-        }
-    }];
-}
-
 
 #pragma mark - Fetching comics
 
@@ -187,20 +160,20 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     return [[Comic objectsWithPredicate:unreadPredicate] sortedResultsUsingKeyPath:@"num" ascending:NO];
 }
 
-- (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
+- (void)syncComics {
     // Calculate the starting index.
     NSInteger since = [self latestComicDownloaded];
+    NSDictionary *params = @{@"since": [NSString stringWithFormat:@"%ld", (long)since]};
 
-    // Pass that to our request manager to fetch it.
-    [self.assembler.requestManager downloadComicsSince:since completionHandler:^(NSError *error, NSArray *comicDicts) {
-        // Error handling
+    [[Assembler sharedInstance].requestManager sendGETRequestToURL:kFetchURLString params:params handler:^(NSError * _Nullable error, id  _Nullable responseObject) {
         if (error) {
-            handler(error, 0);
+            [[NSNotificationCenter defaultCenter] postNotificationName:ComicSyncFailedNotification object:nil];
             return;
         }
 
         // Convert the dictionaries to our comic models, also keeping track of the newest
         // latest comic.
+        NSArray *comicDicts = (NSArray *)responseObject;
         NSMutableArray *comics = [NSMutableArray arrayWithCapacity:comicDicts.count];
         NSInteger latestDownloaded = since;
 
@@ -213,38 +186,19 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
             }
         }
 
-        // Save them in our realm.
-        if (comics.count > 0) {
-            [self saveComics:comics];
-        }
-
         // Update our latest comic.
         [self setLatestComicDownloaded:latestDownloaded];
 
-        handler(nil, comics.count);
-    }];
-}
+        // If we have new comics, save them in our realm and broadcast to the rest of the app
+        // that the comic list was updated.
+        if (comics.count > 0) {
+            [self saveComics:comics];
 
-
-#pragma mark - Background fetching
-
-- (void)performBackgroundFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    // Download all of the latest comics.
-    [self downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-        BOOL newData = numberOfNewComics > 0;
-
-        if (error) {
-            completionHandler(UIBackgroundFetchResultFailed);
-        } else if (newData) {
-            completionHandler(UIBackgroundFetchResultNewData);
-
-            [[NSNotificationCenter defaultCenter] postNotificationName:NewComicsAvailableNotification object:nil];
-        } else {
-            completionHandler(UIBackgroundFetchResultNoData);
+            RLMResults *allComics = [self allSavedComics];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ComicListUpdatedNotification object:allComics];
         }
     }];
 }
-
 
 #pragma mark - Converting token data
 
@@ -276,36 +230,6 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
     NSInteger randomIndex = [self randomNumberBetweenMin:0 andMax:allComics.count - 1];
     return allComics[randomIndex];
-}
-
-
-#pragma mark - Reviews
-
-- (BOOL)hasAskedForReview {
-    return [self.defaults boolForKey:kHasAskedForReviewKey];
-}
-
-- (void)setHasAskedForReview:(BOOL)hasAsked {
-    [self.defaults setBool:hasAsked forKey:kHasAskedForReviewKey];
-}
-
-
-#pragma mark - Clearing Cache
-
-- (void)clearCache {
-    // Reset bookmarked comic
-    [self setBookmarkedComic:0];
-
-    // Reset the latest comic download index. This will result in the next
-    // comic request fetching all of the comics from the beginning with their
-    // default state being set/updated.
-    [self setLatestComicDownloaded:0];
-
-    // Remove all images from disk and the cache on a background thread.
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.assembler.imageManager deleteAllImagesFromDisk];
-        [self.assembler.imageManager deleteAllImagesFromCache];
-    });
 }
 
 

@@ -16,6 +16,7 @@
 #import "Assembler.h"
 #import "RequestManager.h"
 #import "ImageManager.h"
+#import "Comic.h"
 
 static CGFloat const kComicNumberLabelPadding = 7.0;
 static CGFloat const kMaxContentHeight = 300.0;
@@ -97,17 +98,17 @@ static CGFloat const kMaxContentHeight = 300.0;
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     // Fetch the comics and show the most recent.
-    [self.dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-        self.comic = [self.dataManager allSavedComics].firstObject;
-
-        if (error) {
-            completionHandler(NCUpdateResultFailed);
-        } else if (numberOfNewComics == 0) {
-            completionHandler(NCUpdateResultNoData);
-        } else {
-            completionHandler(NCUpdateResultNewData);
-        }
-    }];
+//    [self.dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
+//        self.comic = [self.dataManager allSavedComics].firstObject;
+//
+//        if (error) {
+//            completionHandler(NCUpdateResultFailed);
+//        } else if (numberOfNewComics == 0) {
+//            completionHandler(NCUpdateResultNoData);
+//        } else {
+//            completionHandler(NCUpdateResultNewData);
+//        }
+//    }];
 }
 
 

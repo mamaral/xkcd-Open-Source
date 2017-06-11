@@ -24,18 +24,22 @@
 
 @implementation ComicListPresenter
 
-- (instancetype)initWithAssembler:(Assembler *)assembler {
+- (instancetype)init {
     self = [super init];
 
     if (!self) {
         return nil;
     }
 
-    self.dataManager = assembler.dataManager;
+    // Get a reference to our data manager, and load up the saved comics to start.
+    self.dataManager = [Assembler sharedInstance].dataManager;
     self.comics = [self.dataManager allSavedComics];
 
     // Fetch comics whenever we get notified more are available.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComicsFromDB) name:NewComicsAvailableNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleComicListUpdated:) name:ComicListUpdatedNotification object:nil];
+
+    // Fetch comics whenever we get notified more are available.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleComicSyncFailed) name:ComicSyncFailedNotification object:nil];
 
     // Handle whenever we're notified about comic favorite updates.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleComicFavorited) name:ComicFavoritedNotification object:nil];
@@ -50,41 +54,49 @@
     NSParameterAssert(view);
 
     self.view = view;
-    [self.view comicListDidChange:self.comics];
+
+    // If we don't have comics yet, tell the view that we're loading.
+    if (self.comics.count == 0) {
+        [self.view didStartLoadingComics];
+    } else {
+        // Otherwise tell our view we have comics.
+        [self.view comicListDidChange:self.comics];
+    }
 }
 
 - (void)dettachFromView:(id<ComicListView>)view {
+    NSParameterAssert(view);
+    
     self.view = nil;
 }
 
+#pragma mark - Event handling
 
-#pragma mark - Loading comics
+- (void)handleComicListUpdated:(NSNotification *)notification {
+    RLMResults *allComics = notification.object;
 
-- (RLMResults *)getSavedComicList {
-    return [self.dataManager allSavedComics];
-}
+    // If we have no comics at this point, something is wrong. Notify our view.
+    if (allComics.count == 0 && self.comics.count == 0) {
+        [self.view didEncounterLoadingError];
+        return;
+    }
 
-- (BOOL)isInitialLoadRequired {
-    return self.comics.count == 0;
-}
+    // Tell our view we finished loading.
+    [self.view didFinishLoadingComics];
 
-- (void)handleInitialLoad {
-    [self.view didStartLoadingComics];
-
-    [self.dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-        RLMResults *savedComicsAfterLoad = [self.dataManager allSavedComics];
-
-        // If an error occurred and we have no saved comics, tell the view an error occurred.
-        if (error && savedComicsAfterLoad.count == 0) {
-            [self.view didEncounterLoadingError];
-            return;
-        }
-
-        [self.view didFinishLoadingComics];
-
-        self.comics = savedComicsAfterLoad;
+    // If we're not searching and not filtering, update our list and tell the view we've updated.
+    if (!self.isSearching && !self.isFilteringFavorites) {
+        self.comics = notification.object;
         [self.view comicListDidChange:self.comics];
-    }];
+    }
+}
+
+- (void)handleComicSyncFailed {
+    // If we have no comics, tell the view we encountered an error, otherwise we can
+    // silently fail.
+    if (self.comics.count == 0) {
+        [self.view didEncounterLoadingError];
+    }
 }
 
 - (void)handleComicFavorited {
@@ -99,6 +111,22 @@
     }
 
     [self.view comicListDidChange:self.comics];
+}
+
+#pragma mark - Loading comics
+
+- (void)handleLoadRetry {
+    [self.view didStartLoadingComics];
+
+    [self.dataManager syncComics];
+}
+
+- (RLMResults *)getSavedComicList {
+    return [self.dataManager allSavedComics];
+}
+
+- (BOOL)isInitialLoadRequired {
+    return self.comics.count == 0;
 }
 
 - (void)loadComicsFromDB {
@@ -223,9 +251,6 @@
     // Get our updated list and pass it to the view.
     self.comics = [self.dataManager allSavedComics];
     [self.view comicListDidChange:self.comics];
-
-    // Act as if this is the initial load.
-    [self handleInitialLoad];
 }
 
 

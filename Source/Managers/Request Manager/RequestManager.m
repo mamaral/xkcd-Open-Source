@@ -7,79 +7,67 @@
 //
 
 #import "RequestManager.h"
-#import "Assembler.h"
-#import "DataManager.h"
 
-static NSString * const kFetchURLString = @"http://xkcdos.app.sgnl24.com/fetch-comics.php";
-static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/register-push.php";
+#import <AFNetworking.h>
+
+NS_ASSUME_NONNULL_BEGIN;
+
+static NSString * const kDefaultContentType = @"application/x-www-form-urlencoded";
+static NSString * const kContentTypeKey = @"Content-Type";
 
 @interface RequestManager ()
 
-@property (nonatomic, strong) DataManager *dataManager;
+@property (nonatomic, strong) AFHTTPRequestOperationManager *manager;
 
 @end
+
 
 @implementation RequestManager
 
 #pragma mark - Initialization
 
-- (instancetype)initWithAssembler:(Assembler *)assembler {
+- (instancetype)init {
     self = [super init];
 
-    self.manager = [self generateHTTPRequestOperationManager];
+    if (!self) {
+        return nil;
+    }
 
-    self.dataManager = [Assembler sharedInstance].dataManager;
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    [serializer setValue:kDefaultContentType forHTTPHeaderField:kContentTypeKey];
+
+    self.manager = [AFHTTPRequestOperationManager manager];
+    self.manager.requestSerializer = serializer;
 
     return self;
 }
 
-- (AFHTTPRequestOperationManager *)generateHTTPRequestOperationManager {
-    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
-    [serializer setValue:kDefaultContentType forHTTPHeaderField:kContentTypeKey];
+#pragma mark - Sending requests
 
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.requestSerializer = serializer;
+- (void)sendPOSTRequestToURL:(NSString *)urlString params:(nullable NSDictionary *)params handler:(RequestHandler)handler {
+    NSLog(@"Sending POST request to %@ with params: %@", urlString, params);
 
-    return manager;
-}
-
-
-#pragma mark - Downloading comics
-
-- (void)downloadComicsSince:(NSInteger)since completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler {
-    NSDictionary *params = @{@"since": [NSString stringWithFormat:@"%ld", (long)since]};
-
-    [self.manager GET:kFetchURLString parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        handler(nil, (NSArray *)responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    [self.manager POST:urlString parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSLog(@"POST success with response: %@", responseObject);
+        handler(nil, responseObject);
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"POST failed with error: %@", error);
         handler(error, nil);
     }];
 }
 
+- (void)sendGETRequestToURL:(NSString *)urlString params:(nullable NSDictionary *)params handler:(RequestHandler)handler {
+    NSLog(@"Sending GET request to %@ with params: %@", urlString, params);
 
-#pragma mark - Device tokens
-
-- (void)sendDeviceToken:(NSString *)token completionHandler:(void (^)(NSError *error))handler {
-    if (!token) {
-        NSError *error = [self errorWithMessage:kRequestManagerNilTokenErrorMessage];
-        handler(error);
-        return;
-    }
-
-    NSDictionary *params = @{@"token": token};
-
-    [self.manager POST:kTokenPostURLString parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        handler(nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        handler(error);
+    [self.manager GET:urlString parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSLog(@"GET success with response: %@", responseObject);
+        handler(nil, responseObject);
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"GET failed with error: %@", error);
+        handler(error, nil);
     }];
 }
 
-
-#pragma mark - Error handling
-
-- (NSError *)errorWithMessage:(NSString *)errorMessage {
-    return [NSError errorWithDomain:kRequestManagerErrorDomain code:kRequestManagerErrorCode userInfo:@{kRequestManagerUserInfoKey: errorMessage ?: @""}];
-}
-
 @end
+
+NS_ASSUME_NONNULL_END

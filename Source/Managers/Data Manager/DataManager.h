@@ -10,11 +10,11 @@
 #import <Realm/Realm.h>
 
 @class Comic;
-@class Assembler;
 
 // TODO: Refactor this class.
 
-static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
+static NSString * const ComicListUpdatedNotification = @"ComicListUpdated";
+static NSString * const ComicSyncFailedNotification = @"ComicSyncFailed";
 static NSString * const ComicFavoritedNotification = @"ComicFavorited";
 static NSString * const ComicReadNotification = @"ComicRead";
 static NSString * const kComicKey = @"comic";
@@ -27,20 +27,16 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 
 @property (nonatomic, strong) NSArray *knownInteractiveComicNumbers;
 
-- (instancetype)initWithAssembler:(Assembler *)assembler;
-
 #pragma mark - Saving / updating comics
 
 - (void)saveComics:(NSArray *)comics;
 - (void)markComicViewed:(Comic *)comic;
 - (void)markComic:(Comic *)comic favorited:(BOOL)favorited;
 
-
 #pragma mark - Latest comic info
 
 - (NSInteger)latestComicDownloaded;
 - (void)setLatestComicDownloaded:(NSInteger)latest;
-
 
 #pragma mark - Bookmarked Comic
 
@@ -48,42 +44,25 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 - (NSInteger)bookmarkedComicNumber;
 - (void)setBookmarkedComic:(NSInteger)bookmarkedComic;
 
-
 #pragma mark - Getting comics
 
 - (RLMResults *)allSavedComics;
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString;
 - (RLMResults *)allFavorites;
 - (RLMResults *)allUnread;
-- (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler;
 
+#pragma mark - Syncinc comics
 
-#pragma mark - Background fetching 
-
-- (void)performBackgroundFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
-
+- (void)syncComics;
 
 #pragma mark - Converting token data
 
 - (NSString *)tokenStringFromData:(NSData *)data;
 
-
 #pragma mark - Randomization
 
 - (NSInteger)randomNumberBetweenMin:(NSUInteger)min andMax:(NSUInteger)max;
 - (Comic *)randomComic;
-
-
-#pragma mark - Reviews
-
-- (BOOL)hasAskedForReview;
-- (void)setHasAskedForReview:(BOOL)hasAsked;
-
-
-#pragma mark - Clearing Cache
-
-- (void)clearCache;
-
 
 #pragma mark - Date utils
 

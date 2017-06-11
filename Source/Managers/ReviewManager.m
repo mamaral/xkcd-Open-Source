@@ -52,7 +52,7 @@ static NSTimeInterval const kReviewAlertDelay = 15.0;
     }
 
     // First we need to get the current number of launches for this version
-    NSUInteger launchCount = [self updateLaunchCountForCurrentVersion];
+    NSUInteger launchCount = [self updateAndReturnLaunchCountForCurrentVersion];
 
     // If we're at our threshold, prompt the user for a review after a delay.
     if (launchCount == kAppLaunchReviewThreshold) {
@@ -62,12 +62,11 @@ static NSTimeInterval const kReviewAlertDelay = 15.0;
     }
 }
 
+/**
+ * Whether or not the new app review API is available on the current device.
+ */
 - (BOOL)isFancyNewAppReviewAPIAvailable {
-    if ([SKStoreReviewController class]) {
-        return [SKStoreReviewController respondsToSelector:@selector(requestReview)];
-    } else {
-        return NO;
-    }
+    return [SKStoreReviewController class] && [SKStoreReviewController respondsToSelector:@selector(requestReview)];
 }
 
 /**
@@ -88,7 +87,7 @@ static NSTimeInterval const kReviewAlertDelay = 15.0;
 /**
  * Increments and returns the updated launch count for the current version.
  */
-- (NSUInteger)updateLaunchCountForCurrentVersion {
+- (NSUInteger)updateAndReturnLaunchCountForCurrentVersion {
     NSUInteger newLaunchCount = [self previousLaunchCount] + 1;
     [self.defaults setInteger:newLaunchCount forKey:self.currentAppVersion];
     return newLaunchCount;

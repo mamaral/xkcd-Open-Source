@@ -49,7 +49,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         return nil;
     }
 
-    self.presenter = [[ComicListPresenter alloc] initWithAssembler:[Assembler sharedInstance]];
+    self.presenter = [ComicListPresenter new];
     
     return self;
 }
@@ -59,8 +59,6 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    [self.presenter attachToView:self];
 
     self.navigationItem.title = kComicListTitle;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -101,14 +99,12 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    // If our presenter tells us an initial load is required, disable the navigation buttons
-    // and tell it to handle the initial load.
-    if ([self.presenter isInitialLoadRequired]) {
-        [self.presenter handleInitialLoad];
-    }
+    [self.presenter attachToView:self];
 }
 
-- (void)dealloc {
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
     [self.presenter dettachFromView:self];
 }
 
@@ -163,13 +159,6 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         [self viewBookmark];
     }];
 
-    // Temporarily disabling the clear cache feature as this is causing some
-    // issues and I don't feel like debugging it any more. :)
-//    NSString *clearCacheTitle = NSLocalizedString(@"comic.list.clear cache", nil);
-//    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:clearCacheTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-//        [self showClearCacheConfirmation];
-//    }];
-
     NSString *cancelTitle = NSLocalizedString(@"common.button.cancel", nil);
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:nil];
 
@@ -201,8 +190,6 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         [alertController addAction:viewBookmark];
     }
 
-    //[alertController addAction:clearCache];
-
     [alertController addAction:cancel];
 
     if ([XKCDDeviceManager isPad]) {
@@ -216,24 +203,6 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
 - (void)viewBookmark {
     [self.presenter showBookmarkedComic];
-}
-
-- (void)showClearCacheConfirmation {
-    NSString *clearCacheTitle = NSLocalizedString(@"comic.list.clear cache", nil);
-    UIAlertAction *clearCache = [UIAlertAction actionWithTitle:clearCacheTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [self.presenter handleClearCache];
-    }];
-
-    NSString *cancelTitle = NSLocalizedString(@"common.button.cancel", nil);;
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:nil];
-
-    NSString *areYouSureTitle = NSLocalizedString(@"common.button.are you sure", nil);
-    NSString *warning = NSLocalizedString(@"comic.list.clear cache warning", nil);
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:areYouSureTitle message:warning preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
-    [alertController addAction:clearCache];
-    [alertController addAction:cancel];
-
-    [self.navigationController presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)showRandomComic {
@@ -433,7 +402,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
     NSString *okString = NSLocalizedString(@"common.button.ok", nil);
     UIAlertController *errorAlert = [UIAlertController alertControllerWithTitle:errorTitle message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:okString style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self.presenter handleInitialLoad];
+        [self.presenter handleLoadRetry];
     }];
     [errorAlert addAction:okAction];
     [self.navigationController presentViewController:errorAlert animated:YES completion:nil];

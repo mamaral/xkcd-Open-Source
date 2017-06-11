@@ -41,6 +41,7 @@
 		27871CF71E86C1F500817481 /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2773170F1B06DF9300ED7978 /* ThemeManager.m */; };
 		27871CF81E86C20800817481 /* Assembler.m in Sources */ = {isa = PBXBuildFile; fileRef = 270101AC1E77BABE0009A0C3 /* Assembler.m */; };
 		279D3B0C1E58C4D600476B13 /* ComicListPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 279D3B0B1E58C4D600476B13 /* ComicListPresenter.m */; };
+		279DE02A1EEDDEE500290FD9 /* ApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 279DE0291EEDDEE500290FD9 /* ApplicationController.m */; };
 		27AE1AD41B08CFE6002D5280 /* ComicListFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */; };
 		27AE51DA1B10DF8F0090292A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27AE51D91B10DF8F0090292A /* LaunchScreen.xib */; };
 		27B984AA1B0D641700684AA1 /* ComicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B984A91B0D641700684AA1 /* ComicTests.m */; };
@@ -150,6 +151,8 @@
 		2774C40A1CC70CA2003B215A /* ComicWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicWebViewController.m; sourceTree = "<group>"; };
 		279D3B0A1E58C4D600476B13 /* ComicListPresenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicListPresenter.h; sourceTree = "<group>"; };
 		279D3B0B1E58C4D600476B13 /* ComicListPresenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicListPresenter.m; sourceTree = "<group>"; };
+		279DE0281EEDDEE500290FD9 /* ApplicationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationController.h; sourceTree = "<group>"; };
+		279DE0291EEDDEE500290FD9 /* ApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationController.m; sourceTree = "<group>"; };
 		27AE1AD21B08CFE6002D5280 /* ComicListFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComicListFlowLayout.h; sourceTree = "<group>"; };
 		27AE1AD31B08CFE6002D5280 /* ComicListFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComicListFlowLayout.m; sourceTree = "<group>"; };
 		27AE51D91B10DF8F0090292A /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
@@ -385,6 +388,7 @@
 		277316F41B056A4600ED7978 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				279DE0271EEDDED700290FD9 /* Application Controller */,
 				27AE1AD01B08CF0B002D5280 /* Comic */,
 			);
 			path = Models;
@@ -459,6 +463,15 @@
 				279D3B0B1E58C4D600476B13 /* ComicListPresenter.m */,
 			);
 			path = Presenters;
+			sourceTree = "<group>";
+		};
+		279DE0271EEDDED700290FD9 /* Application Controller */ = {
+			isa = PBXGroup;
+			children = (
+				279DE0281EEDDEE500290FD9 /* ApplicationController.h */,
+				279DE0291EEDDEE500290FD9 /* ApplicationController.m */,
+			);
+			name = "Application Controller";
 			sourceTree = "<group>";
 		};
 		27AE1AD01B08CF0B002D5280 /* Comic */ = {
@@ -920,6 +933,7 @@
 				277317071B05955300ED7978 /* ComicCell.m in Sources */,
 				2774C40B1CC70CA2003B215A /* ComicWebViewController.m in Sources */,
 				2714CCB81B05667400ADF009 /* main.m in Sources */,
+				279DE02A1EEDDEE500290FD9 /* ApplicationController.m in Sources */,
 				277317161B06E3E600ED7978 /* LoadingView.m in Sources */,
 				2759D4A71E9C85BB0037B7E0 /* ReviewManager.m in Sources */,
 				277317101B06DF9300ED7978 /* ThemeManager.m in Sources */,
