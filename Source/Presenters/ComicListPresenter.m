@@ -59,7 +59,7 @@
     if (self.comics.count == 0) {
         [self.view didStartLoadingComics];
     } else {
-        // Otherwise tell our view we have comics.
+        // Otherwise pass our current comic list to the view.
         [self.view comicListDidChange:self.comics];
     }
 }
