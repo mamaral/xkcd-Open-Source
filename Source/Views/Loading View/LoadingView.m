@@ -9,9 +9,9 @@
 #import "LoadingView.h"
 #import <UIView+Facade.h>
 #import "ThemeManager.h"
+#import "ApplicationController.h"
 
 @implementation LoadingView
-
 
 #pragma mark - Singleton
 
@@ -149,6 +149,8 @@
         [[self sharedInstance] removeFromSuperview];
 
         [self sharedInstance].isVisible = NO;
+
+        [[ApplicationController sharedInstance] handleLoadingViewDismissed];
     }];
 }
 

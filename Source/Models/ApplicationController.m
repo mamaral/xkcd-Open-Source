@@ -28,6 +28,17 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 
 @implementation ApplicationController
 
+#pragma mark - Singleton
+
++ (instancetype)sharedInstance {
+    static dispatch_once_t pred = 0;
+    __strong static id _sharedObject = nil;
+    dispatch_once(&pred, ^{
+        _sharedObject = [[self alloc] init];
+    });
+    return _sharedObject;
+}
+
 - (void)handleAppLaunch {
     // Setup the assembler.
     [self assemble];
@@ -65,6 +76,17 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 - (void)setupThirdPartyLibraries {
     [Fabric with:@[CrashlyticsKit, TwitterKit]];
 }
+
+#pragma mark - Loading dismissal
+
+- (void)handleLoadingViewDismissed {
+    // We want to hold off prompting the user for push permissions until dismissing the loading view
+    // so they get a chance to see the cool loading GIF and aren't bombarded with all sorts of popups
+    // during their firs tapp launch.
+    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+}
+
+#pragma mark - Push notifications
 
 - (void)handlePushRegistrationWithTokenData:(NSData *)data {
     NSString *token = [self.assembler.dataManager tokenStringFromData:data];

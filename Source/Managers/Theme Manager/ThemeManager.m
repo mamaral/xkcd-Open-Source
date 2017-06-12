@@ -18,8 +18,10 @@
 
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSFontAttributeName:[[self class] xkcdFontWithSize:kDefaultSearchBarFontSize]} forState:UIControlStateNormal];
 
+    // TODO: Fix this warning.
     [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor], NSFontAttributeName : [[self class] xkcdFontWithSize:kDefaultXKCDTitleFontSize]} forState:UIControlStateNormal];
 
+    // TODO: Fix this warning.
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSFontAttributeName: [[self class] xkcdFontWithSize:kDefaultSearchBarFontSize]}];
 }
 

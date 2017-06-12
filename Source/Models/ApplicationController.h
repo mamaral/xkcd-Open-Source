@@ -10,7 +10,11 @@
 
 @interface ApplicationController : NSObject
 
++ (instancetype)sharedInstance;
+
 - (void)handleAppLaunch;
+
+- (void)handleLoadingViewDismissed;
 
 - (void)handlePushRegistrationWithTokenData:(NSData *)data;
 

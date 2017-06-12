@@ -13,8 +13,6 @@
 
 @interface AppDelegate ()
 
-@property (nonatomic, strong) ApplicationController *appController;
-
 @end
 
 @implementation AppDelegate
@@ -33,10 +31,7 @@
         application.applicationIconBadgeNumber = 0;
     }
 
-    self.appController = [ApplicationController new];
-    [self.appController handleAppLaunch];
-
-    [self setupPushNotifications];
+    [[ApplicationController sharedInstance] handleAppLaunch];
 
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];;
     [self.window makeKeyAndVisible];
@@ -54,16 +49,12 @@
 
 #pragma mark - Push notifications
 
-- (void)setupPushNotifications {
-    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-}
-
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
     [application registerForRemoteNotifications];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    [self.appController handlePushRegistrationWithTokenData:deviceToken];
+    [[ApplicationController sharedInstance] handlePushRegistrationWithTokenData:deviceToken];
 }
 
 @end

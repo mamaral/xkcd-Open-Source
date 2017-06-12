@@ -23,6 +23,7 @@ static CGFloat const kMaxContentHeight = 300.0;
 
 @interface TodayViewController () <NCWidgetProviding>
 
+@property (nonatomic, copy, nullable) void (^updateHandler)(NCUpdateResult);
 @property (strong, nonatomic) DataManager *dataManager;
 @property (strong, nonatomic) Comic *comic;
 @property (strong, nonatomic) UIImageView *comicImageView;
@@ -43,6 +44,9 @@ static CGFloat const kMaxContentHeight = 300.0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    // Fetch comics whenever we get notified more are available.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleComicListUpdated:) name:ComicListUpdatedNotification object:nil];
 
     [self setupAssembler];
 
@@ -97,18 +101,19 @@ static CGFloat const kMaxContentHeight = 300.0;
 }
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
-    // Fetch the comics and show the most recent.
-//    [self.dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-//        self.comic = [self.dataManager allSavedComics].firstObject;
-//
-//        if (error) {
-//            completionHandler(NCUpdateResultFailed);
-//        } else if (numberOfNewComics == 0) {
-//            completionHandler(NCUpdateResultNoData);
-//        } else {
-//            completionHandler(NCUpdateResultNewData);
-//        }
-//    }];
+    self.updateHandler = completionHandler;
+    [self.dataManager syncComics];
+}
+
+- (void)handleComicListUpdated:(NSNotification *)notification {
+    RLMResults *allComics = notification.object;
+
+    if (allComics.count == 0) {
+        self.updateHandler(NCUpdateResultFailed);
+    } else {
+        self.comic = allComics.firstObject;
+        self.updateHandler(NCUpdateResultNewData);
+    }
 }
 
 
