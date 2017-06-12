@@ -12,11 +12,12 @@
 
 @class Comic;
 @class Assembler;
+@class ComicPresenter;
 
 @protocol ComicListView <NSObject>
 
 @required
-- (void)showComic:(Comic *)comic allowingNavigation:(BOOL)allowNavigation isInteractive:(BOOL)isInteractive inPreviewMode:(BOOL)inPreviewMode;
+- (void)showComic:(Comic *)comic withPresenter:(ComicPresenter *)presenter interactive:(BOOL)interactive;
 - (void)didStartLoadingComics;
 - (void)didFinishLoadingComics;
 - (void)comicListDidChange:(RLMResults *)comicList;

@@ -20,10 +20,11 @@
 #import "ComicCell.h"
 #import "XKCDDeviceManager.h"
 #import "Assembler.h"
+#import "ComicPresenter.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 
-@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate, UIViewControllerPreviewingDelegate>
+@interface ComicListViewController () <ComicListFlowLayoutDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic, strong) RLMResults *comics;
 
@@ -270,25 +271,6 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 }
 
 
-#pragma mark - Comic view controller delegate
-
-- (Comic *)comicViewController:(ComicViewController *)comicViewController comicBeforeCurrentComic:(Comic *)currentComic {
-    NSInteger indexOfCurrentComic = [self.comics indexOfObject:currentComic];
-
-    return (indexOfCurrentComic != NSNotFound && indexOfCurrentComic > 0) ? self.comics[indexOfCurrentComic - 1] : nil;
-}
-
-- (Comic *)comicViewController:(ComicViewController *)comicViewController comicAfterCurrentComic:(Comic *)currentComic {
-    NSInteger indexOfCurrentComic = [self.comics indexOfObject:currentComic];
-
-    return (indexOfCurrentComic != NSNotFound && indexOfCurrentComic + 1 <= self.comics.count - 1) ? self.comics[indexOfCurrentComic + 1] : nil;
-}
-
-- (Comic *)comicViewController:(ComicViewController *)comicViewController randomComic:(Comic *)currentComic {
-    return [self.presenter randomComic];
-}
-
-
 #pragma mark - Searching and Filtering
 
 - (void)toggleSearch {
@@ -353,8 +335,8 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
 #pragma mark - Comic view protocol
 
-- (void)showComic:(Comic *)comic allowingNavigation:(BOOL)allowNavigation isInteractive:(BOOL)isInteractive inPreviewMode:(BOOL)inPreviewMode {
-    UIViewController *viewController = [self viewControllerForComic:comic isInteractive:isInteractive allowNavigation:allowNavigation inPreviewMode:inPreviewMode];
+- (void)showComic:(Comic *)comic withPresenter:(ComicPresenter *)presenter interactive:(BOOL)interactive {
+    UIViewController *viewController = [self viewControllerForComic:comic withPresenter:presenter isInteractive:interactive inPreviewMode:NO];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -418,35 +400,33 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
 #pragma mark - UIViewController previewing delegate
 
-- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
-    NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
-    UICollectionViewLayoutAttributes *cellAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
-    [previewingContext setSourceRect:cellAttributes.frame];
-
-    Comic *comic = self.comics[indexPath.item];
-    return [self viewControllerForComic:comic isInteractive:comic.isInteractive allowNavigation:NO inPreviewMode:YES];
-}
-
-- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-    if ([viewControllerToCommit isKindOfClass:[ComicViewController class]]) {
-        ((ComicViewController *)viewControllerToCommit).previewMode = NO;
-    }
-    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
-}
+//- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
+//    NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
+//    UICollectionViewLayoutAttributes *cellAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
+//    [previewingContext setSourceRect:cellAttributes.frame];
+//
+//    Comic *comic = self.comics[indexPath.item];
+//    return [self viewControllerForComic:comic isInteractive:comic.isInteractive allowNavigation:NO inPreviewMode:YES];
+//}
+//
+//- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
+//    if ([viewControllerToCommit isKindOfClass:[ComicViewController class]]) {
+//        ((ComicViewController *)viewControllerToCommit).previewMode = NO;
+//    }
+//    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
+//}
 
 
 #pragma mark - Convenience methods
 
-- (UIViewController *)viewControllerForComic:(Comic *)comic isInteractive:(BOOL)isInteractive allowNavigation:(BOOL)allowNavigation inPreviewMode:(BOOL)inPreviewMode {
+- (UIViewController *)viewControllerForComic:(Comic *)comic withPresenter:(ComicPresenter *)presenter isInteractive:(BOOL)isInteractive inPreviewMode:(BOOL)inPreviewMode {
     if (isInteractive) {
         ComicWebViewController *comicWebVC = [ComicWebViewController new];
         comicWebVC.title = comic.title;
         comicWebVC.URLString = comic.comicURLString;
         return comicWebVC;
     } else {
-        ComicViewController *comicVC = [ComicViewController new];
-        comicVC.delegate = self;
-        comicVC.allowComicNavigation = allowNavigation;
+        ComicViewController *comicVC = [[ComicViewController alloc] initWithPresenter:presenter];
         comicVC.comic = comic;
         comicVC.previewMode = inPreviewMode;
         return comicVC;

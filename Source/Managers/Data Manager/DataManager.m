@@ -229,7 +229,16 @@ static NSString * const kFetchURLString = @"http://xkcdos.app.sgnl24.com/fetch-c
     }
 
     NSInteger randomIndex = [self randomNumberBetweenMin:0 andMax:allComics.count - 1];
-    return allComics[randomIndex];
+
+    // Ensure we only show interactive comics, we'll need some more work to handle if not.
+    // For now, just try another random comic.
+    Comic *randomComic = allComics[randomIndex];
+    BOOL isInteractive = randomComic.isInteractive || [self.knownInteractiveComicNumbers containsObject:@(randomComic.num)];
+    if (!isInteractive) {
+        return [self randomComic];
+    }
+
+    return randomComic;
 }
 
 

@@ -18,6 +18,8 @@
 #import "ComicWebViewController.h"
 #import "Assembler.h"
 #import "ImageManager.h"
+#import "ComicPresenter.h"
+#import "ComicWebViewController.h"
 
 static CGFloat const kComicViewControllerPadding = 10.0;
 static CGFloat const kComicViewControllerSmallPadding = 7.0;
@@ -27,8 +29,9 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 static NSString * const kAltButtonText = @"Alt";
 
-@interface ComicViewController () <AltViewDelegate>
+@interface ComicViewController () <ComicView, AltViewDelegate>
 
+@property (nonatomic, strong) ComicPresenter *presenter;
 @property (nonatomic, weak) ImageManager *imageManager;
 @property (nonatomic, weak) DataManager *dataManager;
 
@@ -54,18 +57,21 @@ static NSString * const kAltButtonText = @"Alt";
 
 @implementation ComicViewController
 
-- (instancetype)init {
+- (instancetype)initWithPresenter:(ComicPresenter *)presenter {
+    NSParameterAssert(presenter);
+
     self = [super init];
 
     if (self == nil) {
         return nil;
     }
 
+    self.presenter = presenter;
     self.imageManager = [Assembler sharedInstance].imageManager;
     self.dataManager = [Assembler sharedInstance].dataManager;
 
-    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrev)];
-    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
+    self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self.presenter action:@selector(showPreviousComic)];
+    self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self.presenter action:@selector(showNextComic)];
 
     self.containerView = [UIScrollView new];
 
@@ -139,12 +145,12 @@ static NSString * const kAltButtonText = @"Alt";
     self.randomComicButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
     self.randomComicButton.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
     [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
-    [self.randomComicButton addTarget:self action:@selector(showRandomComic) forControlEvents:UIControlEventTouchDown];
+    [self.randomComicButton addTarget:self.presenter action:@selector(showRandomComic) forControlEvents:UIControlEventTouchDown];
     [self.buttonContainerView addSubview:self.randomComicButton];
 
     self.prevButton.adjustsImageWhenHighlighted = NO;
     [self.prevButton setImage:[ThemeManager prevComicImage] forState:UIControlStateNormal];
-    [self.prevButton addTarget:self action:@selector(showPrev) forControlEvents:UIControlEventTouchDown];
+    [self.prevButton addTarget:self.presenter action:@selector(showPreviousComic) forControlEvents:UIControlEventTouchDown];
     [self.buttonContainerView addSubview:self.prevButton];
 
     self.prevSwipe.direction = UISwipeGestureRecognizerDirectionRight;
@@ -155,7 +161,7 @@ static NSString * const kAltButtonText = @"Alt";
 
     self.nextButton.adjustsImageWhenHighlighted = NO;
     [self.nextButton setImage:[ThemeManager nextComicImage] forState:UIControlStateNormal];
-    [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
+    [self.nextButton addTarget:self.presenter action:@selector(showNextComic) forControlEvents:UIControlEventTouchDown];
     [self.buttonContainerView addSubview:self.nextButton];
 
     [self.altTextButton setTitle:kAltButtonText forState:UIControlStateNormal];
@@ -166,6 +172,18 @@ static NSString * const kAltButtonText = @"Alt";
     [self.buttonContainerView addSubview:self.altTextButton];
 
     self.altView.alpha = 0.0;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    [self.presenter attachToView:self];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    [self.presenter dettachFromView:self];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -225,14 +243,6 @@ static NSString * const kAltButtonText = @"Alt";
     self.comicImageView.image = cachedImage ?: [ThemeManager loadingImage];
 
     [self.favoriteButton setAlpha:self.comic.favorite ? 1.0 : kFavoritedButtonNonFavoriteAlpha];
-
-    self.prevButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicBeforeCurrentComic:comic] == nil;
-    self.nextButton.hidden = !self.allowComicNavigation || [self.delegate comicViewController:self comicAfterCurrentComic:comic] == nil;
-    
-    self.prevSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicBeforeCurrentComic:comic] != nil;
-    self.nextSwipe.enabled = self.allowComicNavigation && [self.delegate comicViewController:self comicAfterCurrentComic:comic] != nil;
-
-    [self prefetchImagesForComicsBeforeAndAfter];
 
     self.altView.comic = comic;
 
@@ -295,34 +305,6 @@ static NSString * const kAltButtonText = @"Alt";
     return self.comicImageView;
 }
 
-#pragma mark - Navigation between comics
-
-- (void)showPrev {
-    self.comic = [self.delegate comicViewController:self comicBeforeCurrentComic:self.comic];
-}
-
-- (void)showNext {  
-    self.comic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];
-}
-
-- (void)showRandomComic {
-    self.comic = [self.delegate comicViewController:self randomComic:self.comic];
-    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
-}
-- (void)prefetchImagesForComicsBeforeAndAfter {
-    Comic *prevComic = [self.delegate comicViewController:self comicBeforeCurrentComic:self.comic];
-    Comic *nextComic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];
-
-    if (prevComic.imageURLString) {
-        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:@[[NSURL URLWithString:prevComic.imageURLString]]];
-    }
-
-    if (nextComic.imageURLString) {
-        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:@[[NSURL URLWithString:nextComic.imageURLString]]];
-    }
-}
-
-
 #pragma mark - Sharing
 
 - (void)handleShareButton {
@@ -332,6 +314,23 @@ static NSString * const kAltButtonText = @"Alt";
     [self presentViewController:shareSheet animated:YES completion:nil];
 }
 
+#pragma mark - Comic view delegate
+
+- (void)updateToNewComic:(Comic *)comic hasPrevious:(BOOL)hasPrevious hasNext:(BOOL)hasNext {
+    self.comic = comic;
+
+    self.prevButton.hidden = !hasPrevious;
+    self.prevSwipe.enabled = hasPrevious;
+    self.nextButton.hidden = !hasNext;
+    self.nextSwipe.enabled = hasNext;
+}
+
+- (void)showWebComic:(Comic *)comic {
+    ComicWebViewController *comicWebVC = [ComicWebViewController new];
+    comicWebVC.title = comic.title;
+    comicWebVC.URLString = comic.comicURLString;
+    [self.navigationController pushViewController:comicWebVC animated:YES];
+}
 
 #pragma mark - Alt view delegate
 

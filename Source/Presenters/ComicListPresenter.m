@@ -11,6 +11,7 @@
 #import "Assembler.h"
 #import "DataManager.h"
 #import "Comic.h"
+#import "ComicPresenter.h"
 
 @interface ComicListPresenter ()
 
@@ -241,12 +242,10 @@
 - (void)showComic:(Comic *)comic inPreviewMode:(BOOL)previewMode {
     NSParameterAssert(comic);
 
-    // Mark this comic as viewed.
-    [self.dataManager markComicViewed:comic];
-
-    BOOL allowNavigation = !self.isSearching && !self.isFilteringFavorites;
     BOOL isInteractive = comic.isInteractive || [self.dataManager.knownInteractiveComicNumbers containsObject:@(comic.num)];
-    [self.view showComic:comic allowingNavigation:allowNavigation isInteractive:isInteractive inPreviewMode:previewMode];
+    ComicPresenter *presenter = [[ComicPresenter alloc] initWithComics:self.comics currentComic:comic];
+    [self.view showComic:comic withPresenter:presenter interactive:isInteractive];
+    //[self.view showComic:comic allowingNavigation:allowNavigation isInteractive:isInteractive inPreviewMode:previewMode];
 }
 
 @end
