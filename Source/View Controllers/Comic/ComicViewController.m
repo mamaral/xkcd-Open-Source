@@ -49,6 +49,7 @@ static NSString * const kAltButtonText = @"Alt";
 @property (nonatomic, strong) UIView *buttonContainerView;
 @property (nonatomic, strong) UISwipeGestureRecognizer *prevSwipe;
 @property (nonatomic, strong) UISwipeGestureRecognizer *nextSwipe;
+@property (nonatomic, strong) UITapGestureRecognizer *zoomTap;
 @property (nonatomic, strong) UIImage *comicImage;
 
 @property (nonatomic) CGFloat buttonSize;
@@ -72,6 +73,8 @@ static NSString * const kAltButtonText = @"Alt";
 
     self.prevSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self.presenter action:@selector(showPreviousComic)];
     self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self.presenter action:@selector(showNextComic)];
+    self.zoomTap =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleZoom)];
+    self.zoomTap.numberOfTapsRequired = 2;
 
     self.containerView = [UIScrollView new];
 
@@ -158,6 +161,9 @@ static NSString * const kAltButtonText = @"Alt";
 
     self.nextSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
     [self.view addGestureRecognizer:self.nextSwipe];
+    
+    self.zoomTap.numberOfTapsRequired = 2;
+    [self.comicImageView addGestureRecognizer:self.zoomTap];
 
     self.nextButton.adjustsImageWhenHighlighted = NO;
     [self.nextButton setImage:[ThemeManager nextComicImage] forState:UIControlStateNormal];
@@ -303,6 +309,22 @@ static NSString * const kAltButtonText = @"Alt";
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.comicImageView;
+}
+
+#pragma mark - Zooming
+
+- (void)toggleZoom {
+    CGFloat currentZoomScale = self.containerView.zoomScale;
+    CGFloat minimumZoomScale = self.containerView.minimumZoomScale;
+    CGFloat newZoomScale = 0;
+    
+    if (fabs(currentZoomScale) - fabs(minimumZoomScale) < DBL_EPSILON) {
+        newZoomScale = 2;
+    } else {
+        newZoomScale = minimumZoomScale;
+    }
+    
+    [self.containerView setZoomScale:newZoomScale animated:YES];
 }
 
 #pragma mark - Sharing
