@@ -86,7 +86,7 @@ static NSString * const kFetchURLString = @"http://xkcdos.app.sgnl24.com/fetch-c
     NSParameterAssert(comics);
 
     [self.realm beginWriteTransaction];
-    [self.realm addOrUpdateObjectsFromArray:comics];
+    [self.realm addOrUpdateObjects:comics];
     [self.realm commitWriteTransaction];
 }
 

@@ -16,6 +16,7 @@ typedef enum {
     DeviceType5,
     DeviceType6,
     DeviceType6Plus,
+    DeviceTypeX,
     DeviceTypeUnknown
 } DeviceType;
 
@@ -36,6 +37,7 @@ typedef enum {
 + (BOOL)isLargeDevice;
 + (BOOL)isSmallDevice;
 + (BOOL)isUSDevice;
++ (BOOL)isPhoneX;
 
 
 #pragma mark - App info

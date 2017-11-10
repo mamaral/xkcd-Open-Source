@@ -22,6 +22,7 @@
 #define IS_IPHONE_5 (IS_IPHONE && SCREEN_MAX_LENGTH == 568.0)
 #define IS_IPHONE_6 (IS_IPHONE && SCREEN_MAX_LENGTH == 667.0)
 #define IS_IPHONE_6P (IS_IPHONE && SCREEN_MAX_LENGTH == 736.0)
+#define IS_IPHONE_X (IS_IPHONE && SCREEN_MAX_LENGTH == 812.0)
 #define IS_IPAD_2 (IS_IPAD && !IS_RETINA)
 
 @implementation XKCDDeviceManager
@@ -43,27 +44,19 @@
 + (DeviceType)currentDeviceType {
     if (IS_IPAD_2) {
         return DeviceTypePad2;
-    }
-    else if (IS_IPAD) {
+    } else if (IS_IPAD) {
         return DeviceTypePad;
-    }
-    else if (IS_IPHONE_4_OR_LESS) {
+    } else if (IS_IPHONE_4_OR_LESS) {
         return DeviceType4;
-    }
-    
-    else if (IS_IPHONE_5) {
+    } else if (IS_IPHONE_5) {
         return DeviceType5;
-    }
-    
-    else if (IS_IPHONE_6) {
+    } else if (IS_IPHONE_6) {
         return DeviceType6;
-    }
-    
-    else if (IS_IPHONE_6P) {
+    } else if (IS_IPHONE_6P) {
         return DeviceType6Plus;
-    }
-    
-    else {
+    } else if (IS_IPHONE_X) {
+        return DeviceTypeX;
+    } else {
         return DeviceTypeUnknown;
     }
 }
@@ -87,6 +80,10 @@
 + (BOOL)isUSDevice {
     NSString *countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
     return [countryCode isEqualToString:@"US"];
+}
+
++ (BOOL)isPhoneX {
+    return [XKCDDeviceManager currentDeviceType] == DeviceTypeX;
 }
 
 
