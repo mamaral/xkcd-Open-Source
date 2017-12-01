@@ -12,7 +12,7 @@
 
 // Reviews
 "review.alert.title" = "Tell us what you think!";
-"review.alert.message" = "We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
+"review.alert.message" = "We worked hard to create the best xkcd comic reader out there, for free AND without ads! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
 "review.alert.leave review" = "Leave A Review";
 "review.alert.dont ask again" = "No... Leave me alone!";
 
