@@ -39,6 +39,7 @@
 "comic.view.bookmark" = "добавить комикс в закладки";
 "comic.view.prev" = "просмотреть предыдущий комикс";
 "comic.view.next" = "просмотреть следующий комикс";
+"comic.view.on web" = "Просмотр в Интернете";
 
 // Explain
 "comic.explain.title" = "Объяснение";

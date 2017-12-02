@@ -14,6 +14,7 @@
 @protocol AltViewDelegate <NSObject>
 
 - (void)altView:(AltView *)altView didSelectExplainForComic:(Comic *)comic;
+- (void)altView:(AltView *)altView didSelectViewOnWebForComic:(Comic *)comic;
 
 @end
 
@@ -27,6 +28,7 @@
 @property (nonatomic, strong) UILabel *altLabel;
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UIButton *explainButton;
+@property (nonatomic, strong) UIButton *viewOnWebButton;
 
 @property (nonatomic) BOOL isVisible;
 

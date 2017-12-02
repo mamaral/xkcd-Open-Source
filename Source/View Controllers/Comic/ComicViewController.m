@@ -323,13 +323,8 @@ static NSString * const kAltButtonText = @"Alt";
     self.prevSwipe.enabled = hasPrevious;
     self.nextButton.hidden = !hasNext;
     self.nextSwipe.enabled = hasNext;
-}
 
-- (void)showWebComic:(Comic *)comic {
-    ComicWebViewController *comicWebVC = [ComicWebViewController new];
-    comicWebVC.title = comic.title;
-    comicWebVC.URLString = comic.comicURLString;
-    [self.navigationController pushViewController:comicWebVC animated:YES];
+    [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
 }
 
 #pragma mark - Alt view delegate
@@ -340,6 +335,15 @@ static NSString * const kAltButtonText = @"Alt";
     ComicWebViewController *comicWebVC = [ComicWebViewController new];
     comicWebVC.title = kExplainTitle;
     comicWebVC.URLString = comic.explainURLString;
+    [self.navigationController pushViewController:comicWebVC animated:YES];
+}
+
+- (void)altView:(AltView *)altView didSelectViewOnWebForComic:(Comic *)comic {
+    [altView dismiss];
+
+    ComicWebViewController *comicWebVC = [ComicWebViewController new];
+    comicWebVC.title = comic.title;
+    comicWebVC.URLString = comic.comicURLString;
     [self.navigationController pushViewController:comicWebVC animated:YES];
 }
 

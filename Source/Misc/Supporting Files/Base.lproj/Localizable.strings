@@ -39,6 +39,7 @@
 "comic.view.bookmark" = "bookmark this comic";
 "comic.view.prev" = "view previous comic";
 "comic.view.next" = "view next comic";
+"comic.view.on web" = "view on web";
 
 // Explain
 "comic.explain.title" = "Explain";

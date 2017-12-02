@@ -39,6 +39,7 @@
 "comic.view.bookmark" = "Lesezeichen setzen";
 "comic.view.prev" = "Vorherigen Comic anzeigen";
 "comic.view.next" = "Nächsten Comic anzeigen";
+"comic.view.on web" = "Blick auf Web";
 
 // Explain
 "comic.explain.title" = "Erklären";

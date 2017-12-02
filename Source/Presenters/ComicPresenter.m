@@ -76,21 +76,14 @@
 - (void)updateCurrentComic:(Comic *)newComic {
     NSParameterAssert(newComic);
 
-    // Mark this comic as viewed.
-    DataManager *dataManager = [Assembler sharedInstance].dataManager;
-    [dataManager markComicViewed:newComic];
-
-    // If this is a web comic, show it the special way.
-    BOOL isInteractive = newComic.isInteractive || [dataManager.knownInteractiveComicNumbers containsObject:@(newComic.num)];
-    if (isInteractive) {
-        [self.view showWebComic:newComic];
-        return;
-    }
-
     self.currentComic = newComic;
     BOOL hasPrevious = [self.comics indexOfObject:newComic] > 0;
     BOOL hasNext = [self.comics indexOfObject:newComic] < self.comics.count - 1;
     [self.view updateToNewComic:newComic hasPrevious:hasPrevious hasNext:hasNext];
+
+    // Mark this comic as viewed.
+    DataManager *dataManager = [Assembler sharedInstance].dataManager;
+    [dataManager markComicViewed:newComic];
 }
 
 

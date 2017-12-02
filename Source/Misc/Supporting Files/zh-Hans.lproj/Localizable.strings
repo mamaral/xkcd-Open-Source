@@ -39,6 +39,7 @@
 "comic.view.bookmark" = "为该连环画加书签";
 "comic.view.prev" = "查看上个连环画";
 "comic.view.next" = "查看下个连环画";
+"comic.view.on web" = "在网上查看";
 
 // Explain
 "comic.explain.title" = "说明";

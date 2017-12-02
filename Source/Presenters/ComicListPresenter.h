@@ -17,7 +17,7 @@
 @protocol ComicListView <NSObject>
 
 @required
-- (void)showComic:(Comic *)comic withPresenter:(ComicPresenter *)presenter interactive:(BOOL)interactive;
+- (void)showComic:(Comic *)comic withPresenter:(ComicPresenter *)presenter;
 - (void)didStartLoadingComics;
 - (void)didFinishLoadingComics;
 - (void)comicListDidChange:(RLMResults *)comicList;
@@ -33,6 +33,8 @@
 
 - (void)attachToView:(id<ComicListView>)view;
 - (void)dettachFromView:(id<ComicListView>)view;
+
+- (ComicPresenter *)createComicPresenterForComic:(Comic *)comic;
 
 #pragma mark - Loading
 - (void)handleLoadRetry;

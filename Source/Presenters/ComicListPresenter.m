@@ -71,6 +71,10 @@
     self.view = nil;
 }
 
+- (ComicPresenter *)createComicPresenterForComic:(Comic *)comic {
+    return [[ComicPresenter alloc] initWithComics:self.comics currentComic:comic];
+}
+
 #pragma mark - Event handling
 
 - (void)handleComicListUpdated:(NSNotification *)notification {
@@ -242,10 +246,8 @@
 - (void)showComic:(Comic *)comic inPreviewMode:(BOOL)previewMode {
     NSParameterAssert(comic);
 
-    BOOL isInteractive = comic.isInteractive || [self.dataManager.knownInteractiveComicNumbers containsObject:@(comic.num)];
-    ComicPresenter *presenter = [[ComicPresenter alloc] initWithComics:self.comics currentComic:comic];
-    [self.view showComic:comic withPresenter:presenter interactive:isInteractive];
-    //[self.view showComic:comic allowingNavigation:allowNavigation isInteractive:isInteractive inPreviewMode:previewMode];
+    ComicPresenter *presenter = [self createComicPresenterForComic:comic];
+    [self.view showComic:comic withPresenter:presenter];
 }
 
 @end

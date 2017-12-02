@@ -14,7 +14,6 @@
 @protocol ComicView <NSObject>
 
 - (void)updateToNewComic:(Comic *)comic hasPrevious:(BOOL)hasPrevious hasNext:(BOOL)hasNext;
-- (void)showWebComic:(Comic *)comic;
 
 @end
 

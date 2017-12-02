@@ -61,7 +61,18 @@ static CGFloat const kAltViewPadding = 10.0;
     [self.explainButton addTarget:self action:@selector(handleExplain) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.explainButton];
 
+    self.viewOnWebButton = [UIButton new];
+    self.viewOnWebButton.titleLabel.font = [ThemeManager xkcdFontWithSize:15];
+    self.viewOnWebButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.viewOnWebButton.clipsToBounds = YES;
+    self.viewOnWebButton.showsTouchWhenHighlighted = YES;
+    self.viewOnWebButton.backgroundColor = [ThemeManager xkcdLightBlue];
+    [self.viewOnWebButton setTitle:NSLocalizedString(@"comic.view.on web", nil) forState:UIControlStateNormal];
+    [self.viewOnWebButton addTarget:self action:@selector(handleViewOnWeb) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.viewOnWebButton];
+
     [ThemeManager addBorderToLayer:self.explainButton.layer radius:3.0 color:[UIColor whiteColor]];
+    [ThemeManager addBorderToLayer:self.viewOnWebButton.layer radius:3.0 color:[UIColor whiteColor]];
 }
 
 
@@ -94,6 +105,7 @@ static CGFloat const kAltViewPadding = 10.0;
     }
 
     [self.explainButton anchorTopRightWithRightPadding:10.0 topPadding:10.0 width:100.0 height:40.0];
+    [self.viewOnWebButton alignUnder:self.explainButton matchingRightWithTopPadding:10.0 width:120.0 height:40.0];
 }
 
 
@@ -142,6 +154,10 @@ static CGFloat const kAltViewPadding = 10.0;
 
 - (void)handleExplain {
     [self.delegate altView:self didSelectExplainForComic:self.comic];
+}
+
+- (void)handleViewOnWeb {
+    [self.delegate altView:self didSelectViewOnWebForComic:self.comic];
 }
 
 @end
