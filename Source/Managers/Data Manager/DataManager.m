@@ -311,7 +311,7 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     dateComponents.day = day;
     dateComponents.month = month;
     dateComponents.year = year;
-
+    dateComponents.calendar = [NSCalendar autoupdatingCurrentCalendar];
     return [self.dateFormatter stringFromDate:dateComponents.date];
 }
 
