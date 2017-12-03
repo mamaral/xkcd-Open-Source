@@ -274,6 +274,8 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
     // If we should show this comic as interactive, use the web view controller, otherwise
     // use the normal comic presentation method.
     if ([self.presenter shouldShowComicAsInteractive:comic]) {
+        [[DataManager sharedInstance] markComicViewed:comic];
+
         ComicWebViewController *comicWebVC = [ComicWebViewController new];
         comicWebVC.title = comic.title;
         comicWebVC.URLString = comic.comicURLString;
