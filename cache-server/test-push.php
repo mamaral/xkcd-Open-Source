@@ -38,8 +38,27 @@ $pusher->disconnect();
 // were there any errors?
 $errors = $pusher->getErrors();
 if (!empty($errors)) {
-	echo "Push errors:\n";
-	var_dump($errors);
+	// prepare an error for unhandled errors
+	$unhandledErrors = [];
+
+	// loop through each error
+	foreach ($errors as $error) {
+		// if it's an invalid token error (statusCode 8)
+		if ($error['ERRORS'][0]['statusCode'] == 8) {
+			// remove this token from the database
+			$db->exec('delete from devices where token=' . $db->quote($error['MESSAGE']->getRecipient()));
+		}
+
+		else {
+			// otherwise, we'll add it to the unhandled errors array
+			$unhandledErrors[] = $error;
+		}
+	}
+
+	if (!empty($unhandledErrors)) {
+		echo "Unhandled push errors:\n";
+		var_dump($unhandledErrors);
+	}
 }
 
 // done!

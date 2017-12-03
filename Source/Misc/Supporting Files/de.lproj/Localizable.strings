@@ -1,0 +1,45 @@
+
+// Common
+"common.button.ok" = "OK";
+"common.error.title" = "Oh!";
+"common.button.cancel" = "Abbrechen";
+"common.button.are you sure" = "Sicher?";
+"common.button.continue" = "Weiter";
+
+// Loading
+"loading.button.title" = "xkcd lädt...";
+"loading.button.complete" = "Fertig geladen!";
+
+// Reviews
+"review.alert.title" = "Sag uns deine Meinung!";
+"review.alert.message" = "Wir haben uns große Mühe gegeben, den besten xkcd-Comic-Reader aller Zeiten zu entwickeln, der kostenlos ist UND keine Werbung enthält! Es würde uns sehr viel bedeuten, wenn du dir kurz Zeit nehmen und uns dein ehrliches Feedback zur App geben könntest. Bitte, bitte!";
+"review.alert.leave review" = "App bewerten";
+"review.alert.dont ask again" = "Nö... Keinen Bock!";
+
+// Comic List
+"comic.list.favorites title" = "Favoriten";
+"comic.list.unread title" = "Ungelesen";
+"comic.list.no search results" = "Keine Ergebnisse gefunden...";
+"comic.list.no favorites" = "Du hast noch keine Favoriten!";
+"comic.list.view all" = "Alle Comics anzeigen";
+"comic.list.view unread" = "Alle ungelesenen anzeigen";
+"comic.list.view favorites" = "Favoriten anzeigen";
+"comic.list.view random" = "Zufälligen Comic anzeigen";
+"comic.list.view bookmark" = "Gemerkten Comic anzeigen";
+"comic.list.clear cache" = "Zwischenspeicher leeren";
+"comic.list.clear cache warning" = "Hiermit werden alle Comics gelöscht, alle Comics als ungelesen markiert, alle Favoriten zurückgesetzt und dein Lesezeichen entfernt, sofern du eins gesetzt hast.";
+"comic.list.loading error" = "Beim Laden dieses Inhalts ist ein Fehler aufgetreten. Bitte überprüfe deine Internetverbindung und versuche es erneut.";
+"comic.list.menu accessibility" = "Menü";
+
+// Comic
+"comic.view.comic" = "Comic";
+"comic.view.view random" = "Zufälligen Comic anzeigen";
+"comic.view.alt" = "Alternativen Text anzeigen";
+"comic.view.favorite" = "Als Favorit speichern";
+"comic.view.bookmark" = "Lesezeichen setzen";
+"comic.view.prev" = "Vorherigen Comic anzeigen";
+"comic.view.next" = "Nächsten Comic anzeigen";
+
+// Explain
+"comic.explain.title" = "Erklären";
+"comic.explain.accessibility" = "Comic erklären";

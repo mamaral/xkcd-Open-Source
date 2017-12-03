@@ -16,6 +16,7 @@ typedef enum {
     DeviceType5,
     DeviceType6,
     DeviceType6Plus,
+    DeviceTypeX,
     DeviceTypeUnknown
 } DeviceType;
 
@@ -35,6 +36,7 @@ typedef enum {
 + (BOOL)isPad2;
 + (BOOL)isLargeDevice;
 + (BOOL)isSmallDevice;
++ (BOOL)isX;
 + (BOOL)isUSDevice;
 
 

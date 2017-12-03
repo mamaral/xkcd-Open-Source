@@ -23,6 +23,8 @@ static CGFloat const kBottomButtonSize = 50.0;
 static CGFloat const kBottomButtonPadSize = 70.0;
 static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
+static NSString * const kAltButtonText = @"Alt";
+
 @interface ComicViewController () <AltViewDelegate>
 
 @property (nonatomic) BOOL viewedAlt;
@@ -58,14 +60,29 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.nextSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNext)];
 
     self.containerView = [UIScrollView new];
+
     self.comicImageView = [UIImageView new];
+    self.comicImageView.accessibilityLabel = NSLocalizedString(@"comic.view.comic", nil);
+
     self.buttonContainerView = [UIView new];
+
     self.favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.favoriteButton.accessibilityLabel = NSLocalizedString(@"comic.view.favorite", nil);
+
     self.randomComicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.randomComicButton.accessibilityLabel = NSLocalizedString(@"comic.view.view random", nil);
+
     self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.prevButton.accessibilityLabel = NSLocalizedString(@"comic.view.prev", nil);
+
     self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.nextButton.accessibilityLabel = NSLocalizedString(@"comic.view.next", nil);
+
     self.altTextButton = [UIButton new];
+    self.altTextButton.accessibilityLabel = NSLocalizedString(@"comic.view.alt", nil);
+
     self.bookmarkButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.bookmarkButton.accessibilityLabel = NSLocalizedString(@"comic.view.bookmark", nil);
 
     self.altView = [AltView new];
     self.altView.delegate = self;
@@ -95,6 +112,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     self.comicImageView.contentMode = UIViewContentModeScaleAspectFit;
     self.comicImageView.userInteractionEnabled = YES;
+    self.comicImageView.isAccessibilityElement = YES;
     [self.containerView addSubview:self.comicImageView];
 
     self.buttonContainerView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
@@ -132,7 +150,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self.nextButton addTarget:self action:@selector(showNext) forControlEvents:UIControlEventTouchDown];
     [self.buttonContainerView addSubview:self.nextButton];
 
-    [self.altTextButton setTitle:@"Alt" forState:UIControlStateNormal];
+    [self.altTextButton setTitle:kAltButtonText forState:UIControlStateNormal];
     [self.altTextButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.altTextButton setTitleColor:[[UIColor blackColor] colorWithAlphaComponent:0.7] forState:UIControlStateHighlighted];
     [self.altTextButton.titleLabel setFont:[ThemeManager xkcdFontWithSize:20.0]];
@@ -158,7 +176,12 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     // Layout the button container and buttons
     CGFloat spacing = [XKCDDeviceManager isSmallDevice] ? kComicViewControllerSmallPadding : kComicViewControllerPadding;
-    [self.buttonContainerView anchorBottomCenterFillingWidthWithLeftAndRightPadding:0.0 bottomPadding:0.0 height:self.buttonSize];
+    CGFloat bottomPadding = 0.0;
+    if (@available(iOS 11.0, *)) {
+        bottomPadding = UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom;
+    }
+
+    [self.buttonContainerView anchorBottomCenterFillingWidthWithLeftAndRightPadding:0.0 bottomPadding:bottomPadding height:self.buttonSize];
     [self.prevButton anchorCenterLeftWithLeftPadding:spacing width:kBottomButtonSize height:self.buttonSize];
     [self.nextButton anchorCenterRightWithRightPadding:spacing width:kBottomButtonSize height:self.buttonSize];
     [self.buttonContainerView groupHorizontally:@[self.bookmarkButton, self.favoriteButton, self.randomComicButton, self.altTextButton] centeredFillingHeightWithSpacing:spacing width:self.buttonSize];
@@ -182,6 +205,10 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     self.title = comic.safeTitle;
     self.containerView.zoomScale = 1.0;
 
+    if (comic.transcript.length > 0) {
+        self.comicImageView.accessibilityLabel = comic.transcript;
+    }
+
     [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         if (image) {
             self.comicImage = image;
@@ -203,6 +230,11 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
     [self updateBookmarkButtonImage];
 }
 
+- (void)setPreviewMode:(BOOL)previewMode {
+    _previewMode = previewMode;
+
+    self.buttonContainerView.hidden = previewMode;
+}
 
 #pragma mark - Alt
 

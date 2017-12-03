@@ -14,15 +14,12 @@
 #import <TwitterKit/TwitterKit.h>
 #import "XKCDDeviceManager.h"
 
+@import StoreKit;
+
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
 
-static NSString * const kLeaveAReviewButtonTitle = @"Leave A Review";
-static NSString * const kDontAskAgainButtonTitle = @"No... Leave me alone!";
-
-static NSString * const kReviewAlertTitle = @"Tell us what you think!";
-static NSString * const kReviewAlertMessage = @"We worked hard to create the best xkcd comic reader out there, for free AND without adds! It would mean a lot if you'd take a minute and leave some honest feedback about the app. Pretty please?";
-
 static NSTimeInterval const kReviewAlertDelay = 30.0;
+static NSTimeInterval const kFourMonthsInSeconds = 10368000;
 
 @interface AppDelegate ()
 
@@ -103,29 +100,18 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 #pragma mark - Annoying review stuff
 
 - (void)askNicelyForAReviewIfNecessary {
-    // If we've already asked for a review in the past, don't ask again.
-    if ([[DataManager sharedInstance] hasAskedForReview]) {
+    // If we've already asked for a review in the past 4 months, bail.
+    NSDate *previousReviewDate = [[DataManager sharedInstance] previousReviewPromptDate];
+    if (previousReviewDate && [[NSDate date] timeIntervalSinceDate:previousReviewDate] < kFourMonthsInSeconds) {
         return;
     }
 
-    // After a short delay, ask the nice people to leave a review.
+    // After a short delay, prompt users for a rating and update our date so we don't ask again for another 4 months.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, kReviewAlertDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        UIAlertAction *goToReview = [UIAlertAction actionWithTitle:kLeaveAReviewButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSURL *appStoreURL = [NSURL URLWithString:kAppStoreURLString];
-            [[UIApplication sharedApplication] openURL:appStoreURL];
-
-            [self.dataManager setHasAskedForReview:YES];
-        }];
-
-        UIAlertAction *dontAskAgain = [UIAlertAction actionWithTitle:kDontAskAgainButtonTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            [self.dataManager setHasAskedForReview:YES];
-        }];
-
-        UIAlertController *reviewAlertController = [UIAlertController alertControllerWithTitle:kReviewAlertTitle message:kReviewAlertMessage preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
-        [reviewAlertController addAction:goToReview];
-        [reviewAlertController addAction:dontAskAgain];
-
-        [self.window.rootViewController presentViewController:reviewAlertController animated:YES completion:nil];
+        if (@available(iOS 11.0, *)) {
+            [SKStoreReviewController requestReview];
+            [[DataManager sharedInstance] updateReviewPromptDate];
+        }
     });
 }
 

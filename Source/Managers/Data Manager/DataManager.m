@@ -17,6 +17,8 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 @property (nonatomic, strong) NSUserDefaults *defaults;
 
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+
 @end
 
 @implementation DataManager
@@ -41,6 +43,9 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     self = [super init];
 
     self.defaults = [NSUserDefaults standardUserDefaults];
+
+    self.dateFormatter = [NSDateFormatter new];
+    self.dateFormatter.dateStyle = NSDateFormatterMediumStyle;
 
     self.knownInteractiveComicNumbers = @[@1193, @1331, @1446, @1525, @1608, @1663];
 
@@ -89,7 +94,7 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     NSParameterAssert(comics);
 
     [self.realm beginWriteTransaction];
-    [self.realm addOrUpdateObjectsFromArray:comics];
+    [self.realm addOrUpdateObjects:comics];
     [self.realm commitWriteTransaction];
 }
 
@@ -166,19 +171,28 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 #pragma mark - Fetching comics
 
 - (RLMResults *)allSavedComics {
-    return [[Comic allObjects] sortedResultsUsingProperty:@"num" ascending:NO];
+    RLMResults *allComics = [Comic allObjects];
+    RLMSortDescriptor *sortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:@"num" ascending:NO];
+    return [allComics sortedResultsUsingDescriptors:@[sortDescriptor]];
 }
 
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingProperty:@"num" ascending:NO];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString];
+    RLMResults *matchingComics = [Comic objectsWithPredicate:predicate];
+    RLMSortDescriptor *sortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:@"num" ascending:NO];
+    return [matchingComics sortedResultsUsingDescriptors:@[sortDescriptor]];
 }
 
 - (RLMResults *)allFavorites {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]] sortedResultsUsingProperty:@"num" ascending:NO];
+    RLMResults *unsorted = [Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]];
+    RLMSortDescriptor *sortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:@"num" ascending:NO];
+    return [unsorted sortedResultsUsingDescriptors:@[sortDescriptor]];
 }
 
 - (RLMResults *)allUnread {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]] sortedResultsUsingProperty:@"num" ascending:NO];
+    RLMResults *unsorted = [Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]];
+    RLMSortDescriptor *sortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:@"num" ascending:NO];
+    return [unsorted sortedResultsUsingDescriptors:@[sortDescriptor]];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
@@ -270,12 +284,12 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 #pragma mark - Reviews
 
-- (BOOL)hasAskedForReview {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:kHasAskedForReviewKey];
+- (NSDate *)previousReviewPromptDate {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kReviewPromptDate];
 }
 
-- (void)setHasAskedForReview:(BOOL)hasAsked {
-    [[NSUserDefaults standardUserDefaults] setBool:hasAsked forKey:kHasAskedForReviewKey];
+- (void)updateReviewPromptDate {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kReviewPromptDate];
 }
 
 
@@ -287,6 +301,18 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     [self.realm transactionWithBlock:^{
         [self.realm deleteAllObjects];
     }];
+}
+
+
+#pragma mark - Date utils
+
+- (NSString *)dateStringFromDay:(NSInteger)day month:(NSInteger)month year:(NSInteger)year {
+    NSDateComponents *dateComponents = [NSDateComponents new];
+    dateComponents.day = day;
+    dateComponents.month = month;
+    dateComponents.year = year;
+
+    return [self.dateFormatter stringFromDate:dateComponents.date];
 }
 
 @end

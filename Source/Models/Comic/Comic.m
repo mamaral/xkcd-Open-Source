@@ -37,8 +37,11 @@
     self.isInteractive = [dictionary[kIsInteractiveKey] boolValue];
     self.explainURLString = [NSString stringWithFormat:@"%@/%@", kExplainURLBase, @(self.num)];
 
-    NSString *month = self.month.length > 0 ? [[[NSDateFormatter new] monthSymbols] objectAtIndex:([self.month integerValue] - 1)] : @"";
-    self.formattedDateString = (month.length > 0 && self.day.length > 0 && self.year.length > 0) ? [NSString stringWithFormat:@"%@ %@, %@", month, self.day, self.year] : @"";
+    NSInteger day = [self.day integerValue];
+    NSInteger month = [self.month integerValue];
+    NSInteger year = [self.year integerValue];
+
+    self.formattedDateString = [[DataManager sharedInstance] dateStringFromDay:day month:month year:year];
 
     self.comicURLString = [[self class] generateComicURLStringFromNumber:self.num];
 
@@ -62,6 +65,9 @@
 - (BOOL)isBookmark {
     return [[DataManager sharedInstance] bookmarkedComicNumber] == self.num;
 }
+
+
+#pragma mark - Date
 
 
 #pragma mark - Test utilities

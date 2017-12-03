@@ -1,0 +1,45 @@
+
+// Common
+"common.button.ok" = "OK";
+"common.error.title" = "Ой!";
+"common.button.cancel" = "Отменить";
+"common.button.are you sure" = "Вы уверены?";
+"common.button.continue" = "Продолжить";
+
+// Loading
+"loading.button.title" = "Загрузка xkcd...";
+"loading.button.complete" = "Загрузка завершена!";
+
+// Reviews
+"review.alert.title" = "Поделитесь с нами своими мыслями!";
+"review.alert.message" = "Мы упорно трудились, чтобы создать лучшую читалку для комиксов xkcd, бесплатную и без рекламы! Нам было бы приятно, если бы вы уделили минуту, чтобы оставить честный отзыв о приложении. Пожалуйста?";
+"review.alert.leave review" = "Оставить отзыв";
+"review.alert.dont ask again" = "Нет... Оставьте меня в покое!";
+
+// Comic List
+"comic.list.favorites title" = "Избранное";
+"comic.list.unread title" = "Непрочитанные";
+"comic.list.no search results" = "Поиск не дал результатов...";
+"comic.list.no favorites" = "У вас еще нет записей в Избранном!";
+"comic.list.view all" = "Просмотреть все комиксы";
+"comic.list.view unread" = "Просмотреть все непрочитанные";
+"comic.list.view favorites" = "Просмотреть Избранное";
+"comic.list.view random" = "Просмотреть комиксы в произвольном порядке";
+"comic.list.view bookmark" = "Просмотреть комиксы в закладках";
+"comic.list.clear cache" = "Очистить кэш";
+"comic.list.clear cache warning" = "Это действие удалит все комиксы, отметит их как непрочитанные, удалит избранное и очистит ваши закладки, если вы их создавали.";
+"comic.list.loading error" = "Во время загрузки содержимого произошла ошибка. Пожалуйста, проверьте свое подключение и попробуйте снова.";
+"comic.list.menu accessibility" = "меню";
+
+// Comic
+"comic.view.comic" = "комиксы";
+"comic.view.view random" = "просмотреть случайный комикс";
+"comic.view.alt" = "просмотреть альтернативный текст";
+"comic.view.favorite" = "добавить комикс в избранное";
+"comic.view.bookmark" = "добавить комикс в закладки";
+"comic.view.prev" = "просмотреть предыдущий комикс";
+"comic.view.next" = "просмотреть следующий комикс";
+
+// Explain
+"comic.explain.title" = "Объяснение";
+"comic.explain.accessibility" = "разъяснить этот комикс";

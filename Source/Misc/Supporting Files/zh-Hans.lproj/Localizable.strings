@@ -1,0 +1,45 @@
+
+// Common
+"common.button.ok" = "好";
+"common.error.title" = "糟糕！";
+"common.button.cancel" = "取消";
+"common.button.are you sure" = "你确定？";
+"common.button.continue" = "继续";
+
+// Loading
+"loading.button.title" = "正在加载xkcd...";
+"loading.button.complete" = "加载完成！";
+
+// Reviews
+"review.alert.title" = "告诉我们你的想法！";
+"review.alert.message" = "我们致力于创建无广告的免费最佳xkcd连环画阅读器！如果您愿意花点时间留下一些关于本应用的诚实反馈，这将给我们极大的鼓励。请给好评吧？";
+"review.alert.leave review" = "留下评论";
+"review.alert.dont ask again" = "不...不要打扰我！";
+
+// Comic List
+"comic.list.favorites title" = "收藏";
+"comic.list.unread title" = "未读";
+"comic.list.no search results" = "未找到结果…";
+"comic.list.no favorites" = "你还没有收藏！";
+"comic.list.view all" = "查看所有连环画";
+"comic.list.view unread" = "查看所有未读";
+"comic.list.view favorites" = "查看收藏";
+"comic.list.view random" = "查看随机连环画";
+"comic.list.view bookmark" = "查看加书签的连环画";
+"comic.list.clear cache" = "清除缓存";
+"comic.list.clear cache warning" = "这会删除所有连环画、全部设置为未读，重置所有收藏，并清除您的书签（若已设置）。";
+"comic.list.loading error" = "加载该内容时出错。请检查连接后重试。";
+"comic.list.menu accessibility" = "菜单";
+
+// Comic
+"comic.view.comic" = "连环画";
+"comic.view.view random" = "查看随机连环画";
+"comic.view.alt" = "查看替代文本";
+"comic.view.favorite" = "收藏该连环画";
+"comic.view.bookmark" = "为该连环画加书签";
+"comic.view.prev" = "查看上个连环画";
+"comic.view.next" = "查看下个连环画";
+
+// Explain
+"comic.explain.title" = "说明";
+"comic.explain.accessibility" = "说明该连环画";
