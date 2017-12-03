@@ -13,7 +13,7 @@ static NSString * const NewComicsAvailableNotification = @"NewComicsAvailable";
 static NSString * const ComicFavoritedNotification = @"ComicFavorited";
 static NSString * const ComicReadNotification = @"ComicRead";
 static NSString * const kComicKey = @"comic";
-static NSString * const kHasAskedForReviewKey = @"HasAskedForReview";
+static NSString * const kReviewPromptDate = @"ReviewPromptDate";
 static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 
 @interface DataManager : NSObject
@@ -75,8 +75,8 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 
 #pragma mark - Reviews
 
-- (BOOL)hasAskedForReview;
-- (void)setHasAskedForReview:(BOOL)hasAsked;
+- (NSDate *)previousReviewPromptDate;
+- (void)updateReviewPromptDate;
 
 
 #pragma mark - Clearing Cache

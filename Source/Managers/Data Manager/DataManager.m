@@ -284,12 +284,12 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 #pragma mark - Reviews
 
-- (BOOL)hasAskedForReview {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:kHasAskedForReviewKey];
+- (NSDate *)previousReviewPromptDate {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kReviewPromptDate];
 }
 
-- (void)setHasAskedForReview:(BOOL)hasAsked {
-    [[NSUserDefaults standardUserDefaults] setBool:hasAsked forKey:kHasAskedForReviewKey];
+- (void)updateReviewPromptDate {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kReviewPromptDate];
 }
 
 

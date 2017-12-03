@@ -14,9 +14,12 @@
 #import <TwitterKit/TwitterKit.h>
 #import "XKCDDeviceManager.h"
 
+@import StoreKit;
+
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
 
 static NSTimeInterval const kReviewAlertDelay = 30.0;
+static NSTimeInterval const kFourMonthsInSeconds = 10368000;
 
 @interface AppDelegate ()
 
@@ -97,33 +100,18 @@ static NSTimeInterval const kReviewAlertDelay = 30.0;
 #pragma mark - Annoying review stuff
 
 - (void)askNicelyForAReviewIfNecessary {
-    // If we've already asked for a review in the past, don't ask again.
-    if ([[DataManager sharedInstance] hasAskedForReview]) {
+    // If we've already asked for a review in the past 4 months, bail.
+    NSDate *previousReviewDate = [[DataManager sharedInstance] previousReviewPromptDate];
+    if (previousReviewDate && [[NSDate date] timeIntervalSinceDate:previousReviewDate] < kFourMonthsInSeconds) {
         return;
     }
 
-    // After a short delay, ask the nice people to leave a review.
+    // After a short delay, prompt users for a rating and update our date so we don't ask again for another 4 months.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, kReviewAlertDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        NSString *reviewTitle = NSLocalizedString(@"review.alert.leave review", nil);
-        UIAlertAction *goToReview = [UIAlertAction actionWithTitle:reviewTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSURL *appStoreURL = [NSURL URLWithString:kAppStoreURLString];
-            [[UIApplication sharedApplication] openURL:appStoreURL];
-
-            [self.dataManager setHasAskedForReview:YES];
-        }];
-
-        NSString *dontAskTitle = NSLocalizedString(@"review.alert.dont ask again", nil);
-        UIAlertAction *dontAskAgain = [UIAlertAction actionWithTitle:dontAskTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            [self.dataManager setHasAskedForReview:YES];
-        }];
-
-        NSString *alertTitle = NSLocalizedString(@"review.alert.title", nil);
-        NSString *alertMessage = NSLocalizedString(@"review.alert.message", nil);
-        UIAlertController *reviewAlertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:[XKCDDeviceManager isPad] ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
-        [reviewAlertController addAction:goToReview];
-        [reviewAlertController addAction:dontAskAgain];
-
-        [self.window.rootViewController presentViewController:reviewAlertController animated:YES completion:nil];
+        if (@available(iOS 11.0, *)) {
+            [SKStoreReviewController requestReview];
+            [[DataManager sharedInstance] updateReviewPromptDate];
+        }
     });
 }
 
