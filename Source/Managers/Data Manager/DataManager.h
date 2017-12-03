@@ -55,6 +55,7 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 - (RLMResults *)allFavorites;
 - (RLMResults *)allUnread;
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler;
+- (void)downloadLatestComicWithCompletionHandler:(void (^)(Comic *comic, BOOL wasNew))handler;
 
 
 #pragma mark - Background fetching 

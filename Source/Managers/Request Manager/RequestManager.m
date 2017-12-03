@@ -10,6 +10,7 @@
 #import "DataManager.h"
 
 static NSString * const kFetchURLString = @"http://xkcdos.app.sgnl24.com/fetch-comics.php";
+static NSString * const kLatestComicFetchUrlString = @"http://xkcdos.app.sgnl24.com/latest-comic.php";
 static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/register-push.php";
 
 @implementation RequestManager {
@@ -60,6 +61,14 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 
     [self.manager GET:kFetchURLString parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         handler(nil, (NSArray *)responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        handler(error, nil);
+    }];
+}
+
+- (void)downloadLatestComicWithCompletionHandler:(void (^)(NSError *error, NSDictionary *latestComic))handler {
+    [self.manager GET:kLatestComicFetchUrlString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        handler(nil, (NSDictionary *)responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         handler(error, nil);
     }];

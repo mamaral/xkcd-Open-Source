@@ -233,6 +233,22 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     }];
 }
 
+- (void)downloadLatestComicWithCompletionHandler:(void (^)(Comic *comic, BOOL wasNew))handler {
+    [[RequestManager sharedInstance] downloadLatestComicWithCompletionHandler:^(NSError *error, NSDictionary *latestComic) {
+        if (error || !latestComic) {
+            handler(nil, NO);
+            return;
+        }
+
+        Comic *latest = [Comic comicFromDictionary:latestComic];
+
+        BOOL wasNew = [self latestComicDownloaded] < latest.num;
+        [self setLatestComicDownloaded:latest.num];
+
+        handler(latest, wasNew);
+    }];
+}
+
 
 #pragma mark - Background fetching
 

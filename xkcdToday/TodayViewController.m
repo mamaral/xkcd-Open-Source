@@ -84,15 +84,12 @@ static CGFloat const kMaxContentHeight = 300.0;
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     // Fetch the comics and show the most recent.
-    [[DataManager sharedInstance] downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-        self.comic = [[DataManager sharedInstance] allSavedComics].firstObject;
-
-        if (error) {
-            completionHandler(NCUpdateResultFailed);
-        } else if (numberOfNewComics == 0) {
-            completionHandler(NCUpdateResultNoData);
+    [[DataManager sharedInstance] downloadLatestComicWithCompletionHandler:^(Comic *comic, BOOL wasNew) {
+        if (comic) {
+            self.comic = comic;
+            completionHandler(wasNew ? NCUpdateResultNewData : NCUpdateResultNoData);
         } else {
-            completionHandler(NCUpdateResultNewData);
+            completionHandler(NCUpdateResultFailed);
         }
     }];
 }

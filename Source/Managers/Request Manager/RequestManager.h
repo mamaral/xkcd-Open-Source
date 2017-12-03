@@ -32,6 +32,7 @@ static NSString * const kContentTypeKey = @"Content-Type";
 #pragma mark - Downloading comics
 
 - (void)downloadComicsSince:(NSInteger)since completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler;
+- (void)downloadLatestComicWithCompletionHandler:(void (^)(NSError *error, NSDictionary *latestComic))handler;
 
 
 #pragma mark - Device tokens
