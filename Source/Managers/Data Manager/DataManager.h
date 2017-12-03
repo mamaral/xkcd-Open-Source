@@ -76,6 +76,8 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 
 #pragma mark - Reviews
 
+- (NSInteger)appLaunchCount;
+- (void)incrementAppLaunchCount;
 - (NSDate *)previousReviewPromptDate;
 - (void)updateReviewPromptDate;
 

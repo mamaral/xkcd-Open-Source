@@ -12,6 +12,7 @@
 static NSInteger const kCurrentSchemaVersion = 5;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
+static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 
 @interface DataManager ()
 
@@ -299,6 +300,15 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 
 
 #pragma mark - Reviews
+
+- (NSInteger)appLaunchCount {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:kAppLaunchedCountKey];
+}
+
+- (void)incrementAppLaunchCount {
+    NSInteger newAppLaunchCount = [self appLaunchCount] + 1;
+    [[NSUserDefaults standardUserDefaults] setInteger:newAppLaunchCount forKey:kAppLaunchedCountKey];
+}
 
 - (NSDate *)previousReviewPromptDate {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kReviewPromptDate];

@@ -18,6 +18,7 @@
 
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
 
+static NSUInteger const kMinAppLaunchCountForReview = 3;
 static NSTimeInterval const kReviewAlertDelay = 30.0;
 static NSTimeInterval const kFourMonthsInSeconds = 10368000;
 
@@ -51,7 +52,12 @@ static NSTimeInterval const kFourMonthsInSeconds = 10368000;
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];;
     [self.window makeKeyAndVisible];
 
-    [self askNicelyForAReviewIfNecessary];
+    [self.dataManager incrementAppLaunchCount];
+
+    // Only ask for reviews if the've launched the app at least a few times.
+    if ([self.dataManager appLaunchCount] >= kMinAppLaunchCountForReview) {
+        [self askNicelyForAReviewIfNecessary];
+    }
 
     return YES;
 }
