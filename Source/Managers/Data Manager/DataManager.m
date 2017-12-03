@@ -89,7 +89,7 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
     NSParameterAssert(comics);
 
     [self.realm beginWriteTransaction];
-    [self.realm addOrUpdateObjectsFromArray:comics];
+    [self.realm addOrUpdateObjects:comics];
     [self.realm commitWriteTransaction];
 }
 
@@ -166,19 +166,28 @@ static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 #pragma mark - Fetching comics
 
 - (RLMResults *)allSavedComics {
-    return [[Comic allObjects] sortedResultsUsingProperty:@"num" ascending:NO];
+    RLMResults *allComics = [Comic allObjects];
+    RLMSortDescriptor *sortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:@"num" ascending:NO];
+    return [allComics sortedResultsUsingDescriptors:@[sortDescriptor]];
 }
 
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString]] sortedResultsUsingProperty:@"num" ascending:NO];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString];
+    RLMResults *matchingComics = [Comic objectsWithPredicate:predicate];
+    RLMSortDescriptor *sortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:@"num" ascending:NO];
+    return [matchingComics sortedResultsUsingDescriptors:@[sortDescriptor]];
 }
 
 - (RLMResults *)allFavorites {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]] sortedResultsUsingProperty:@"num" ascending:NO];
+    RLMResults *unsorted = [Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"favorite == YES"]];
+    RLMSortDescriptor *sortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:@"num" ascending:NO];
+    return [unsorted sortedResultsUsingDescriptors:@[sortDescriptor]];
 }
 
 - (RLMResults *)allUnread {
-    return [[Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]] sortedResultsUsingProperty:@"num" ascending:NO];
+    RLMResults *unsorted = [Comic objectsWithPredicate:[NSPredicate predicateWithFormat:@"viewed == NO"]];
+    RLMSortDescriptor *sortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:@"num" ascending:NO];
+    return [unsorted sortedResultsUsingDescriptors:@[sortDescriptor]];
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
