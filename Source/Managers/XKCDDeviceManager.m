@@ -22,6 +22,7 @@
 #define IS_IPHONE_5 (IS_IPHONE && SCREEN_MAX_LENGTH == 568.0)
 #define IS_IPHONE_6 (IS_IPHONE && SCREEN_MAX_LENGTH == 667.0)
 #define IS_IPHONE_6P (IS_IPHONE && SCREEN_MAX_LENGTH == 736.0)
+#define IS_IPHONE_X  (IS_IPHONE && SCREEN_HEIGHT == 812.0)
 #define IS_IPAD_2 (IS_IPAD && !IS_RETINA)
 
 @implementation XKCDDeviceManager
@@ -62,6 +63,10 @@
     else if (IS_IPHONE_6P) {
         return DeviceType6Plus;
     }
+
+    else if (IS_IPHONE_X) {
+        return DeviceTypeX;
+    }
     
     else {
         return DeviceTypeUnknown;
@@ -82,6 +87,11 @@
 
 + (BOOL)isSmallDevice {
     return ([XKCDDeviceManager currentDeviceType] == DeviceType4) || ([XKCDDeviceManager currentDeviceType] == DeviceType5);
+}
+
++ (BOOL)isX
+{
+    return ([self currentDeviceType] == DeviceTypeX);
 }
 
 + (BOOL)isUSDevice {

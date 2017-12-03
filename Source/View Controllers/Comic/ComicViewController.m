@@ -158,7 +158,12 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
     // Layout the button container and buttons
     CGFloat spacing = [XKCDDeviceManager isSmallDevice] ? kComicViewControllerSmallPadding : kComicViewControllerPadding;
-    [self.buttonContainerView anchorBottomCenterFillingWidthWithLeftAndRightPadding:0.0 bottomPadding:0.0 height:self.buttonSize];
+    CGFloat bottomPadding = 0.0;
+    if (@available(iOS 11.0, *)) {
+        bottomPadding = UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom;
+    }
+
+    [self.buttonContainerView anchorBottomCenterFillingWidthWithLeftAndRightPadding:0.0 bottomPadding:bottomPadding height:self.buttonSize];
     [self.prevButton anchorCenterLeftWithLeftPadding:spacing width:kBottomButtonSize height:self.buttonSize];
     [self.nextButton anchorCenterRightWithRightPadding:spacing width:kBottomButtonSize height:self.buttonSize];
     [self.buttonContainerView groupHorizontally:@[self.bookmarkButton, self.favoriteButton, self.randomComicButton, self.altTextButton] centeredFillingHeightWithSpacing:spacing width:self.buttonSize];
