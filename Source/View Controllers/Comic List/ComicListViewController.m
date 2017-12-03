@@ -19,6 +19,7 @@
 #import "ComicViewController.h"
 #import "ComicCell.h"
 #import "XKCDDeviceManager.h"
+#import "DataManager.h"
 
 static NSString * const kComicListTitle = @"xkcd: Open Source";
 static NSString * const kComicListFavoritesTitle = @"Favorites";
@@ -39,7 +40,7 @@ static NSString * const kErrorLoadingMessage = @"An error occurred while loading
 static NSString * const kErrorTitle = @"Oops!";
 static NSString * const kOK = @"OK";
 
-@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate>
+@interface ComicListViewController () <ComicListFlowLayoutDelegate, ComicViewControllerDelegate, UISearchBarDelegate, ComicCellDelegate, ComicListView, AltViewDelegate, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic, strong) RLMResults *comics;
 
@@ -81,9 +82,15 @@ static NSString * const kOK = @"OK";
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationController.navigationBar.backIndicatorImage = [ThemeManager backImage];
     self.navigationController.navigationBar.backIndicatorTransitionMaskImage = [ThemeManager backImage];
+
     self.edgesForExtendedLayout = UIRectEdgeNone;
+
     self.collectionView.backgroundColor = [ThemeManager xkcdLightBlue];
     [self.collectionView registerClass:[ComicCell class] forCellWithReuseIdentifier:kComicCellReuseIdentifier];
+
+    if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
+        [self registerForPreviewingWithDelegate:self sourceView:self.collectionView];
+    }
 
     self.altView = [AltView new];
     self.altView.delegate = self;
@@ -441,6 +448,37 @@ static NSString * const kOK = @"OK";
 - (void)altView:(AltView *)altView didSelectExplainForComic:(Comic *)comic {
     [altView dismiss];
     [self showExplanationForComic:comic];
+}
+
+#pragma mark - UIViewController previewing delegate
+
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
+    NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
+    UICollectionViewLayoutAttributes *cellAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
+    [previewingContext setSourceRect:cellAttributes.frame];
+
+    Comic *comic = self.comics[indexPath.item];
+
+    if (comic.isInteractive || [[DataManager sharedInstance].knownInteractiveComicNumbers containsObject:@(comic.num)]) {
+        ComicWebViewController *comicWebVC = [ComicWebViewController new];
+        comicWebVC.URLString = comic.comicURLString;
+        return comicWebVC;
+    } else {
+        ComicViewController *comicVC = [ComicViewController new];
+        comicVC.delegate = self;
+        comicVC.allowComicNavigation = !self.presenter.isSearching && !self.presenter.isFilteringFavorites;
+        comicVC.comic = comic;
+        comicVC.previewMode = YES;
+        return comicVC;
+     }
+}
+
+- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
+    if ([viewControllerToCommit isKindOfClass:[ComicViewController class]]) {
+        ((ComicViewController *)viewControllerToCommit).previewMode = NO;
+    }
+
+    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
 }
 
 @end
