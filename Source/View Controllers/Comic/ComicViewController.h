@@ -22,7 +22,7 @@
 
 @end
 
-@interface ComicViewController : UIViewController <UIScrollViewDelegate>
+@interface ComicViewController : UIViewController
 
 @property (nonatomic) id<ComicViewControllerDelegate> delegate;
 
