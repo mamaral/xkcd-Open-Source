@@ -49,6 +49,8 @@
 		27EC24931D977BAE00D29A4F /* RequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 277316F01B0567B300ED7978 /* RequestManager.m */; };
 		27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27EE4A5F1B07BDAA001454A3 /* ComicViewController.m */; };
 		27F653681B154C5C00F3377D /* silent.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 27F653671B154C5C00F3377D /* silent.m4a */; };
+		7CBE6E7A20322EDD00EE46C1 /* PageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBE6E7820322EDC00EE46C1 /* PageView.m */; };
+		7CBE6E7E20322FD900EE46C1 /* ComicImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CBE6E7D20322FD900EE46C1 /* ComicImageView.m */; };
 		A6964EB278DE5FAD53FAE64E /* libPods-xkcd Open Source.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6725348942BDED8113C3A0E6 /* libPods-xkcd Open Source.a */; };
 		B2E2C3BB8A0BF182D5B63AA7 /* libPods-xkcdOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E69F5E414C056D6417BAB6C /* libPods-xkcdOSTests.a */; };
 		CFBE9B0DFB023BE7F9947460 /* libPods-xkcdToday.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA14FE212EF9148483390BD6 /* libPods-xkcdToday.a */; };
@@ -157,6 +159,10 @@
 		6E1FA3469DB8BE67C35FC01F /* Pods-xkcdToday.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-xkcdToday.debug.xcconfig"; path = "Pods/Target Support Files/Pods-xkcdToday/Pods-xkcdToday.debug.xcconfig"; sourceTree = "<group>"; };
 		6FC62ADD7F65F52E7FE39EE1 /* Pods-xkcdOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-xkcdOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-xkcdOSTests/Pods-xkcdOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		79DD09DB279FA5413379F8A0 /* Pods-xkcdToday.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-xkcdToday.release.xcconfig"; path = "Pods/Target Support Files/Pods-xkcdToday/Pods-xkcdToday.release.xcconfig"; sourceTree = "<group>"; };
+		7CBE6E7820322EDC00EE46C1 /* PageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PageView.m; path = "Source/Views/Page View/PageView.m"; sourceTree = SOURCE_ROOT; };
+		7CBE6E7920322EDC00EE46C1 /* PageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PageView.h; path = "Source/Views/Page View/PageView.h"; sourceTree = SOURCE_ROOT; };
+		7CBE6E7C20322FD900EE46C1 /* ComicImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComicImageView.h; path = "Source/Views/Comic Image View/ComicImageView.h"; sourceTree = SOURCE_ROOT; };
+		7CBE6E7D20322FD900EE46C1 /* ComicImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComicImageView.m; path = "Source/Views/Comic Image View/ComicImageView.m"; sourceTree = SOURCE_ROOT; };
 		A2969305AA6551B43D83A5AF /* Pods-xkcd Open Source.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-xkcd Open Source.debug.xcconfig"; path = "Pods/Target Support Files/Pods-xkcd Open Source/Pods-xkcd Open Source.debug.xcconfig"; sourceTree = "<group>"; };
 		BA14FE212EF9148483390BD6 /* libPods-xkcdToday.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-xkcdToday.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -373,6 +379,8 @@
 		277317121B06E3D300ED7978 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				7CBE6E7B20322F5F00EE46C1 /* Comic Image View */,
+				7CBE6E7720322EC000EE46C1 /* Page View */,
 				270B57481B07F27700651787 /* Alt View */,
 				27EE4A5B1B07BD8D001454A3 /* Comic Cell */,
 				277317131B06E3D900ED7978 /* Loading View */,
@@ -500,6 +508,24 @@
 				2715C2ED1B090AFD00F50645 /* Crashlytics.framework */,
 			);
 			path = Frameworks;
+			sourceTree = "<group>";
+		};
+		7CBE6E7720322EC000EE46C1 /* Page View */ = {
+			isa = PBXGroup;
+			children = (
+				7CBE6E7920322EDC00EE46C1 /* PageView.h */,
+				7CBE6E7820322EDC00EE46C1 /* PageView.m */,
+			);
+			path = "Page View";
+			sourceTree = "<group>";
+		};
+		7CBE6E7B20322F5F00EE46C1 /* Comic Image View */ = {
+			isa = PBXGroup;
+			children = (
+				7CBE6E7C20322FD900EE46C1 /* ComicImageView.h */,
+				7CBE6E7D20322FD900EE46C1 /* ComicImageView.m */,
+			);
+			path = "Comic Image View";
 			sourceTree = "<group>";
 		};
 		A8CF523BE9ECB6EFEFBFD740 /* Products */ = {
@@ -864,6 +890,8 @@
 				2714CCB81B05667400ADF009 /* main.m in Sources */,
 				277317161B06E3E600ED7978 /* LoadingView.m in Sources */,
 				277317101B06DF9300ED7978 /* ThemeManager.m in Sources */,
+				7CBE6E7A20322EDD00EE46C1 /* PageView.m in Sources */,
+				7CBE6E7E20322FD900EE46C1 /* ComicImageView.m in Sources */,
 				279D3B0C1E58C4D600476B13 /* ComicListPresenter.m in Sources */,
 				27EE4A601B07BDAA001454A3 /* ComicViewController.m in Sources */,
 			);
