@@ -37,6 +37,11 @@
     self.isInteractive = [dictionary[kIsInteractiveKey] boolValue];
     self.explainURLString = [NSString stringWithFormat:@"%@/%@", kExplainURLBase, @(self.num)];
 
+    if ((UIScreen.mainScreen.scale >= 2) && (self.comicID.integerValue >= 1084)) {
+        NSString *patchingImageString = [self.imageURLString stringByDeletingPathExtension];
+        self.imageURLString = [patchingImageString stringByAppendingString:@"_2x.png"];
+    }
+    
     NSInteger day = [self.day integerValue];
     NSInteger month = [self.month integerValue];
     NSInteger year = [self.year integerValue];
