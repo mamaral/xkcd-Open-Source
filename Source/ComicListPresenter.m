@@ -18,6 +18,8 @@
 
 @property (nonatomic, strong) RLMResults *comics;
 
+@property (nonatomic, copy) NSString *searchText;
+
 @end
 
 @implementation ComicListPresenter
@@ -90,11 +92,21 @@
 }
 
 - (void)loadComicsFromDB {
-    // If we're not searching and not filtering, update our list and tell the view we've updated.
-    if (!self.isSearching && !self.isFilteringFavorites) {
-        self.comics = [self.dataManager allSavedComics];
-        [self.view comicListDidChange:self.comics];
+    // Refresh whichever list we're currently showing and tell the view we've updated.
+    self.comics = [self comicsForCurrentState];
+    [self.view comicListDidChange:self.comics];
+}
+
+- (RLMResults *)comicsForCurrentState {
+    if (self.isSearching && self.searchText.length > 0) {
+        return [self.dataManager comicsMatchingSearchString:self.searchText];
+    } else if (self.isFilteringFavorites) {
+        return [self.dataManager allFavorites];
+    } else if (self.isFilteringUnread) {
+        return [self.dataManager allUnread];
     }
+
+    return [self.dataManager allSavedComics];
 }
 
 - (void)handleShowAllComics {
@@ -102,6 +114,7 @@
     _isFilteringUnread = NO;
     _isFilteringFavorites = NO;
     _isSearching = NO;
+    self.searchText = nil;
 
     self.comics = [self.dataManager allSavedComics];
     [self.view comicListDidChange:self.comics];
@@ -144,6 +157,7 @@
 
 - (void)handleSearchBegan {
     _isSearching = YES;
+    self.searchText = nil;
 
     // Refresh our state and comics list, and tell our view we've updated.
     _isFilteringFavorites = NO;
@@ -155,13 +169,15 @@
 
 - (void)searchForComicsWithText:(NSString *)searchText {
     _isSearching = YES;
+    self.searchText = searchText;
 
-    self.comics = [[DataManager sharedInstance] comicsMatchingSearchString:searchText];
+    self.comics = [self.dataManager comicsMatchingSearchString:searchText];
     [self.view comicListDidChange:self.comics];
 }
 
 - (void)cancelSearch {
     _isSearching = NO;
+    self.searchText = nil;
 
     self.comics = [self.dataManager allSavedComics];
     [self.view comicListDidChange:self.comics];
@@ -195,7 +211,7 @@
 #pragma mark - Clearing cache
 
 - (void)handleClearCache {
-    [[DataManager sharedInstance] clearCache];
+    [self.dataManager clearCache];
 
     self.comics = [self.dataManager allSavedComics];
     [self.view comicListDidChange:self.comics];

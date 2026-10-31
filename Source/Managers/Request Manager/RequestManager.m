@@ -7,15 +7,71 @@
 //
 
 #import "RequestManager.h"
-#import "DataManager.h"
 
-static NSString * const kFetchURLString = @"http://xkcdos.app.sgnl24.com/fetch-comics.php";
-static NSString * const kLatestComicFetchUrlString = @"http://xkcdos.app.sgnl24.com/latest-comic.php";
-static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/register-push.php";
+static NSString * const kLatestComicURLString = @"https://xkcd.com/info.0.json";
+static NSString * const kComicURLFormat = @"https://xkcd.com/%ld/info.0.json";
 
-@implementation RequestManager {
-    DataManager *_dataManager;
+// xkcd.com serves these over HTTP/2, so they share a single connection; each request is mostly
+// waiting on latency, so a couple dozen in flight keeps the first-launch download reasonably quick.
+static NSUInteger const kMaxConcurrentComicDownloads = 24;
+static NSTimeInterval const kRequestTimeout = 20.0;
+
+@interface RequestManager ()
+
+- (void)GETJSONFromURL:(NSURL *)url completionHandler:(void (^)(NSError *error, id json))handler;
+- (NSError *)errorWithMessage:(NSString *)errorMessage;
+
+@end
+
+
+// Tracks a batch of comic downloads, keeping a limited number of requests in flight so we
+// don't hammer xkcd.com when we need to download the entire archive on first launch.
+@interface ComicBatchDownload : NSObject
+
+@property (nonatomic, weak) RequestManager *requestManager;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *pendingNumbers;
+@property (nonatomic, strong) NSMutableArray *comicDicts;
+@property (nonatomic, strong) NSError *firstError;
+@property (nonatomic) NSUInteger requestsInFlight;
+@property (nonatomic, copy) void (^completionHandler)(NSError *error, NSArray *comicDicts);
+
+@end
+
+@implementation ComicBatchDownload
+
+- (void)startNextRequests {
+    while (self.requestsInFlight < kMaxConcurrentComicDownloads && self.pendingNumbers.count > 0) {
+        NSInteger number = [self.pendingNumbers.firstObject integerValue];
+        [self.pendingNumbers removeObjectAtIndex:0];
+        self.requestsInFlight++;
+
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:kComicURLFormat, (long)number]];
+
+        // The request's completion block keeps this batch alive until everything has finished.
+        [self.requestManager GETJSONFromURL:url completionHandler:^(NSError *error, id json) {
+            self.requestsInFlight--;
+
+            if ([json isKindOfClass:[NSDictionary class]]) {
+                [self.comicDicts addObject:json];
+            } else if (!self.firstError) {
+                self.firstError = error ?: [self.requestManager errorWithMessage:kRequestManagerInvalidResponseErrorMessage];
+            }
+
+            [self startNextRequests];
+        }];
+    }
+
+    if (self.requestsInFlight == 0 && self.pendingNumbers.count == 0 && self.completionHandler) {
+        void (^handler)(NSError *, NSArray *) = self.completionHandler;
+        self.completionHandler = nil;
+        handler(self.firstError, [self.comicDicts copy]);
+    }
 }
+
+@end
+
+
+@implementation RequestManager
 
 
 #pragma mark - Singleton
@@ -36,61 +92,66 @@ static NSString * const kTokenPostURLString = @"http://xkcdos.app.sgnl24.com/reg
 - (instancetype)init {
     self = [super init];
 
-    self.manager = [self generateHTTPRequestOperationManager];
+    if (!self) {
+        return nil;
+    }
 
-    _dataManager = [DataManager sharedInstance];
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    configuration.timeoutIntervalForRequest = kRequestTimeout;
+
+    // Deliver completions on the main queue, since callers touch Realm and the UI.
+    self.session = [NSURLSession sessionWithConfiguration:configuration delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
 
     return self;
-}
-
-- (AFHTTPRequestOperationManager *)generateHTTPRequestOperationManager {
-    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
-    [serializer setValue:kDefaultContentType forHTTPHeaderField:kContentTypeKey];
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.requestSerializer = serializer;
-
-    return manager;
 }
 
 
 #pragma mark - Downloading comics
 
-- (void)downloadComicsSince:(NSInteger)since completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler {
-    NSDictionary *params = @{@"since": [NSString stringWithFormat:@"%ld", (long)since]};
-
-    [self.manager GET:kFetchURLString parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        handler(nil, (NSArray *)responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        handler(error, nil);
-    }];
-}
-
 - (void)downloadLatestComicWithCompletionHandler:(void (^)(NSError *error, NSDictionary *latestComic))handler {
-    [self.manager GET:kLatestComicFetchUrlString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        handler(nil, (NSDictionary *)responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        handler(error, nil);
+    [self GETJSONFromURL:[NSURL URLWithString:kLatestComicURLString] completionHandler:^(NSError *error, id json) {
+        if (![json isKindOfClass:[NSDictionary class]]) {
+            handler(error ?: [self errorWithMessage:kRequestManagerInvalidResponseErrorMessage], nil);
+            return;
+        }
+
+        handler(nil, json);
     }];
 }
 
+- (void)downloadComicsWithNumbers:(NSArray<NSNumber *> *)numbers completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler {
+    NSParameterAssert(handler);
 
-#pragma mark - Device tokens
+    ComicBatchDownload *batch = [ComicBatchDownload new];
+    batch.requestManager = self;
+    batch.pendingNumbers = [(numbers ?: @[]) mutableCopy];
+    batch.comicDicts = [NSMutableArray arrayWithCapacity:numbers.count];
+    batch.completionHandler = handler;
+    [batch startNextRequests];
+}
 
-- (void)sendDeviceToken:(NSString *)token completionHandler:(void (^)(NSError *error))handler {
-    if (!token) {
-        NSError *error = [self errorWithMessage:kRequestManagerNilTokenErrorMessage];
-        handler(error);
-        return;
-    }
 
-    NSDictionary *params = @{@"token": token};
+#pragma mark - Requests
 
-    [self.manager POST:kTokenPostURLString parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        handler(nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        handler(error);
+- (void)GETJSONFromURL:(NSURL *)url completionHandler:(void (^)(NSError *error, id json))handler {
+    NSURLSessionDataTask *task = [self.session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error) {
+            handler(error, nil);
+            return;
+        }
+
+        NSInteger statusCode = [response isKindOfClass:[NSHTTPURLResponse class]] ? ((NSHTTPURLResponse *)response).statusCode : 0;
+        if (statusCode < 200 || statusCode >= 300 || !data) {
+            handler([self errorWithMessage:kRequestManagerInvalidResponseErrorMessage], nil);
+            return;
+        }
+
+        NSError *parseError = nil;
+        id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+        handler(json ? nil : parseError, json);
     }];
+
+    [task resume];
 }
 
 

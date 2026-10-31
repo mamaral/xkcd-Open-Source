@@ -98,7 +98,13 @@ static CGFloat const kFavoriteIconSize = 55.0;
 - (void)setComic:(Comic *)comic {
     _comic = comic;
 
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString] placeholderImage:[ThemeManager loadingImage]];
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString] placeholderImage:[ThemeManager loadingImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        // Remember the image's aspect ratio so the list can size this comic properly. Cells get
+        // reused, so make sure this is still the comic we're showing.
+        if (image && image.size.height > 0 && comic == self.comic) {
+            [[DataManager sharedInstance] updateAspectRatio:image.size.width / image.size.height forComic:comic];
+        }
+    }];
 
     self.maskView.alpha = comic.viewed ? 1.0 : 0.0;
     [self.comicNumberButton setTitle:[NSString stringWithFormat:@"%ld", (long)comic.num] forState:UIControlStateNormal];

@@ -7,8 +7,8 @@
 //
 
 #import "StubManager.h"
-#import <OHHTTPStubs/OHHTTPStubs.h>
-#import <OHHTTPStubs/OHHTTPStubsResponse+JSON.h>
+#import <OHHTTPStubs/HTTPStubs.h>
+#import <OHHTTPStubs/HTTPStubsResponse+JSON.h>
 
 @implementation StubManager
 
@@ -23,15 +23,40 @@
 }
 
 - (void)stubResponseWithStatusCode:(int)statusCode object:(id)object delay:(NSTimeInterval)delay {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
-        return [request.URL.absoluteString hasPrefix:@"http://xkcdos.app.sgnl24.com/"];
-    } withStubResponse:^OHHTTPStubsResponse *(NSURLRequest *request) {
-        return [[OHHTTPStubsResponse responseWithJSONObject:object ?: @{} statusCode:statusCode headers:nil] responseTime:delay];
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+        return [request.URL.absoluteString hasPrefix:@"https://xkcd.com/"];
+    } withStubResponse:^HTTPStubsResponse *(NSURLRequest *request) {
+        return [[HTTPStubsResponse responseWithJSONObject:object ?: @{} statusCode:statusCode headers:nil] responseTime:delay];
+    }];
+}
+
+- (void)stubComics:(NSArray<NSDictionary *> *)comicDicts {
+    NSMutableDictionary *comicsByPath = [NSMutableDictionary dictionary];
+    NSDictionary *latest = nil;
+
+    for (NSDictionary *comicDict in comicDicts) {
+        NSInteger num = [comicDict[@"num"] integerValue];
+        comicsByPath[[NSString stringWithFormat:@"/%ld/info.0.json", (long)num]] = comicDict;
+
+        if (!latest || num > [latest[@"num"] integerValue]) {
+            latest = comicDict;
+        }
+    }
+
+    if (latest) {
+        comicsByPath[@"/info.0.json"] = latest;
+    }
+
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+        return [request.URL.absoluteString hasPrefix:@"https://xkcd.com/"];
+    } withStubResponse:^HTTPStubsResponse *(NSURLRequest *request) {
+        NSDictionary *comicDict = comicsByPath[request.URL.path];
+        return [HTTPStubsResponse responseWithJSONObject:comicDict ?: @{} statusCode:comicDict ? 200 : 404 headers:nil];
     }];
 }
 
 - (void)removeAllStubs {
-    [OHHTTPStubs removeAllStubs];
+    [HTTPStubs removeAllStubs];
 }
 
 @end

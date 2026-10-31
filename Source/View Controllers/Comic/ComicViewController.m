@@ -12,7 +12,6 @@
 #import "ThemeManager.h"
 #import "DataManager.h"
 #import <SDWebImagePrefetcher.h>
-#import <TwitterKit/TwitterKit.h>
 #import "AltView.h"
 #import "XKCDDeviceManager.h"
 #import "ComicWebViewController.h"
@@ -25,7 +24,7 @@ static CGFloat const kFavoritedButtonNonFavoriteAlpha = 0.3;
 
 static NSString * const kAltButtonText = @"Alt";
 
-@interface ComicViewController () <AltViewDelegate>
+@interface ComicViewController () <AltViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic) BOOL viewedAlt;
 
@@ -209,9 +208,15 @@ static NSString * const kAltButtonText = @"Alt";
         self.comicImageView.accessibilityLabel = comic.transcript;
     }
 
+    self.comicImage = nil;
     [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        if (image) {
+        // Ignore images for a comic we've since navigated away from.
+        if (image && comic == self.comic) {
             self.comicImage = image;
+
+            if (image.size.height > 0) {
+                [[DataManager sharedInstance] updateAspectRatio:image.size.width / image.size.height forComic:comic];
+            }
         }
     }];
 
@@ -290,27 +295,42 @@ static NSString * const kAltButtonText = @"Alt";
 #pragma mark - Navigation between comics
 
 - (void)showPrev {
-    self.comic = [self.delegate comicViewController:self comicBeforeCurrentComic:self.comic];
+    [self showComicIfPossible:[self.delegate comicViewController:self comicBeforeCurrentComic:self.comic]];
 }
 
-- (void)showNext {  
-    self.comic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];
+- (void)showNext {
+    [self showComicIfPossible:[self.delegate comicViewController:self comicAfterCurrentComic:self.comic]];
 }
 
 - (void)showRandomComic {
-    self.comic = [self.delegate comicViewController:self randomComic:self.comic];
+    [self showComicIfPossible:[self.delegate comicViewController:self randomComic:self.comic]];
     [self.randomComicButton setImage:[ThemeManager randomImage] forState:UIControlStateNormal];
 }
+
+- (void)showComicIfPossible:(Comic *)comic {
+    // The comic list can change underneath us, so there may be nothing to navigate to.
+    if (comic) {
+        self.comic = comic;
+    }
+}
+
 - (void)prefetchImagesForComicsBeforeAndAfter {
     Comic *prevComic = [self.delegate comicViewController:self comicBeforeCurrentComic:self.comic];
     Comic *nextComic = [self.delegate comicViewController:self comicAfterCurrentComic:self.comic];
 
-    if (prevComic.imageURLString) {
-        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:@[[NSURL URLWithString:prevComic.imageURLString]]];
+    NSMutableArray *urls = [NSMutableArray array];
+
+    for (Comic *comic in @[prevComic ?: [NSNull null], nextComic ?: [NSNull null]]) {
+        NSURL *url = [comic isKindOfClass:[Comic class]] ? [NSURL URLWithString:comic.imageURLString] : nil;
+
+        if (url) {
+            [urls addObject:url];
+        }
     }
 
-    if (nextComic.imageURLString) {
-        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:@[[NSURL URLWithString:nextComic.imageURLString]]];
+    // Prefetching cancels any prefetch in progress, so request both at once.
+    if (urls.count > 0) {
+        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:urls];
     }
 }
 
@@ -318,7 +338,8 @@ static NSString * const kAltButtonText = @"Alt";
 #pragma mark - Sharing
 
 - (void)handleShareButton {
-    NSArray *activityItems = self.comicImage ? @[[NSURL URLWithString:self.comic.comicURLString ?: @""], self.comicImage] : @[[NSURL URLWithString:self.comic.comicURLString ?: @""]];
+    NSURL *comicURL = [NSURL URLWithString:self.comic.comicURLString ?: kShareURLBase];
+    NSArray *activityItems = self.comicImage ? @[comicURL, self.comicImage] : @[comicURL];
     UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     shareSheet.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
     [self presentViewController:shareSheet animated:YES completion:nil];

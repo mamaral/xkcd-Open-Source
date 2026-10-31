@@ -71,7 +71,7 @@
     NSString *safeTitle = @"This is a safe comic title.";
     NSString *alt = @"Here's some alt text.";
     NSString *transcript = @"This is the transcript.";
-    NSString *imageURLString = @"http://imgs.xkcd.com/comics/456.png";
+    NSString *imageURLString = @"https://imgs.xkcd.com/comics/456.png";
     NSString *day = @"10";
     NSString *month = @"11";
     NSString *year = @"1988";
@@ -105,7 +105,15 @@
     XCTAssert([comic.year isEqualToString:year]);
     XCTAssertEqual(comic.aspectRatio, aspectRatio);
     XCTAssertFalse(comic.viewed);
-    XCTAssert([comic.formattedDateString isEqualToString:@"November 10, 1988"]);
+
+    // Dates are formatted for the user's locale, so build the expected string the same way.
+    NSDateComponents *dateComponents = [NSDateComponents new];
+    dateComponents.day = 10;
+    dateComponents.month = 11;
+    dateComponents.year = 1988;
+    dateComponents.calendar = [NSCalendar autoupdatingCurrentCalendar];
+    NSString *expectedDate = [NSDateFormatter localizedStringFromDate:dateComponents.date dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
+    XCTAssertEqualObjects(comic.formattedDateString, expectedDate);
 }
 
 - (void)testGenerateURLString {
@@ -119,7 +127,41 @@
 
     shareURL = [NSURL URLWithString:[Comic generateComicURLStringFromNumber:comic.num]];
     XCTAssertNotNil(shareURL);
-    XCTAssert([shareURL.absoluteString isEqualToString:@"http://xkcd.com/666"]);
+    XCTAssert([shareURL.absoluteString isEqualToString:@"https://xkcd.com/666"]);
+}
+
+- (void)testInsecureImageURLIsUpgraded {
+    Comic *comic = [Comic comicFromDictionary:@{kNumKey: @1, kImageURLStringKey: @"http://imgs.xkcd.com/comics/barrel_cropped_(1).jpg"}];
+    XCTAssertEqualObjects(comic.imageURLString, @"https://imgs.xkcd.com/comics/barrel_cropped_(1).jpg");
+
+    XCTAssertEqualObjects([Comic secureURLStringFromURLString:@"https://xkcd.com"], @"https://xkcd.com");
+    XCTAssertEqualObjects([Comic secureURLStringFromURLString:@""], @"");
+}
+
+- (void)testComicWithNullValues {
+    NSDictionary *comicDict = @{
+                                kNumKey: [NSNull null],
+                                kTitleKey: [NSNull null],
+                                kTranscriptKey: [NSNull null],
+                                kAspectRatioKey: [NSNull null],
+                                kIsInteractiveKey: [NSNull null]
+                                };
+
+    Comic *comic = [Comic comicFromDictionary:comicDict];
+
+    XCTAssertEqual(comic.num, 0);
+    XCTAssertEqualObjects(comic.title, @"");
+    XCTAssertEqualObjects(comic.transcript, @"");
+    XCTAssertEqual(comic.aspectRatio, kDefaultAspectRatio);
+    XCTAssertFalse(comic.isInteractive);
+}
+
+- (void)testComicWithExtraPartsIsInteractive {
+    Comic *comic = [Comic comicFromDictionary:@{kNumKey: @1663, kExtraPartsKey: @{@"headerextra": @""}}];
+    XCTAssertTrue(comic.isInteractive);
+
+    comic = [Comic comicFromDictionary:@{kNumKey: @1}];
+    XCTAssertFalse(comic.isInteractive);
 }
 
 @end

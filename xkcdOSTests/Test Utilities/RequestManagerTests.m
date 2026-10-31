@@ -41,27 +41,20 @@
 
 - (void)testSingleton {
     XCTAssertNotNil([RequestManager sharedInstance]);
-    XCTAssertNotNil([RequestManager sharedInstance].manager);
-    XCTAssertNotNil([RequestManager sharedInstance].manager.requestSerializer);
-    XCTAssert([[RequestManager sharedInstance].manager.requestSerializer.HTTPRequestHeaders[kContentTypeKey] isEqualToString:kDefaultContentType]);
+    XCTAssertNotNil([RequestManager sharedInstance].session);
 }
 
-- (void)testDownloadComicsSinceWithComics {
+- (void)testDownloadLatestComic {
     XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
     NSDictionary *comic1 = [Comic comicDictForTestsWithID:1];
     NSDictionary *comic2 = [Comic comicDictForTestsWithID:2];
 
-    NSArray *comics = @[comic1, comic2];
+    [[StubManager sharedInstance] stubComics:@[comic1, comic2]];
 
-    [[StubManager sharedInstance] stubResponseWithStatusCode:202 object:comics delay:0.0];
-
-    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
+    [_requestManager downloadLatestComicWithCompletionHandler:^(NSError *error, NSDictionary *latestComic) {
         XCTAssertNil(error);
-        XCTAssertNotNil(comicDicts);
-        XCTAssertEqual(comicDicts.count, comics.count);
-        XCTAssert([comicDicts containsObject:comic1]);
-        XCTAssert([comicDicts containsObject:comic2]);
+        XCTAssertEqualObjects(latestComic, comic2);
 
         [expectation fulfill];
     }];
@@ -69,12 +62,52 @@
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
 }
 
-- (void)testDownloadComicsSinceWithNoComics {
+- (void)testDownloadLatestComicWithError {
     XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
-    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:@[] delay:0.0];
+    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
 
-    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
+    [_requestManager downloadLatestComicWithCompletionHandler:^(NSError *error, NSDictionary *latestComic) {
+        XCTAssertNotNil(error);
+        XCTAssertNil(latestComic);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+}
+
+- (void)testDownloadComicsWithNumbers {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
+
+    // More comics than we download at once, to exercise the batching.
+    NSMutableArray *comics = [NSMutableArray array];
+    NSMutableArray *numbers = [NSMutableArray array];
+    for (NSInteger num = 1; num <= 20; num++) {
+        [comics addObject:[Comic comicDictForTestsWithID:num]];
+        [numbers addObject:@(num)];
+    }
+
+    [[StubManager sharedInstance] stubComics:comics];
+
+    [_requestManager downloadComicsWithNumbers:numbers completionHandler:^(NSError *error, NSArray *comicDicts) {
+        XCTAssertNil(error);
+        XCTAssertEqual(comicDicts.count, comics.count);
+
+        for (NSDictionary *comic in comics) {
+            XCTAssert([comicDicts containsObject:comic]);
+        }
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
+- (void)testDownloadComicsWithNoNumbers {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
+
+    [_requestManager downloadComicsWithNumbers:@[] completionHandler:^(NSError *error, NSArray *comicDicts) {
         XCTAssertNil(error);
         XCTAssertNotNil(comicDicts);
         XCTAssertEqual(comicDicts.count, 0);
@@ -85,62 +118,17 @@
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
 }
 
-- (void)testDownloadComicsSinceWithError {
+- (void)testDownloadComicsWithPartialFailure {
     XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
-    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
+    NSDictionary *comic1 = [Comic comicDictForTestsWithID:1];
+    [[StubManager sharedInstance] stubComics:@[comic1]];
 
-    [_requestManager downloadComicsSince:0 completionHandler:^(NSError *error, NSArray *comicDicts) {
+    // Comic 2 doesn't exist, so its request 404s, but we should still get comic 1.
+    [_requestManager downloadComicsWithNumbers:@[@1, @2] completionHandler:^(NSError *error, NSArray *comicDicts) {
         XCTAssertNotNil(error);
-        XCTAssertNil(comicDicts);
-
-        [expectation fulfill];
-    }];
-
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
-}
-
-- (void)testSendDeviceToken {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
-
-    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:nil delay:0.0];
-
-    NSString *token = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
-        XCTAssertNil(error);
-
-        [expectation fulfill];
-    }];
-
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
-}
-
-- (void)testSendNilToken {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
-
-    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
-
-    NSString *token = nil;
-    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
-        XCTAssertNotNil(error);
-        XCTAssert([error.domain isEqualToString:kRequestManagerErrorDomain]);
-        XCTAssertEqual(error.code, kRequestManagerErrorCode);
-        XCTAssert([error.userInfo[kRequestManagerUserInfoKey] isEqualToString:kRequestManagerNilTokenErrorMessage]);
-
-        [expectation fulfill];
-    }];
-
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
-}
-
-- (void)testSendTokenWithError {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
-
-    [[StubManager sharedInstance] stubResponseWithStatusCode:502 object:nil delay:0.0];
-
-    NSString *token = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    [_requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
-        XCTAssertNotNil(error);
+        XCTAssertEqual(comicDicts.count, 1);
+        XCTAssertEqualObjects(comicDicts.firstObject, comic1);
 
         [expectation fulfill];
     }];

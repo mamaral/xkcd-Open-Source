@@ -270,14 +270,14 @@
 
     NSArray *comics = @[comic1, comic2];
 
-    [[StubManager sharedInstance] stubResponseWithStatusCode:202 object:comics delay:0.0];
+    [[StubManager sharedInstance] stubComics:comics];
 
     [_dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
         XCTAssertNil(error);
         XCTAssertEqual(numberOfNewComics, comics.count);
         XCTAssertEqual([_dataManager latestComicDownloaded], latest);
 
-        XCTAssertGreaterThanOrEqual([_dataManager allSavedComics].count, comics.count);
+        XCTAssertEqual([_dataManager allSavedComics].count, comics.count);
         XCTAssertNotNil([Comic objectForPrimaryKey:@"1"]);
 
         NSString *latestID = [NSString stringWithFormat:@"%ld", (long)latest];
@@ -289,6 +289,87 @@
     [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
+- (void)testDownloadLatestComicsFillsInGaps {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
+
+    // We already have comic 3, and have "downloaded" up to it, but are missing 1 and 2.
+    [_dataManager saveComics:@[[Comic comicFromDictionary:[Comic comicDictForTestsWithID:3]]]];
+    [_dataManager setLatestComicDownloaded:3];
+
+    NSArray *comics = @[[Comic comicDictForTestsWithID:1], [Comic comicDictForTestsWithID:2], [Comic comicDictForTestsWithID:3]];
+    [[StubManager sharedInstance] stubComics:comics];
+
+    [_dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
+        XCTAssertNil(error);
+        XCTAssertEqual(numberOfNewComics, 2);
+        XCTAssertEqual([_dataManager allSavedComics].count, 3);
+
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+}
+
+- (void)testDownloadLatestComicsCoalescesConcurrentRequests {
+    XCTestExpectation *firstExpectation = [self expectationWithDescription:@"The first completion handler should be called."];
+    XCTestExpectation *secondExpectation = [self expectationWithDescription:@"The second completion handler should be called."];
+
+    [[StubManager sharedInstance] stubComics:@[[Comic comicDictForTestsWithID:1], [Comic comicDictForTestsWithID:2]]];
+
+    // Both callers should hear about the same two new comics from a single download.
+    [_dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
+        XCTAssertEqual(numberOfNewComics, 2);
+        [firstExpectation fulfill];
+    }];
+
+    [_dataManager downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
+        XCTAssertEqual(numberOfNewComics, 2);
+        [secondExpectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+}
+
+- (void)testSaveComicsKeepsExistingState {
+    NSDictionary *comicDict = [Comic comicDictForTestsWithID:1];
+    Comic *comic = [Comic comicFromDictionary:comicDict];
+
+    XCTAssertEqual([_dataManager saveComics:@[comic]], 1);
+    [_dataManager markComic:comic favorited:YES];
+    [_dataManager markComicViewed:comic];
+
+    // Saving the same comic again shouldn't reset it.
+    XCTAssertEqual([_dataManager saveComics:@[[Comic comicFromDictionary:comicDict]]], 0);
+
+    Comic *savedComic = [Comic objectForPrimaryKey:@"1"];
+    XCTAssertTrue(savedComic.favorite);
+    XCTAssertTrue(savedComic.viewed);
+}
+
+- (void)testRandomComicWithNoComics {
+    XCTAssertNil([_dataManager randomComic]);
+}
+
+- (void)testSearchIsCaseInsensitive {
+    Comic *comic = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:1]];
+    [_dataManager saveComics:@[comic]];
+
+    XCTAssertEqual([_dataManager comicsMatchingSearchString:[comic.title uppercaseString]].count, 1);
+    XCTAssertEqual([_dataManager comicsMatchingSearchString:[comic.alt uppercaseString]].count, 1);
+}
+
+- (void)testUpdateAspectRatio {
+    Comic *comic = [Comic comicFromDictionary:[Comic comicDictForTestsWithID:1]];
+    [_dataManager saveComics:@[comic]];
+
+    [_dataManager updateAspectRatio:2.5 forComic:comic];
+    XCTAssertEqualWithAccuracy(comic.aspectRatio, 2.5, 0.001);
+
+    // Nonsense ratios are ignored.
+    [_dataManager updateAspectRatio:0.0 forComic:comic];
+    XCTAssertEqualWithAccuracy(comic.aspectRatio, 2.5, 0.001);
+}
+
 - (void)testPerformBackgroundFetchNewData {
     XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
@@ -296,9 +377,7 @@
     NSDictionary *comic1 = [Comic comicDictForTestsWithID:1];
     NSDictionary *comic2 = [Comic comicDictForTestsWithID:latest];
 
-    NSArray *comics = @[comic1, comic2];
-
-    [[StubManager sharedInstance] stubResponseWithStatusCode:202 object:comics delay:0.0];
+    [[StubManager sharedInstance] stubComics:@[comic1, comic2]];
 
     [_dataManager performBackgroundFetchWithCompletionHandler:^(UIBackgroundFetchResult result) {
         XCTAssertEqual(result, UIBackgroundFetchResultNewData);
@@ -312,7 +391,9 @@
 - (void)testPerformBackgroundFetchNoNewData {
     XCTestExpectation *expectation = [self expectationWithDescription:@"The completion handler should be called."];
 
-    [[StubManager sharedInstance] stubResponseWithStatusCode:200 object:@[] delay:0.0];
+    NSDictionary *comicDict = [Comic comicDictForTestsWithID:1];
+    [_dataManager saveComics:@[[Comic comicFromDictionary:comicDict]]];
+    [[StubManager sharedInstance] stubComics:@[comicDict]];
 
     [_dataManager performBackgroundFetchWithCompletionHandler:^(UIBackgroundFetchResult result) {
         XCTAssertEqual(result, UIBackgroundFetchResultNoData);
@@ -337,26 +418,12 @@
     [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
-- (void)testTokenStringFromData {
-    NSString *tokenString = [_dataManager tokenStringFromData:[NSData data]];
-    XCTAssertNotNil(tokenString);
-}
+- (void)testReviewPromptDate {
+    [_dataManager updateReviewPromptDate];
 
-- (void)testTokenStringFromNilData {
-    NSString *tokenString = [_dataManager tokenStringFromData:nil];
-    XCTAssert([tokenString isEqualToString:@""]);
-}
-
-- (void)testHasAskedForReview {
-    XCTAssertFalse([_dataManager hasAskedForReview]);
-
-    [_dataManager setHasAskedForReview:YES];
-
-    XCTAssertTrue([_dataManager hasAskedForReview]);
-
-    [_dataManager setHasAskedForReview:NO];
-
-    XCTAssertFalse([_dataManager hasAskedForReview]);
+    NSDate *promptDate = [_dataManager previousReviewPromptDate];
+    XCTAssertNotNil(promptDate);
+    XCTAssertLessThan(fabs([promptDate timeIntervalSinceNow]), 5.0);
 }
 
 @end

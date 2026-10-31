@@ -8,7 +8,6 @@
 
 #import "ComicListFlowLayout.h"
 
-static NSUInteger const kHeightModulo = 50;
 static CGFloat const kMinimumCellHeightPhone = 60;
 static CGFloat const kMinimumCellHeightPad = 100;
 
@@ -34,6 +33,12 @@ static CGFloat const kMinimumCellHeightPad = 100;
         CGFloat yOffset = [[_columns objectAtIndex:columnIndex] floatValue];
         CGFloat columnWidth = [self columnWidth];
         CGFloat relativeItemHeight = [self.delegate collectionView:self.collectionView relativeHeightForItemAtIndexPath:indexPath];
+
+        // Guard against bad aspect ratios (zero, infinite, or NaN) producing an unusable height.
+        if (!isfinite(relativeItemHeight) || relativeItemHeight <= 0) {
+            relativeItemHeight = 1.0;
+        }
+
         CGFloat minimumCellHeight = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? kMinimumCellHeightPad : kMinimumCellHeightPhone;
         NSUInteger itemWidth = 0;
         NSUInteger itemHeight = 0;
@@ -51,7 +56,7 @@ static CGFloat const kMinimumCellHeightPad = 100;
 
         else {
             itemWidth = columnWidth;
-            itemHeight = MAX((relativeItemHeight * itemWidth) - (itemHeight % kHeightModulo), minimumCellHeight);
+            itemHeight = MAX(relativeItemHeight * itemWidth, minimumCellHeight);
 
             _columns[columnIndex] = @(yOffset + itemHeight);
         }
@@ -60,6 +65,11 @@ static CGFloat const kMinimumCellHeightPad = 100;
         attributes.frame = CGRectMake(xOffset, yOffset, itemWidth, itemHeight);
         [_itemsAttributes addObject:attributes];
     }
+}
+
+- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
+    // Recalculate our columns when we rotate, but not on every scroll.
+    return CGRectGetWidth(newBounds) != CGRectGetWidth(self.collectionView.bounds);
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect{
@@ -71,7 +81,11 @@ static CGFloat const kMinimumCellHeightPad = 100;
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath{
-    return [_itemsAttributes objectAtIndex:indexPath.row];
+    if (!indexPath || indexPath.item >= _itemsAttributes.count) {
+        return nil;
+    }
+
+    return [_itemsAttributes objectAtIndex:indexPath.item];
 }
 
 - (CGSize)collectionViewContentSize {

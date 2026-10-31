@@ -76,10 +76,13 @@ static CGFloat const kMaxContentHeight = 300.0;
 #pragma mark - Widget delegate
 
 - (void)widgetActiveDisplayModeDidChange:(NCWidgetDisplayMode)activeDisplayMode withMaximumSize:(CGSize)maxSize {
-    CGFloat screenWidth = [XKCDDeviceManager screenWidth];
-    CGFloat actualHeight = screenWidth * (1.0 / self.comic.aspectRatio);
-    CGFloat comicHeight = actualHeight <= kMaxContentHeight ? actualHeight : kMaxContentHeight;
-    self.preferredContentSize = activeDisplayMode == NCWidgetDisplayModeCompact ? maxSize : CGSizeMake(0, comicHeight);
+    self.preferredContentSize = activeDisplayMode == NCWidgetDisplayModeCompact ? maxSize : CGSizeMake(0, [self expandedComicHeight]);
+}
+
+- (CGFloat)expandedComicHeight {
+    CGFloat aspectRatio = self.comic.aspectRatio > 0 ? self.comic.aspectRatio : kDefaultAspectRatio;
+    CGFloat actualHeight = [XKCDDeviceManager screenWidth] / aspectRatio;
+    return MIN(actualHeight, kMaxContentHeight);
 }
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
@@ -103,7 +106,18 @@ static CGFloat const kMaxContentHeight = 300.0;
     self.comicNumberLabel.text = [NSString stringWithFormat:@"%ld", (long)comic.num];
     self.comicNumberLabel.backgroundColor = [ThemeManager xkcdLightBlue];
 
-    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage]];
+    [self.comicImageView sd_setImageWithURL:[NSURL URLWithString:comic.imageURLString ?: @""] placeholderImage:[ThemeManager loadingImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if (!image || image.size.height <= 0 || comic != self.comic) {
+            return;
+        }
+
+        // Now that we know the image's real dimensions, resize if we're expanded.
+        [[DataManager sharedInstance] updateAspectRatio:image.size.width / image.size.height forComic:comic];
+
+        if (self.extensionContext.widgetActiveDisplayMode == NCWidgetDisplayModeExpanded) {
+            self.preferredContentSize = CGSizeMake(0, [self expandedComicHeight]);
+        }
+    }];
 
     [self updateLayout];
 }

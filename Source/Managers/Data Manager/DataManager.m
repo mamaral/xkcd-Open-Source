@@ -9,7 +9,7 @@
 #import "DataManager.h"
 #import "RequestManager.h"
 
-static NSInteger const kCurrentSchemaVersion = 5;
+static NSInteger const kCurrentSchemaVersion = 6;
 static NSString * const kLatestComicDownloadedKey = @"LatestComicDownloaded";
 static NSString * const kBookmarkedComicKey = @"BookmarkedComic";
 static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
@@ -19,6 +19,9 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 @property (nonatomic, strong) NSUserDefaults *defaults;
 
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+
+@property (nonatomic) BOOL isDownloadingComics;
+@property (nonatomic, strong) NSMutableArray *pendingDownloadHandlers;
 
 @end
 
@@ -43,7 +46,12 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 - (instancetype)init {
     self = [super init];
 
+    if (!self) {
+        return nil;
+    }
+
     self.defaults = [NSUserDefaults standardUserDefaults];
+    self.pendingDownloadHandlers = [NSMutableArray array];
 
     self.dateFormatter = [NSDateFormatter new];
     self.dateFormatter.dateStyle = NSDateFormatterMediumStyle;
@@ -73,11 +81,11 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
                 // Generate the URL string for the comic.
                 newObject[@"comicURLString"] = [Comic generateComicURLStringFromNumber:[comicNumber integerValue]];
 
-                // Set the default bookmark value.
-                newObject[@"isBookmark"] = @(NO);
-
                 // Set the explain URL string.
                 newObject[@"explainURLString"] = [NSString stringWithFormat:@"%@/%@", kExplainURLBase, comicNumber];
+
+                // Older comics may have been saved with insecure image URLs, which ATS now blocks.
+                newObject[@"imageURLString"] = [Comic secureURLStringFromURLString:oldObject[@"imageURLString"]];
             }];
         }
     };
@@ -91,16 +99,33 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 
 #pragma mark - Saving comics
 
-- (void)saveComics:(NSArray *)comics {
+- (NSInteger)saveComics:(NSArray *)comics {
     NSParameterAssert(comics);
 
-    [self.realm beginWriteTransaction];
-    [self.realm addOrUpdateObjects:comics];
-    [self.realm commitWriteTransaction];
+    // Skip comics we already have, otherwise we'd reset their viewed and favorite state.
+    NSMutableArray *newComics = [NSMutableArray arrayWithCapacity:comics.count];
+    for (Comic *comic in comics) {
+        if (![Comic objectForPrimaryKey:comic.comicID]) {
+            [newComics addObject:comic];
+        }
+    }
+
+    if (newComics.count == 0) {
+        return 0;
+    }
+
+    [self.realm transactionWithBlock:^{
+        [self.realm addOrUpdateObjects:newComics];
+    }];
+
+    return newComics.count;
 }
 
 - (void)markComicViewed:(Comic *)comic {
-    NSParameterAssert(comic);
+    // The comic may have been deleted out from under us, e.g. by clearing the cache.
+    if (!comic || comic.isInvalidated) {
+        return;
+    }
 
     [self.realm beginWriteTransaction];
     comic.viewed = YES;
@@ -111,7 +136,10 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 }
 
 - (void)markComic:(Comic *)comic favorited:(BOOL)favorited {
-    NSParameterAssert(comic);
+    // The comic may have been deleted out from under us, e.g. by clearing the cache.
+    if (!comic || comic.isInvalidated) {
+        return;
+    }
 
     [self.realm beginWriteTransaction];
     comic.favorite = favorited;
@@ -119,6 +147,21 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 
     // Broadcast this comic was favorited.
     [[NSNotificationCenter defaultCenter] postNotificationName:ComicFavoritedNotification object:nil userInfo:@{kComicKey: comic}];
+}
+
+- (void)updateAspectRatio:(CGFloat)aspectRatio forComic:(Comic *)comic {
+    // xkcd doesn't tell us image dimensions, so we record them once we've loaded the image.
+    if (!comic || comic.isInvalidated || aspectRatio <= 0 || fabs(comic.aspectRatio - aspectRatio) < 0.01) {
+        return;
+    }
+
+    if (comic.realm) {
+        [self.realm transactionWithBlock:^{
+            comic.aspectRatio = aspectRatio;
+        }];
+    } else {
+        comic.aspectRatio = aspectRatio;
+    }
 }
 
 
@@ -153,16 +196,10 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 #pragma mark - App life cycle handling
 
 - (void)handleAppEnteringForeground {
-    // Download the latest comics.
+    // Download any comics we're missing. If this fails we'll try again the next time we come to the
+    // foreground, and the comic list lets the user retry if the initial load fails.
     [self downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-
-        // If there was an error and we have none saved, there was an issue loading the first batch of
-        // comics and we should probably retry after a short delay Otherwise if we have new comics, notify the app that there are more available.
-        if (error && [self allSavedComics].count == 0) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [self handleAppEnteringForeground];
-            });
-        } else if (numberOfNewComics > 0) {
+        if (numberOfNewComics > 0) {
             [[NSNotificationCenter defaultCenter] postNotificationName:NewComicsAvailableNotification object:nil];
         }
     }];
@@ -178,7 +215,8 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 }
 
 - (RLMResults *)comicsMatchingSearchString:(NSString *)searchString {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS %@", searchString, searchString, searchString];
+    searchString = searchString ?: @"";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"comicID == %@ OR title CONTAINS[c] %@ OR alt CONTAINS[c] %@", searchString, searchString, searchString];
     RLMResults *matchingComics = [Comic objectsWithPredicate:predicate];
     RLMSortDescriptor *sortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:@"num" ascending:NO];
     return [matchingComics sortedResultsUsingDescriptors:@[sortDescriptor]];
@@ -197,41 +235,83 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 }
 
 - (void)downloadLatestComicsWithCompletionHandler:(void (^)(NSError *error, NSInteger numberOfNewComics))handler {
-    // Calculate the starting index.
-    NSInteger since = [self latestComicDownloaded];
+    // If a download is already running, wait for it to finish rather than starting another.
+    if (handler) {
+        [self.pendingDownloadHandlers addObject:[handler copy]];
+    }
 
-    // Pass that to our request manager to fetch it.
-    [[RequestManager sharedInstance] downloadComicsSince:since completionHandler:^(NSError *error, NSArray *comicDicts) {
-        // Error handling
+    if (self.isDownloadingComics) {
+        return;
+    }
+
+    self.isDownloadingComics = YES;
+
+    RequestManager *requestManager = [RequestManager sharedInstance];
+
+    [requestManager downloadLatestComicWithCompletionHandler:^(NSError *error, NSDictionary *latestComicDict) {
         if (error) {
-            handler(error, 0);
+            [self finishDownloadingComicsWithError:error numberOfNewComics:0];
             return;
         }
 
-        // Convert the dictionaries to our comic models, also keeping track of the newest
-        // latest comic.
-        NSMutableArray *comics = [NSMutableArray arrayWithCapacity:comicDicts.count];
-        NSInteger latestDownloaded = since;
+        // Rather than only fetching comics newer than the last one we downloaded, fetch every one we
+        // don't have, so any gaps left by failed requests get filled in next time.
+        Comic *latestComic = [Comic comicFromDictionary:latestComicDict];
+        NSMutableArray *numbersToDownload = [[self missingComicNumbersUpTo:latestComic.num] mutableCopy];
 
-        for (NSDictionary *comicDict in comicDicts) {
-            Comic *comic = [Comic comicFromDictionary:comicDict];
-            [comics addObject:comic];
+        // We already have the latest comic from this request, no need to fetch it again.
+        BOOL isLatestComicNew = [numbersToDownload containsObject:@(latestComic.num)];
+        [numbersToDownload removeObject:@(latestComic.num)];
 
-            if (comic.num > latestDownloaded) {
-                latestDownloaded = comic.num;
+        [requestManager downloadComicsWithNumbers:numbersToDownload completionHandler:^(NSError *error, NSArray *comicDicts) {
+            NSMutableArray *comics = [NSMutableArray arrayWithCapacity:comicDicts.count + 1];
+
+            if (isLatestComicNew) {
+                [comics addObject:latestComic];
             }
-        }
 
-        // Save them in our realm.
-        if (comics.count > 0) {
-            [self saveComics:comics];
-        }
+            for (NSDictionary *comicDict in comicDicts) {
+                [comics addObject:[Comic comicFromDictionary:comicDict]];
+            }
 
-        // Update our latest comic.
-        [self setLatestComicDownloaded:latestDownloaded];
+            NSInteger numberOfNewComics = [self saveComics:comics];
 
-        handler(nil, comics.count);
+            if (latestComic.num > [self latestComicDownloaded]) {
+                [self setLatestComicDownloaded:latestComic.num];
+            }
+
+            [self finishDownloadingComicsWithError:error numberOfNewComics:numberOfNewComics];
+        }];
     }];
+}
+
+- (void)finishDownloadingComicsWithError:(NSError *)error numberOfNewComics:(NSInteger)numberOfNewComics {
+    NSArray *handlers = [self.pendingDownloadHandlers copy];
+    [self.pendingDownloadHandlers removeAllObjects];
+    self.isDownloadingComics = NO;
+
+    for (void (^handler)(NSError *, NSInteger) in handlers) {
+        handler(error, numberOfNewComics);
+    }
+}
+
+- (NSArray<NSNumber *> *)missingComicNumbersUpTo:(NSInteger)latest {
+    NSMutableIndexSet *missingNumbers = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(1, MAX(latest, 0))];
+    [missingNumbers removeIndex:kMissingComicNumber];
+
+    for (Comic *comic in [Comic allObjects]) {
+        if (comic.num > 0) {
+            [missingNumbers removeIndex:comic.num];
+        }
+    }
+
+    // Newest first.
+    NSMutableArray *numbers = [NSMutableArray arrayWithCapacity:missingNumbers.count];
+    [missingNumbers enumerateIndexesWithOptions:NSEnumerationReverse usingBlock:^(NSUInteger number, BOOL *stop) {
+        [numbers addObject:@(number)];
+    }];
+
+    return numbers;
 }
 
 - (void)downloadLatestComicWithCompletionHandler:(void (^)(Comic *comic, BOOL wasNew))handler {
@@ -256,33 +336,17 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 - (void)performBackgroundFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     // Download all of the latest comics.
     [self downloadLatestComicsWithCompletionHandler:^(NSError *error, NSInteger numberOfNewComics) {
-        BOOL newData = numberOfNewComics > 0;
-
-        if (error) {
-            completionHandler(UIBackgroundFetchResultFailed);
-        } else if (newData) {
-            completionHandler(UIBackgroundFetchResultNewData);
-
+        // Some comics may have downloaded even if others failed, so check for new data first.
+        if (numberOfNewComics > 0) {
             [[NSNotificationCenter defaultCenter] postNotificationName:NewComicsAvailableNotification object:nil];
+
+            completionHandler(UIBackgroundFetchResultNewData);
+        } else if (error) {
+            completionHandler(UIBackgroundFetchResultFailed);
         } else {
             completionHandler(UIBackgroundFetchResultNoData);
         }
     }];
-}
-
-
-#pragma mark - Converting token data
-
-- (NSString *)tokenStringFromData:(NSData *)data {
-    if (!data) {
-        return @"";
-    }
-
-    NSString *token = [NSString stringWithFormat:@"%@", data];
-    token = [token stringByReplacingOccurrencesOfString:@"<" withString:@""];
-    token = [token stringByReplacingOccurrencesOfString:@">" withString:@""];
-    token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
-    return token;
 }
 
 
@@ -294,8 +358,12 @@ static NSString * const kAppLaunchedCountKey = @"AppLaunchedCount";
 
 - (Comic *)randomComic {
     RLMResults *allComics = [self allSavedComics];
-    NSInteger randomIndex = [self randomNumberBetweenMin:0 andMax:allComics.count - 1];
-    return allComics[randomIndex];
+
+    if (allComics.count == 0) {
+        return nil;
+    }
+
+    return allComics[arc4random_uniform((u_int32_t)allComics.count)];
 }
 
 

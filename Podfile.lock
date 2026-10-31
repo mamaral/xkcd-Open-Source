@@ -1,0 +1,48 @@
+PODS:
+  - Facade (1.1.1)
+  - FLAnimatedImage (1.0.17)
+  - OHHTTPStubs (9.1.0):
+    - OHHTTPStubs/Default (= 9.1.0)
+  - OHHTTPStubs/Core (9.1.0)
+  - OHHTTPStubs/Default (9.1.0):
+    - OHHTTPStubs/Core
+    - OHHTTPStubs/JSON
+    - OHHTTPStubs/NSURLSession
+    - OHHTTPStubs/OHPathHelpers
+  - OHHTTPStubs/JSON (9.1.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/NSURLSession (9.1.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/OHPathHelpers (9.1.0)
+  - Realm (20.0.6):
+    - Realm/Headers (= 20.0.6)
+  - Realm/Headers (20.0.6)
+  - SDWebImage (3.8.3):
+    - SDWebImage/Core (= 3.8.3)
+  - SDWebImage/Core (3.8.3)
+
+DEPENDENCIES:
+  - Facade
+  - FLAnimatedImage (~> 1.0)
+  - OHHTTPStubs
+  - Realm
+  - SDWebImage (~> 3.7)
+
+SPEC REPOS:
+  trunk:
+    - Facade
+    - FLAnimatedImage
+    - OHHTTPStubs
+    - Realm
+    - SDWebImage
+
+SPEC CHECKSUMS:
+  Facade: 3c5c6fb1ba042d20885cfe5a290050f5b9351ca2
+  FLAnimatedImage: bbf914596368867157cc71b38a8ec834b3eeb32b
+  OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
+  Realm: e63b3586386f7ab655dc890a9d0878870ebb1837
+  SDWebImage: a72e880a8fe0f7fc31efe15aaed443c074d2a80c
+
+PODFILE CHECKSUM: 1ea33fb092663d5b55db36724e1afb2108ff282a
+
+COCOAPODS: 1.17.0

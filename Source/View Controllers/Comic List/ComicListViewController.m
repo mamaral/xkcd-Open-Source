@@ -17,7 +17,6 @@
 #import "ComicListPresenter.h"
 #import "ComicListFlowLayout.h"
 #import "ComicViewController.h"
-#import "ComicCell.h"
 #import "XKCDDeviceManager.h"
 #import "DataManager.h"
 
@@ -49,7 +48,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         return nil;
     }
 
-    self.presenter = [[ComicListPresenter alloc] initWithView:self];;
+    self.presenter = [[ComicListPresenter alloc] initWithView:self];
     self.comics = [self.presenter getSavedComicList];
     
     return self;
@@ -101,6 +100,9 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    // Comic aspect ratios get filled in as their images load, so pick up any changes.
+    [self.collectionViewLayout invalidateLayout];
 
     // If our presenter tells us an initial load is required, disable the navigation buttons
     // and tell it to handle the initial load.
@@ -228,6 +230,10 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 }
 
 - (void)showComic:(Comic *)comic {
+    if (!comic) {
+        return;
+    }
+
     ComicViewController *comicVC = [ComicViewController new];
     comicVC.delegate = self;
     comicVC.allowComicNavigation = !self.presenter.isSearching && !self.presenter.isFilteringFavorites;
@@ -301,9 +307,9 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 }
 
 - (NSUInteger)numberOfColumnsInCollectionView:(UICollectionView *)collectionView {
-    BOOL isPad = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
-    BOOL isLandscape = UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation);
-    
+    BOOL isPad = [XKCDDeviceManager isPad];
+    BOOL isLandscape = CGRectGetWidth(collectionView.bounds) > CGRectGetHeight(collectionView.bounds);
+
     if (isPad) {
         return isLandscape ? 6 : 4;
     } else {
@@ -314,16 +320,23 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
 #pragma mark - Comic view controller delegate
 
+// Our comic lists are sorted newest first, so the comic "before" the current one has the next
+// highest number. We look neighbors up by number rather than by index since the current comic may
+// no longer be in the list, e.g. when viewing unread comics, it's marked read as soon as it's shown.
 - (Comic *)comicViewController:(ComicViewController *)comicViewController comicBeforeCurrentComic:(Comic *)currentComic {
-    NSInteger indexOfCurrentComic = [self.comics indexOfObject:currentComic];
+    if (!currentComic || currentComic.isInvalidated) {
+        return nil;
+    }
 
-    return (indexOfCurrentComic != NSNotFound && indexOfCurrentComic > 0) ? self.comics[indexOfCurrentComic - 1] : nil;
+    return [[[self.comics objectsWhere:@"num > %ld", (long)currentComic.num] sortedResultsUsingKeyPath:@"num" ascending:YES] firstObject];
 }
 
 - (Comic *)comicViewController:(ComicViewController *)comicViewController comicAfterCurrentComic:(Comic *)currentComic {
-    NSInteger indexOfCurrentComic = [self.comics indexOfObject:currentComic];
+    if (!currentComic || currentComic.isInvalidated) {
+        return nil;
+    }
 
-    return (indexOfCurrentComic != NSNotFound && indexOfCurrentComic + 1 <= self.comics.count - 1) ? self.comics[indexOfCurrentComic + 1] : nil;
+    return [[[self.comics objectsWhere:@"num < %ld", (long)currentComic.num] sortedResultsUsingKeyPath:@"num" ascending:NO] firstObject];
 }
 
 - (Comic *)comicViewController:(ComicViewController *)comicViewController randomComic:(Comic *)currentComic {
@@ -457,12 +470,18 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
 
 - (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
+
+    // Pressing between cells doesn't hit a comic, so there's nothing to preview.
+    if (!indexPath) {
+        return nil;
+    }
+
     UICollectionViewLayoutAttributes *cellAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
     [previewingContext setSourceRect:cellAttributes.frame];
 
     Comic *comic = self.comics[indexPath.item];
 
-    if (comic.isInteractive || [self.presenter shouldShowComicAsInteractive:comic]) {
+    if ([self.presenter shouldShowComicAsInteractive:comic]) {
         ComicWebViewController *comicWebVC = [ComicWebViewController new];
         comicWebVC.URLString = comic.comicURLString;
         return comicWebVC;
@@ -473,7 +492,7 @@ static NSString * const kComicListTitle = @"xkcd: Open Source";
         comicVC.comic = comic;
         comicVC.previewMode = YES;
         return comicVC;
-     }
+    }
 }
 
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {

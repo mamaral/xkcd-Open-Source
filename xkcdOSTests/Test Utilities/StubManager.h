@@ -13,6 +13,9 @@
 + (instancetype)sharedInstance;
 
 - (void)stubResponseWithStatusCode:(int)statusCode object:(id)object delay:(NSTimeInterval)delay;
+
+// Stubs xkcd.com as though it only has the given comics, with the highest numbered one as the latest.
+- (void)stubComics:(NSArray<NSDictionary *> *)comicDicts;
 - (void)removeAllStubs;
 
 @end

@@ -9,12 +9,9 @@
 #import "AppDelegate.h"
 #import "ComicListViewController.h"
 #import "ThemeManager.h"
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-#import <TwitterKit/TwitterKit.h>
-#import "XKCDDeviceManager.h"
 
 @import StoreKit;
+@import UserNotifications;
 
 static NSString * const kAppStoreURLString = @"itms-apps://itunes.apple.com/app/id995811425";
 
@@ -39,6 +36,14 @@ static NSTimeInterval const kFourMonthsInSeconds = 10368000;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
+    // When hosting unit tests, don't set up the UI or start downloading comics, as that would
+    // interfere with the tests' own stubbed requests.
+    if ([NSProcessInfo processInfo].environment[@"XCTestConfigurationFilePath"]) {
+        self.window.rootViewController = [UIViewController new];
+        [self.window makeKeyAndVisible];
+        return YES;
+    }
+
     if (application.applicationIconBadgeNumber > 0) {
         application.applicationIconBadgeNumber = 0;
     }
@@ -46,10 +51,10 @@ static NSTimeInterval const kFourMonthsInSeconds = 10368000;
     self.dataManager = [DataManager sharedInstance];
     self.requestManager = [RequestManager sharedInstance];
 
-    [self setupThirdPartyLibraries];
-    [self setupPushNotifications];
+    [ThemeManager setupTheme];
+    [self setupBackgroundFetch];
 
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];;
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ComicListViewController new]];
     [self.window makeKeyAndVisible];
 
     [self.dataManager incrementAppLaunchCount];
@@ -70,36 +75,40 @@ static NSTimeInterval const kFourMonthsInSeconds = 10368000;
 }
 
 
-#pragma mark - Third-party library setup
+#pragma mark - Background fetch
 
-- (void)setupThirdPartyLibraries {
-    [ThemeManager setupTheme];
-    [Fabric with:@[CrashlyticsKit, TwitterKit]];
-}
+- (void)setupBackgroundFetch {
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
-
-#pragma mark - Push notifications
-
-- (void)setupPushNotifications {
-    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-}
-
-- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-    [application registerForRemoteNotifications];
-}
-
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSString *token = [[DataManager sharedInstance] tokenStringFromData:deviceToken];
-    
-    [self.requestManager sendDeviceToken:token completionHandler:^(NSError *error) {
+    // We let people know about new comics with local notifications, posted after a background fetch.
+    [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:(UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError *error) {
         if (error) {
-            NSLog(@"Sending token to server failed with error: %@", error);
+            NSLog(@"Requesting notification authorization failed with error: %@", error);
         }
     }];
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [self.dataManager performBackgroundFetchWithCompletionHandler:completionHandler];
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    [self.dataManager performBackgroundFetchWithCompletionHandler:^(UIBackgroundFetchResult result) {
+        if (result == UIBackgroundFetchResultNewData && application.applicationState != UIApplicationStateActive) {
+            [self notifyAboutNewComic:[[self.dataManager allSavedComics] firstObject]];
+        }
+
+        completionHandler(result);
+    }];
+}
+
+- (void)notifyAboutNewComic:(Comic *)comic {
+    if (!comic) {
+        return;
+    }
+
+    UNMutableNotificationContent *content = [UNMutableNotificationContent new];
+    content.body = [NSString stringWithFormat:NSLocalizedString(@"notification.new comic", nil), comic.title];
+    content.badge = @1;
+
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:comic.comicID content:content trigger:nil];
+    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:nil];
 }
 
 

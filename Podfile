@@ -1,22 +1,32 @@
-def myPods
+platform :ios, '15.0'
+
+def sharedPods
  pod "Realm"
- pod "AFNetworking", "~> 2.0"
  pod "Facade"
  pod "SDWebImage", "~>3.7"
- pod "Facade"
+end
 
+target 'xkcd Open Source' do
+ sharedPods
+ pod "FLAnimatedImage", "~> 1.0"
+end
+
+target 'xkcdToday' do
+ sharedPods
+end
+
+target 'xkcdOSTests' do
+ sharedPods
  pod "FLAnimatedImage", "~> 1.0"
  pod "OHHTTPStubs"
 end
 
-target 'xkcd Open Source' do
- myPods
-end
-
-target 'xkcdToday' do
- myPods
-end
-
-target 'xkcdOSTests' do
- myPods
+# Several pods declare very old minimum iOS versions, which current Xcode rejects, so build them
+# all against our deployment target.
+post_install do |installer|
+ installer.pods_project.targets.each do |target|
+  target.build_configurations.each do |config|
+   config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+  end
+ end
 end

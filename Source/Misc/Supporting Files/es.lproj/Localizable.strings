@@ -43,3 +43,6 @@
 // Explain
 "comic.explain.title" = "Explicar";
 "comic.explain.accessibility" = "Explicar este cómic";
+
+// Notifications
+"notification.new comic" = "Nuevo cómic: %@";

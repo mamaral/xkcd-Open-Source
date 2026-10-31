@@ -14,7 +14,7 @@ static NSString * const ComicFavoritedNotification = @"ComicFavorited";
 static NSString * const ComicReadNotification = @"ComicRead";
 static NSString * const kComicKey = @"comic";
 static NSString * const kReviewPromptDate = @"ReviewPromptDate";
-static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
+static NSString * const kExplainURLBase = @"https://www.explainxkcd.com";
 
 @interface DataManager : NSObject
 
@@ -30,9 +30,11 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 
 #pragma mark - Saving / updating comics
 
-- (void)saveComics:(NSArray *)comics;
+// Saves any of the given comics we don't already have, returning how many were new.
+- (NSInteger)saveComics:(NSArray *)comics;
 - (void)markComicViewed:(Comic *)comic;
 - (void)markComic:(Comic *)comic favorited:(BOOL)favorited;
+- (void)updateAspectRatio:(CGFloat)aspectRatio forComic:(Comic *)comic;
 
 
 #pragma mark - Latest comic info
@@ -63,15 +65,10 @@ static NSString * const kExplainURLBase = @"http://www.explainxkcd.com";
 - (void)performBackgroundFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 
 
-#pragma mark - Converting token data
-
-- (NSString *)tokenStringFromData:(NSData *)data;
-
-
 #pragma mark - Randomization
 
 - (NSInteger)randomNumberBetweenMin:(NSUInteger)min andMax:(NSUInteger)max;
-- (Comic *)randomComic;
+- (Comic *)randomComic; // nil if there are no saved comics.
 
 
 #pragma mark - Reviews

@@ -1,5 +1,0 @@
-{
-    "require": {
-        "duccio/apns-php": "dev-master"
-    }
-}

@@ -7,21 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AFNetworking.h>
 #import "Comic.h"
 
 static NSString * const kRequestManagerErrorDomain = @"Request Manager";
 static NSString * const kRequestManagerUserInfoKey = @"error";
-static NSString * const kRequestManagerNilTokenErrorMessage = @"Request Manager";
+static NSString * const kRequestManagerInvalidResponseErrorMessage = @"The server returned an unexpected response.";
 
 static NSInteger const kRequestManagerErrorCode = -1;
 
-static NSString * const kDefaultContentType = @"application/x-www-form-urlencoded";
-static NSString * const kContentTypeKey = @"Content-Type";
+// xkcd skipped comic #404, so there's never anything to fetch for it.
+static NSInteger const kMissingComicNumber = 404;
 
 @interface RequestManager : NSObject
 
-@property (nonatomic, strong) AFHTTPRequestOperationManager *manager;
+@property (nonatomic, strong) NSURLSession *session;
 
 
 #pragma mark - Singleton
@@ -31,12 +30,10 @@ static NSString * const kContentTypeKey = @"Content-Type";
 
 #pragma mark - Downloading comics
 
-- (void)downloadComicsSince:(NSInteger)since completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler;
 - (void)downloadLatestComicWithCompletionHandler:(void (^)(NSError *error, NSDictionary *latestComic))handler;
 
-
-#pragma mark - Device tokens
-
-- (void)sendDeviceToken:(NSString *)token completionHandler:(void (^)(NSError *error))handler;
+// Downloads the given comics, a few at a time. The handler is called once every request has
+// finished, with whichever comics succeeded and the first error encountered, if any.
+- (void)downloadComicsWithNumbers:(NSArray<NSNumber *> *)numbers completionHandler:(void (^)(NSError *error, NSArray *comicDicts))handler;
 
 @end

@@ -21,10 +21,11 @@ static NSString * const kMonthKey = @"month";
 static NSString * const kYearKey = @"year";
 static NSString * const kAspectRatioKey = @"img_aspect_ratio";
 static NSString * const kIsInteractiveKey = @"isInteractive";
+static NSString * const kExtraPartsKey = @"extra_parts";
 
-static NSString * const kShareURLBase = @"http://xkcd.com";
+static NSString * const kShareURLBase = @"https://xkcd.com";
 
-static NSInteger kDefaultComicNum = 0;
+static NSInteger const kDefaultComicNum = 0;
 static CGFloat const kDefaultAspectRatio = 1.0;
 
 @interface Comic : RLMObject
@@ -47,7 +48,7 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 @property BOOL favorite;
 @property BOOL isInteractive;
 
-@property (nonatomic) BOOL isBookmark;
+@property (nonatomic, readonly) BOOL isBookmark;
 
 
 #pragma mark - Initialization
@@ -58,6 +59,7 @@ static CGFloat const kDefaultAspectRatio = 1.0;
 #pragma mark - Comic URL Generation
 
 + (NSString *)generateComicURLStringFromNumber:(NSInteger)number;
++ (NSString *)secureURLStringFromURLString:(NSString *)urlString;
 
 
 #pragma mark - Test utilities

@@ -45,13 +45,13 @@
 
     [self.view addSubview:self.webView];
     [self.view addSubview:self.progressView];
-}
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:self.URLString]];
-    [self.webView loadRequest:request];
+    // Load once here, rather than every time we appear, so coming back to this screen doesn't
+    // throw away the user's place on the page.
+    NSURL *url = self.URLString ? [NSURL URLWithString:self.URLString] : nil;
+    if (url) {
+        [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
+    }
 }
 
 - (void)dealloc {
@@ -73,6 +73,11 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:NSStringFromSelector(@selector(estimatedProgress))] && object == self.webView) {
+        // Navigating within the page starts a new load, so make sure the progress bar is visible again.
+        if (self.webView.estimatedProgress < 1.0) {
+            self.progressView.alpha = 1.0;
+        }
+
         [self.progressView setProgress:self.webView.estimatedProgress animated:YES];
 
         if (self.webView.estimatedProgress >= 1.0) {

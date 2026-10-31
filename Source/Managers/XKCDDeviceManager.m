@@ -7,7 +7,6 @@
 //
 
 #import "XKCDDeviceManager.h"
-#import "AppDelegate.h"
 
 #define IS_IPHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
 #define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -22,7 +21,8 @@
 #define IS_IPHONE_5 (IS_IPHONE && SCREEN_MAX_LENGTH == 568.0)
 #define IS_IPHONE_6 (IS_IPHONE && SCREEN_MAX_LENGTH == 667.0)
 #define IS_IPHONE_6P (IS_IPHONE && SCREEN_MAX_LENGTH == 736.0)
-#define IS_IPHONE_X  (IS_IPHONE && SCREEN_HEIGHT == 812.0)
+// Every iPhone since the X is at least this tall, so treat them all as "X" sized.
+#define IS_IPHONE_X  (IS_IPHONE && SCREEN_MAX_LENGTH >= 812.0)
 #define IS_IPAD_2 (IS_IPAD && !IS_RETINA)
 
 @implementation XKCDDeviceManager
@@ -74,7 +74,7 @@
 }
 
 + (BOOL)isPad {
-    return ([self currentDeviceType] == DeviceTypePad || [self currentDeviceType] == DeviceTypePad2);
+    return IS_IPAD;
 }
 
 + (BOOL)isPad2 {
@@ -82,11 +82,11 @@
 }
 
 + (BOOL)isLargeDevice {
-    return ([XKCDDeviceManager currentDeviceType] == DeviceType6) || ([XKCDDeviceManager currentDeviceType] == DeviceType6Plus);
+    return IS_IPHONE && SCREEN_MIN_LENGTH >= 375.0;
 }
 
 + (BOOL)isSmallDevice {
-    return ([XKCDDeviceManager currentDeviceType] == DeviceType4) || ([XKCDDeviceManager currentDeviceType] == DeviceType5);
+    return IS_IPHONE && SCREEN_MIN_LENGTH < 375.0;
 }
 
 + (BOOL)isX

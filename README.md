@@ -1,9 +1,7 @@
 
 ![Banner](Screenshots/banner.png)
 
-[![Build Status](https://travis-ci.org/mamaral/xkcd-Open-Source.svg)](https://travis-ci.org/mamaral/xkcd-Open-Source)
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
-[![Coverage Status](https://coveralls.io/repos/mamaral/xkcd-Open-Source/badge.svg?branch=master)](https://coveralls.io/r/mamaral/xkcd-Open-Source?branch=master)
 
 ## A free, ad-free, open-source, native, and universal xkcd.com reader for iOS. [Download it from the app store now!](https://itunes.apple.com/us/app/xkcd-open-source/id995811425?mt=8)
 
@@ -12,17 +10,24 @@
 
 ## Architecture
 
-- [AFNetworking](https://github.com/AFNetworking/AFNetworking) for networking. *duh*
+- `NSURLSession` for networking, pulling comics straight from [xkcd's JSON API](https://xkcd.com/json.html).
 - [Realm](https://github.com/realm/realm-cocoa) as a data store.
 - [Façade](https://github.com/mamaral/Facade) for the UI layout.
 - [SDWebImage](https://github.com/rs/SDWebImage) for image downloading / caching.
 - [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage) for that one GIF.
-- [Fabric](https://get.fabric.io/) for beta distribution, analytics, and crash reporting.
 - [xkcd-font](https://github.com/ipython/xkcd-font) because obviously.
 - Stripped, modified, and customized [Mosaic Layout](https://github.com/betzerra/MosaicLayout) for the comic list.
 
 
 ## Version History
+- **Unreleased**
+   - Comics now come straight from xkcd.com over HTTPS, since the old cache server is gone. Push notifications are replaced by background fetch with a local notification for new comics.
+   - Missing comics are filled in automatically, and re-downloading a comic no longer resets its read/favorite state.
+   - Fixed prev/next navigation while viewing unread comics, and new comics no longer reset the unread/favorites/search filters.
+   - Fixed several crashes (3D Touch between cells, random comic with an empty list) and a runaway retry loop when offline.
+   - Removed the discontinued Fabric, Crashlytics, Twitter Kit, and Facebook SDKs, and AFNetworking.
+   - Requires iOS 15+, 64-bit only.
+
 - **v2.5** (Submitted to the App Store)
    - iPhone X support
    - Added support for the four most common languages used by users other than English. German, Simplified Chinese, Spanish, and Russian.

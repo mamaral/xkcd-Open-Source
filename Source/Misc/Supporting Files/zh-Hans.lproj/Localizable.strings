@@ -43,3 +43,6 @@
 // Explain
 "comic.explain.title" = "说明";
 "comic.explain.accessibility" = "说明该连环画";
+
+// Notifications
+"notification.new comic" = "新漫画：%@";
